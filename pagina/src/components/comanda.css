@@ -1,0 +1,248 @@
+.comanda {
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-start;
+    padding: 10px;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    background-color: cadetblue;
+}
+.totais{
+    background: brown;
+    padding: 11px;
+    border-radius: 7px;
+    color: white;
+    box-shadow: 1px 1px 6px red;
+    height: 34vh;
+    text-align: right;
+}
+.minventario{
+    width: 814px;
+    display: flex;
+    flex-direction: row-reverse;
+    height: 54vh;
+}
+.inventario{
+    display: flex;
+    border-width: 10px;
+    border-style: outset;
+    width: 534px;
+    background: darkgray;
+}
+.inventario div button{
+    margin: 5px;
+    font-size: 40px;
+
+    box-shadow: 1px 1px 1px black;
+}
+.inventario ul button{
+    margin: 0 9px;
+    font-size: 16px;
+    text-transform: capitalize;
+
+    box-shadow: 1px 1px 1px black;
+}
+.itens {
+    width: 40%;
+    margin-right: 20px;
+}
+.grupo-produto{
+    width: 252px;
+    background: brown;
+    border-width: 3px;
+    border-style: double;
+}
+.itens .grupo-produto button{
+    margin: 5px;
+    height: 56px;
+    width: 116px;
+    font-size: 15px;
+    text-indent: -8px;
+    font-weight: 500;
+    text-transform: uppercase;
+    box-shadow: 1px 1px 5px black;
+}
+.itens ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+.GPX1{
+    background-color: #d16309;
+}
+
+.GPX2{
+    background-color: #0992d1;
+}
+.GPX10{
+    background-color: gainsboro;
+    color: #000;
+}
+.GPX7106{
+    background-color: royalblue;
+    color: white;
+}
+.GPX12{
+    background-color: goldenrod;
+    color: #000;
+}
+.GPX13{
+    background-color: #d16309;
+}
+.GPX6615{
+    background-color: #073d70;
+    color: white;
+}
+.GPX9{
+    background-color: #2e2650;
+    color: white;
+}
+.itens ul li button {
+    width: 100px;
+    height: 87px;
+    font-size: 14px;
+}
+
+.comandar {
+    width: 50%;
+    margin-left: 20px;
+}
+
+table {
+    text-align: center;
+    width: 100%;
+    background-color: rgb(0, 0, 0);
+
+}
+
+table tbody div {
+    background-color: black;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+.titulo-tb td {
+    background-color: #000;
+    color: white;
+    font-weight: bold;
+}
+
+.linhas-tb td {
+    background-color: khaki;
+    text-align: center;
+}
+
+.linhas-tb .idd {
+    width: 50px;
+    color: white;
+    font-weight: bold;
+    background-color: #d16309;
+}
+
+.linhas-tb .ndd {
+    width: 350px;
+    text-transform: uppercase;
+    color: black;
+    font-weight: bold;
+    background-color: wheat;
+}
+.V{
+    background-color: red;
+}
+.C{
+    background-color: brown;
+}
+.D{
+    background-color: rgba(109, 11, 11, 0.719);
+}
+ul::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  
+  ul::-webkit-scrollbar-thumb {
+    background-color: red;
+    border-radius: 10px;
+  }
+  
+  ul::-webkit-scrollbar-track {
+    background-color: black;
+    border-radius: 10px;
+  }
+  
+  ul {
+    height: 400px;
+    overflow: auto;
+    scrollbar-width: thin;
+    scrollbar-color: red black;
+  }
+
+li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 7px;
+    margin-left: -9px;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: 1.92s;
+}
+
+button:hover {
+    text-shadow: 1px 1px 1px black;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+input[type="text"],
+input[type="number"] {
+    padding: 5px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: 100%;
+    margin-bottom: 10px;
+}
+
+input[type="submit"] {
+    padding: 5px 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+input[type="submit"]:hover {
+    background-color: #3e8e41;
+}
+
+.controles {
+    margin-top: 20px;
+}
+.controle{
+    float: left;
+}
+select {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    height: 57vh;
+}
+
+option {
+    padding: 5px;
+    font-size: 1.2em;
+    background-color: #f2f2f2;
+    color: #000;
+}

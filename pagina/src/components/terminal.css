@@ -1,0 +1,24 @@
+.terminal {
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    padding: 10px;
+    overflow-y: scroll;
+    height: 150px;
+    margin-top: 20px;
+  }
+  
+  .terminal-input {
+    background-color: black;
+    color: white;
+    font-family: monospace;
+    padding: 10px;
+    border: none;
+    outline: none;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  
+  .terminal-input:focus {
+    outline: none;
+  }

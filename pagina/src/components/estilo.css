@@ -1,0 +1,264 @@
+.frente-loja {
+  display: flex;
+  flex-direction: column;
+  transition: 1.8s;
+}
+
+.comandeira-comanda {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-content: center;
+
+}
+
+/* Estilos para a página de mesas */
+
+.mesas-page {
+  display: flex;
+  font-family: Arial, sans-serif;
+  background-color: #f7f7f7;
+  height: 100vh;
+  width: 78%;
+  padding: 11px;
+  transition: 1.9s;
+}
+
+.mesas-list {
+  background-color: #fff;
+  border-radius: 10px;
+  height: 85vh;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+/*.butaoMenuMesa-hmenu-princopa {
+  width: 100px;
+  height: 100px;
+}*/
+
+.mesas-list h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.mesas-list ul {
+  cursor: pointer;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.mesas-list li {
+  display: flex;
+  font-size: 18px;
+  margin-bottom: 10px;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.mesas-list li span {
+  margin-right: 10px;
+}
+
+.area-mesas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  height: 83vh;
+}
+
+
+.mesa-menu {
+  width: 120px;
+  height: 120px;
+  justify-content: center;
+  border-radius: 6px;
+  box-shadow: 2px 2px 2px black;
+  margin: 3px;
+
+}
+
+.n-mesa-menu {
+  position: relative;
+  top: -43px;
+  width: 58%;
+  left: 2px;
+  background-color: rgba(58, 54, 44, 0.555);
+  font-size: 36px;
+  border-radius: 5px;
+
+}
+
+.span-mesa-comanda-vlw {
+  font-size: 12px;
+  position: relative;
+  top: 10px;
+
+}
+
+.span-mesa-comanda-vlw h4 {
+  position: relative;
+  top: 43px;
+  background-color: rgba(0, 0, 0, 0.822);
+  margin: -1px 0;
+  color: white;
+
+}
+
+.senha-area {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  width: 16%;
+  margin-top: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.senha-area h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.area-digito {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 17px;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.area-digito .area-senha {
+  display: flex;
+  flex-direction: column;
+}
+
+.area-senha div {
+  display: flex;
+  justify-content: space-between;
+}
+
+.senha-area input[type=password] {
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 85%;
+  margin-bottom: 10px;
+}
+
+.senha-area button {
+  padding: 10px 20px;
+  border-radius: 5px;
+  width: 76px;
+  height: 76px;
+  border: none;
+  font-size: 18px;
+  color: #fff;
+  /* background-color: #007bff; */
+  cursor: pointer;
+}
+
+.senha-area button:first-child {
+  margin-right: 10px;
+  background-color: #28a745;
+}
+
+.button {
+  font-size: 16px;
+  font-weight: bold;
+  text-align: center;
+
+}
+.operadores button{
+  width: 80px;
+  margin: 4px;
+}
+.digitos div button {
+  background-color: gray;
+  font-size: 40px;
+  width: 80px;
+  margin: 4px;
+}
+
+.digitos div button:hover {
+  background-color: brown;
+
+}
+.button-livre {
+  background-color: green;
+  color: white;
+
+
+}
+
+.button-indisponivel {
+  background-color: rgb(155, 41, 126);
+  color: white;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/1209/1209474.png");
+  background-size: cover;
+
+}
+
+.button-ocupado {
+  background-color: rgb(153, 15, 15);
+  background-image: url("https://cdn-icons-png.flaticon.com/512/1209/1209474.png");
+  background-size: cover;
+
+  color: white;
+}
+.button-ocupado h4 {
+
+  border-radius: 10px;
+  padding: 5px;
+
+}
+
+.button-pago {
+  background-color: rgb(124, 206, 2);
+  color: white;
+}
+
+.button-limpando {
+  background-color: rgb(255, 115, 0);
+  color: white;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/419/419660.png");
+
+  background-size: cover;
+}
+
+.button-pagamento {
+  background-color: gold;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/1999/1999210.png");
+  background-size: cover;
+  color: black;
+}
+
+.button-fechando {
+  background-color: red;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/1999/1999210.png");
+  background-size: cover;
+
+  color: black;
+}
+
+.button-comanda {
+  background-color: rgb(255, 187, 1);
+  color: white;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/5684/5684838.png");
+  background-size: cover;
+}
+
+.button-defeito {
+  background-color: cadetblue;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/7479/7479439.png");
+  background-size: cover;
+  color: black;
+}
+
+.button-reserva {
+  background-color: goldenrod;
+  background-image: url("https://cdn-icons-png.flaticon.com/512/1209/1209474.png");
+  background-size: cover;
+  color: black;
+}
