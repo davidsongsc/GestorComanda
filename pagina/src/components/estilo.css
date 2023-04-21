@@ -173,6 +173,7 @@
 .operadores button{
   width: 80px;
   margin: 4px;
+  height: 66px;
 }
 .digitos div button {
   background-color: gray;
@@ -261,4 +262,38 @@
   background-image: url("https://cdn-icons-png.flaticon.com/512/1209/1209474.png");
   background-size: cover;
   color: black;
+}
+
+.painel-cozinha{
+  display: flex;
+}
+.opt-pedido{
+   margin: 10px;
+}
+.opt-pedido input[type="radio"] {
+  list-style-type: dashed;
+}
+
+.opt-pedido label {
+
+  cursor: pointer; /* Define o cursor como uma mão quando o mouse estiver sobre o texto */
+  position: relative; /* Permite a estilização do marcador */
+  padding-left: 25px; /* Cria um espaço para o marcador */
+}
+
+.opt-pedido label:before {
+  content: ""; /* Cria um espaço para o marcador */
+
+  position: absolute; /* Permite a estilização do marcador */
+  left: 0; /* Posiciona o marcador à esquerda do texto */
+  top: 2px; /* Centraliza o marcador verticalmente */
+  width: 17px; /* Define a largura do marcador */
+  height: 17px; /* Define a altura do marcador */
+  border: 1px solid #ccc; /* Define a borda do marcador */
+  border-radius: 50%; /* Define o raio da borda do marcador como 50% para criar um círculo */
+}
+
+.opt-pedido input[type="radio"]:checked + label:before {
+  background-color: #008080; /* Muda a cor do fundo do marcador quando estiver selecionado */
+  border-color: #008080; /* Muda a cor da borda do marcador quando estiver selecionado */
 }

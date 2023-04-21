@@ -10,6 +10,7 @@ const Mesa = ({ mesa, comandas, fazerPedido }) => {
   const [mostrarConta, setMostrarConta] = useState(false);
   const [status, setStatus] = useState('Livre');
   const [buttonClass, setButtonClass] = useState('button button-livre');
+  
 
   useEffect(() => {
     const mesaIndisponivel = comandas.some(comanda => comanda.mesa === mesa.mesa && comanda.status === 2);
@@ -57,10 +58,8 @@ const Mesa = ({ mesa, comandas, fazerPedido }) => {
       const tempoDecorrido = calcularTempoDecorrido(comandaOcupada.dataHoraEntrada);
       setButtonClass("button-ocupado");
       setStatus(<>
-        <h4> Em Uso<br/>
-
-        {`R$ ${comandaOcupada.valorTotal}`}<br/>
-        
+        <h4> Em Uso<br />
+          {`R$ ${comandaOcupada.valorTotal}`}<br />
           {`[${tempoDecorrido}]`}
         </h4>
       </>);
@@ -98,13 +97,18 @@ const Mesa = ({ mesa, comandas, fazerPedido }) => {
   };
 
   return (
-    <li className={`mesa-menu button ${buttonClass}`} key={mesa.mesa}>
-      <div className='span-mesa-comanda-vlw'>{status}</div>
-      <div className='n-mesa-menu'>{mesa.mesa}
-      </div>
-      
-    </li>
+    <>
 
+      <li className={`mesa-menu button ${buttonClass}`} key={mesa.mesa}>
+        <div className='span-mesa-comanda-vlw'>{status}{mesa.status}</div>
+   
+        <div className='n-mesa-menu'>{mesa.mesa}
+        </div>
+
+      </li>
+
+
+    </>
   );
 };
 

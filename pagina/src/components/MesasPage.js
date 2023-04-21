@@ -1,25 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import './estilo.css';
 import Mesa from './Mesa';
 import axios from 'axios';
 import Comanda from './Comanda';
-
+import './estilo.css';
+import useSocket from './Socket';
 
 const MesasPage = () => {
     const navigation = useNavigate();
     const [mesas, setMesas] = useState([...Array(66)].map((_, index) => ({ mesa: index + 1, ocupada: false, status: '0', aberta: false, conta: null })));
     const [senha, setSenha] = useState('');
     const [mesaSelecionada, setMesaSelecionada] = useState(null);
+    const [messages, setMessages] = useState([]);
     const [erroSenha, setErroSenha] = useState(false);
     const [dataFormatada, setDataFormatada] = useState('');
     const [comandas, setComandas] = useState([]);
+    const [comanda, setComanda] = useState();
     const [comandasAbertas, setComandasAbertas] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
+    const socket = useSocket('http://192.168.0.50:8000');
     const nome = 'maquina'
     const token = 'abc123'
-    
 
+    
     const fazerPedido = () => { };
 
     const handleSenhaChange = (event) => {
@@ -64,7 +67,6 @@ const MesasPage = () => {
         navigation(`/mesa/${mesaId}/comanda`);
     }
 
-   
     useEffect(() => {
         // Carrega as comandas abertas nas mesas
         setIsLoading(true);
@@ -92,12 +94,13 @@ const MesasPage = () => {
 
     return (
         <div className='comandeira-comanda'>
+            
             <div className="mesas-page">
                 <div className="mesas-list">
 
                     <ul className='area-mesas'>
                         {mesas.map((mesa) => (
-                            <div className={`butaoMenuMesa - hmenu - princopa`} onClick={() => handleMesaClick(mesa.mesa)}><Mesa key={mesa.mesa} mesa={mesa} comandas={comandas} fazerPedido={fazerPedido} sSetMesas={setMesas} /></div>
+                            <div key={mesa.mesa} className={`butaoMenuMesa - hmenu - princopa`} onClick={() => handleMesaClick(mesa.mesa)}><Mesa key={mesa.mesa} mesa={mesa} comandas={comandas} fazerPedido={fazerPedido} sSetMesas={setMesas} /></div>
                         ))}
 
                     </ul>
@@ -110,7 +113,7 @@ const MesasPage = () => {
                 {erroSenha && <p className="senha-erro">Senha incorreta. Tente novamente.</p>}
                 {mesaSelecionada !== null && (
                     <div className="comanda-area">
-                        <Comanda mesa={mesaSelecionada} />
+                        <Comanda mesas={comanda} />
                     </div>
                 )}
                 <div className='digitos'>

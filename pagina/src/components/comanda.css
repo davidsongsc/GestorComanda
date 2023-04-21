@@ -28,6 +28,7 @@
     border-style: outset;
     width: 534px;
     background: darkgray;
+    flex-direction: row-reverse;
 }
 .inventario div button{
     margin: 5px;
@@ -56,9 +57,9 @@
     margin: 5px;
     height: 56px;
     width: 116px;
-    font-size: 15px;
+    font-size: 14px;
     text-indent: -8px;
-    font-weight: 500;
+    font-weight: 800;
     text-transform: uppercase;
     box-shadow: 1px 1px 5px black;
 }
@@ -110,7 +111,7 @@
 
 table {
     text-align: center;
-    width: 100%;
+    width: 818px;
     background-color: rgb(0, 0, 0);
 
 }
@@ -150,11 +151,17 @@ table tbody div {
 .V{
     background-color: red;
 }
+.T{
+    background-color: #513fff;
+}
 .C{
-    background-color: brown;
+    background-color: #767676;
 }
 .D{
-    background-color: rgba(109, 11, 11, 0.719);
+    background-color: green;
+}
+.F{
+    background-color: #7f14b4;
 }
 ul::-webkit-scrollbar {
     width: 8px;
@@ -193,7 +200,8 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    transition: 1.92s;
+    transition: .151s;
+    transition-delay: .151s;
 }
 
 button:hover {
