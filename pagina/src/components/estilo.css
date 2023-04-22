@@ -170,14 +170,16 @@
 
 }
 .operadores button{
-  width: 80px;
+  width: 105px;
   margin: 4px;
-  height: 66px;
+  height: 60px;
+  box-shadow: 1px 1px 2px black;
 }
+
 .digitos div button {
   background-color: gray;
   font-size: 40px;
-  width: 80px;
+  width: 73px;
   margin: 4px;
 }
 

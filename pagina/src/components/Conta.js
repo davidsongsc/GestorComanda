@@ -84,9 +84,6 @@ function Comanda({ mesas }) {
     } else if (id === 'conta') {
       alert('Imprimindo Conta...')
       navigation(`/`);
-    } else if (id === 'caixa') {
-      alert('Imprimindo Conta...')
-      navigation(`/`);
     } else {
       alert('Pedido Enviado!')
       navigation(`/`);
@@ -173,47 +170,18 @@ function Comanda({ mesas }) {
               <td>GORJETA: R${calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td>ATENDENTE: {atendente}</td>
               <td>CONTA: {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
+              <td>Caixa: Fulano da Silva</td>
+            </tr>
+            <tr>
+              
             </tr>
           </thead>
         </table>
-        <div className='minventario'>
-
-          <div className='inventario'>
-            <ul ref={listaRef} style={{ height: '483px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
-              {itensFiltrados.map((item, index) => (
-                <li key={index}>
-                  <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
-                </li>
-              ))}
-            </ul>
-
-            <div>
-              <button onClick={handleScrollUp}>↑</button>
-              <button onClick={handleScrollDown}>↓</button>
-
-            </div>
-
-          </div>
-          <div className='grupo-produto'>
-            <button onClick={mostrarTodos}>Todos</button>
-            <button className='GPX6615' onClick={() => filtrarPorGrupo(6615)}>Entradas</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(9)}>Combinados</button>
-            <button className='GPX13' onClick={() => filtrarPorGrupo(13)}>Burguer</button>
-            <button className='GPX2' onClick={() => filtrarPorGrupo(2)}>Bebidas</button>
-            <button className='GPX10' onClick={() => filtrarPorGrupo(10)}>Executivo</button>
-            <button className='GPX7106' onClick={() => filtrarPorGrupo(7106)}>Sobremesas</button>
-            <button className='GPX12' onClick={() => filtrarPorGrupo(12)}>Ribs</button>
-            <button className='GPX6' onClick={() => filtrarPorGrupo(6)}>Peixes</button>
-            <button className='GPX7' onClick={() => filtrarPorGrupo(6)}>Frango</button>
-            <button className='GPX8' onClick={() => filtrarPorGrupo(6)}>Drinks</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(6)}>Doses</button>
-          </div>
-        </div>
+        
         <div className='container-controles-main'>
 
-          <div className="controles">
-
+        <div className="controles">
+            
             <div className='controle'>
               <div className='operadores'>
                 <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
@@ -224,34 +192,34 @@ function Comanda({ mesas }) {
               </div>
 
               <div className='operadores'>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='A' disabled>Receber</button>
 
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+                <button onClick={() => handleClick('fechar')} className='D' disabled>RELATÓRIOS</button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
               </div>
               <div className='operadores'>
+                <button onClick={() => handleClick('fechar')} className='E' disabled>DELIVERY</button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>OBS</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>PEDIDO</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>COMANDA</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>OBS</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>PEDIDO</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>COMANDA</button>
               </div>
               <div className='operadores'>
                 
                 <button onClick={() => handleClick('fechar')} className='C' disabled>DESCONTO</button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>ATENDENTE</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>CONTA</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>GORJETA</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>ATENDENTE</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>CONTA</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>GORJETA</button>
 
               </div>
               <div className='operadores'>
                 <button onClick={() => handleClick('O.K.')} className='H' >O.K.</button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>PRODUTO</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>MESA</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>PRODUTO</button>
+                <button onClick={() => handleClick('fechar')} className='B' disabled>MESA</button>
                 <button onClick={() => handleClick('fechar')} className='E' disabled>ALTERAR</button>
 
 
@@ -260,6 +228,7 @@ function Comanda({ mesas }) {
 
             </div>
             <div className='controle'>
+
               <div className='digitos'>
                 <div className='g1'>
                   <button>1</button>
@@ -281,12 +250,9 @@ function Comanda({ mesas }) {
                   <button>0</button>
                   <button >C</button>
                 </div>
-                <div className='g1'>
-                  <button onClick={() => handleClick('fechar')} className='T' disabled>D</button>
-                  <button onClick={() => handleClick('fechar')} className='T' disabled>E</button>
-                  <button onClick={() => handleClick('fechar')} className='T' disabled>F</button>
-                </div>
               </div>
+
+
             </div>
             <div>
               <div className='totais'>
@@ -326,7 +292,7 @@ function Comanda({ mesas }) {
                   <tr key={index} className='linhas-tb'>
                     <td className='idd'>{item.produto_id}</td>
 
-                    <td className='ndd'>
+                    <td  className='ndd'>
                       {item.nomefantasia}
                     </td>
                     <td>

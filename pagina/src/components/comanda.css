@@ -7,7 +7,8 @@
     justify-content: space-around;
     background-color: cadetblue;
 }
-.totais{
+
+.totais {
     background: brown;
     padding: 11px;
     border-radius: 7px;
@@ -16,13 +17,15 @@
     height: 34vh;
     text-align: right;
 }
-.minventario{
+
+.minventario {
     width: 814px;
     display: flex;
     flex-direction: row-reverse;
     height: 54vh;
 }
-.inventario{
+
+.inventario {
     display: flex;
     border-width: 10px;
     border-style: outset;
@@ -30,30 +33,35 @@
     background: darkgray;
     flex-direction: row-reverse;
 }
-.inventario div button{
+
+.inventario div button {
     margin: 5px;
     font-size: 40px;
 
     box-shadow: 1px 1px 1px black;
 }
-.inventario ul button{
+
+.inventario ul button {
     margin: 0 9px;
     font-size: 16px;
     text-transform: capitalize;
 
     box-shadow: 1px 1px 1px black;
 }
+
 .itens {
     width: 40%;
     margin-right: 20px;
 }
-.grupo-produto{
+
+.grupo-produto {
     width: 252px;
     background: brown;
     border-width: 3px;
     border-style: double;
 }
-.itens .grupo-produto button{
+
+.itens .grupo-produto button {
     margin: 5px;
     height: 56px;
     width: 116px;
@@ -63,41 +71,50 @@
     text-transform: uppercase;
     box-shadow: 1px 1px 5px black;
 }
+
 .itens ul {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
 }
-.GPX1{
+
+.GPX1 {
     background-color: #d16309;
 }
 
-.GPX2{
+.GPX2 {
     background-color: #0992d1;
 }
-.GPX10{
+
+.GPX10 {
     background-color: gainsboro;
     color: #000;
 }
-.GPX7106{
+
+.GPX7106 {
     background-color: royalblue;
     color: white;
 }
-.GPX12{
+
+.GPX12 {
     background-color: goldenrod;
     color: #000;
 }
-.GPX13{
+
+.GPX13 {
     background-color: #d16309;
 }
-.GPX6615{
+
+.GPX6615 {
     background-color: #073d70;
     color: white;
 }
-.GPX9{
+
+.GPX9 {
     background-color: #2e2650;
     color: white;
 }
+
 .itens ul li button {
     width: 100px;
     height: 87px;
@@ -130,60 +147,93 @@ table tbody div {
 }
 
 .linhas-tb td {
-    background-color: khaki;
+    background-color: #241616;
     text-align: center;
+    color: white;
 }
 
 .linhas-tb .idd {
     width: 50px;
     color: white;
     font-weight: bold;
-    background-color: #d16309;
+    background-color: #221f1d;
 }
 
 .linhas-tb .ndd {
     width: 350px;
     text-transform: uppercase;
-    color: black;
+    color: #f6e0ff;
     font-weight: bold;
-    background-color: wheat;
+    background-color: #2e1e1e;
 }
-.V{
-    background-color: red;
+
+.A {
+    background-color: rgb(216, 104, 29);
 }
-.T{
-    background-color: #513fff;
+
+.B {
+    background-color: #3120cf;
 }
-.C{
-    background-color: #767676;
+
+.C {
+    background-color: #b80d0d;
 }
-.D{
-    background-color: green;
+
+.D {
+    background-color: rgb(98, 0, 179);
 }
-.F{
-    background-color: #7f14b4;
+
+.E {
+    background-color: #09b9b1;
 }
+
+.F {
+    background-color: gray;
+}
+
+.G {
+    background-color: #0383d8;
+}
+
+.H {
+    background-color: #498b49;
+}
+.I {
+    background-color: black;
+}
+
+A,
+B,
+C,
+D,
+E,
+F,
+G,
+H {
+    text-shadow: 1px 1px 1px black;
+}
+
 ul::-webkit-scrollbar {
     width: 8px;
     height: 8px;
-  }
-  
-  ul::-webkit-scrollbar-thumb {
+}
+
+ul::-webkit-scrollbar-thumb {
     background-color: red;
     border-radius: 10px;
-  }
-  
-  ul::-webkit-scrollbar-track {
+}
+
+ul::-webkit-scrollbar-track {
     background-color: black;
     border-radius: 10px;
-  }
-  
-  ul {
+}
+
+ul {
     height: 400px;
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: red black;
-  }
+}
 
 li {
     display: flex;
@@ -238,9 +288,11 @@ input[type="submit"]:hover {
 .controles {
     margin-top: 20px;
 }
-.controle{
+
+.controle {
     float: left;
 }
+
 select {
     width: 100%;
     padding: 5px;
@@ -253,4 +305,9 @@ option {
     font-size: 1.2em;
     background-color: #f2f2f2;
     color: #000;
+}
+
+.container-controles-main {
+    width: 818px;
+
 }
