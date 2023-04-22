@@ -57,18 +57,12 @@ const Mesa = ({ mesa, comandas, fazerPedido }) => {
       const comandaOcupada = comandas.find(comanda => comanda.mesa === mesa.mesa && comanda.status !== 'Pago');
       const tempoDecorrido = calcularTempoDecorrido(comandaOcupada.dataHoraEntrada);
       setButtonClass("button-ocupado");
-      setStatus(<>
-        <h4> Em Uso<br />
-          {`R$ ${comandaOcupada.valorTotal}`}<br />
-          {`[${tempoDecorrido}]`}
-        </h4>
-      </>);
+      
     } else if (mesaAberta) {
       setStatus(<h4>Aberta no Terminal</h4>);
       setButtonClass("button-comanda");
 
     } else {
-      setStatus(<h4>Livre<br /></h4>);
       setButtonClass("button-livre");
     }
 
@@ -100,7 +94,7 @@ const Mesa = ({ mesa, comandas, fazerPedido }) => {
     <>
 
       <li className={`mesa-menu button ${buttonClass}`} key={mesa.mesa}>
-        <div className='span-mesa-comanda-vlw'>{status}{mesa.status}</div>
+        <div className='span-mesa-comanda-vlw'></div>
    
         <div className='n-mesa-menu'>{mesa.mesa}
         </div>

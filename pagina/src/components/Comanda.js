@@ -3,6 +3,7 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from "react-modal";
 import Opt from './Opt';
+
 Modal.setAppElement("#root");
 const GORJETA = 0.10;
 const TX = 0;
@@ -22,19 +23,24 @@ function Comanda({ mesas }) {
   const [comandaid, setComandaID] = useState([]);
   const [atendente, setAtendente] = useState([]);
   const [comanda, setComanda] = useState([]);
+  const [mesaComanda, setComandaMesa] = useState([]);
   const [selectedValue, setSelectedValue] = useState("");
   const [verificador, setVerifica] = useState(0);
 
+
   useEffect(() => {
     function carregarComanda() {
-      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&version=100a`)
+
+      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
+
           comandaMesa.map(listaComanda => (
-            console.log(listaComanda),
+
             setMesa(listaComanda.mesa),
-            setComanda(listaComanda.itens.map(item => ({ ...item, })))
+            setComanda(listaComanda.itens[0].map(item => ({ ...item, }))),
+            console.log(listaComanda)
           ));
         })
         .catch(error => console.error(error));
@@ -262,51 +268,60 @@ function Comanda({ mesas }) {
           <Opt id={1} />
           <button onClick={toggleModal}>Fechar</button>
         </Modal>
-
-        <table>
-          <thead>
-            <tr className='titulo-tb'>
-              <td>ID</td>
-              <td>PRODUTO</td>
-              <td>QTD</td>
-              <td>V UND</td>
-              <td>V TOTAL</td>
-              <td>...</td>
-            </tr>
-          </thead>
-          <tbody>
-
-
-            {comanda.map((item, index) => (
-              <tr key={index} className='linhas-tb'>
-                <td className='idd'>1{item.id}0</td>
-
-                <td onClick={() => removerItem(index)} className='ndd'>
-                  {item.nomefantasia}
-                </td>
-                <td>
-                  {item.qtd}
-                </td>
-                <td>
-                  {item.valor.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </td>
-                <td>
-                  {(item.valor*item.qtd).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                </td>
-
-
-                <td onClick={() => removerItem(index)} key={index}> x </td>
-
-
+        <div style={{ height: '950px', overflow: 'auto' }}>
+          <table>
+            <thead>
+              <tr className='titulo-tb'>
+                <td>ID</td>
+                <td>PRODUTO</td>
+                <td>QTD</td>
+                <td>V UND</td>
+                <td>V TOTAL</td>
+                <td>...</td>
               </tr>
-            ))}
+            </thead>
+            <tbody>
 
 
-          </tbody>
-
-        </table>
 
 
+
+              {comanda.map((item, index) => (
+                <>
+
+                  <tr key={index} className='linhas-tb'>
+                    <td className='idd'>{item.produto_id}</td>
+
+                    <td onClick={() => removerItem(index)} className='ndd'>
+                      {item.nomefantasia}
+                    </td>
+                    <td>
+                      {item.qtd}
+                    </td>
+                    <td>
+
+                      {item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...'}
+
+                    </td>
+                    <td>
+                      {(item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido'}
+                    </td>
+
+
+                    <td onClick={() => removerItem(index)} key={index}> x </td>
+
+
+                  </tr>
+                </>
+              ))}
+
+
+            </tbody>
+
+          </table>
+
+
+        </div>
 
       </div>
 
