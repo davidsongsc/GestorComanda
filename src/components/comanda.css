@@ -130,41 +130,38 @@ table {
     text-align: center;
     width: 818px;
     background-color: rgb(0, 0, 0);
+    border-radius: 5px;
+    line-height: 20px;
 
 }
 
 table tbody div {
-    background-color: black;
+    /*background-color: black;*/
     border-radius: 5px;
     color: white;
     cursor: pointer;
 }
 
 .titulo-tb td {
-    background-color: #000;
-    color: white;
+    background-color: white;
+    color: black;
     font-weight: bold;
-}
 
-.linhas-tb td {
-    background-color: #241616;
-    text-align: center;
-    color: white;
 }
 
 .linhas-tb .idd {
     width: 50px;
     color: white;
     font-weight: bold;
-    background-color: #221f1d;
+    /* background-color: #221f1d;*/
 }
 
 .linhas-tb .ndd {
     width: 350px;
-    text-transform: uppercase;
-    color: #f6e0ff;
     font-weight: bold;
-    background-color: #2e1e1e;
+    font-size: 26px;
+    /* background-color: #2e1e1e;*/
+    text-align: left;
 }
 
 .A {
@@ -198,8 +195,15 @@ table tbody div {
 .H {
     background-color: #498b49;
 }
+
 .I {
     background-color: black;
+}
+
+em {
+    background-color: red;
+    padding: 1px 5px;
+    border-radius: 50%;
 }
 
 A,
@@ -258,6 +262,10 @@ button:hover {
     text-shadow: 1px 1px 1px black;
 }
 
+.buttonX {
+    cursor: pointer;
+}
+
 label {
     display: block;
     margin-bottom: 5px;
@@ -310,4 +318,20 @@ option {
 .container-controles-main {
     width: 818px;
 
+}
+
+.itemNormal {
+    display: flex;
+    justify-content: left;
+    color: white;
+}
+
+.obs {
+    display: flex;
+    justify-content: center;
+    color: #0992d1;
+}
+
+.itemNormalB {
+    color: white;
 }

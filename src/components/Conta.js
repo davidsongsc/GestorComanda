@@ -31,7 +31,7 @@ function Comanda({ mesas }) {
   useEffect(() => {
     function carregarComanda() {
 
-      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      fetch(`http://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
@@ -45,7 +45,7 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`http://192.168.0.50:5000/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`http://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => setItens(data.produtos))
         .catch(error => console.error(error));
@@ -290,25 +290,26 @@ function Comanda({ mesas }) {
                 <>
 
                   <tr key={index} className='linhas-tb'>
-                    <td className='idd'>{item.produto_id}</td>
+                  <td className='itemNormalB'>
+                      {item.qtd !== 0 ? item.qtd : '▲'}
+                    </td>
 
-                    <td  className='ndd'>
+
+                    <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
                       {item.nomefantasia}
                     </td>
-                    <td>
-                      {item.qtd}
-                    </td>
-                    <td>
 
-                      {item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...'}
+                    <td className='itemNormalB'>
+                      {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
 
                     </td>
-                    <td>
-                      {(item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido'}
+                    <td className='itemNormalB'>
+                      {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
+
                     </td>
+                    <td className='idd'>0</td>
 
-
-                    <td onClick={() => removerItem(index)} key={index}> x </td>
+                    <td className='buttonX' onClick={() => removerItem(index)} key={index}> <em>X </em></td>
 
 
                   </tr>

@@ -23,15 +23,13 @@ function Comanda({ mesas }) {
   const [comandaid, setComandaID] = useState([]);
   const [atendente, setAtendente] = useState([]);
   const [comanda, setComanda] = useState([]);
-  const [mesaComanda, setComandaMesa] = useState([]);
-  const [selectedValue, setSelectedValue] = useState("");
-  const [verificador, setVerifica] = useState(0);
+  const [tipoItem, setTipoItem] = useState();
 
 
   useEffect(() => {
     function carregarComanda() {
 
-      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      fetch(`http://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
@@ -45,7 +43,7 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`http://192.168.0.50:5000/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`http://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => setItens(data.produtos))
         .catch(error => console.error(error));
@@ -56,9 +54,6 @@ function Comanda({ mesas }) {
   useEffect(() => {
     console.log(mesas)
   }, []);
-  const handleChange = (event) => {
-    setSelectedValue(event.target.value);
-  };
 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -115,17 +110,15 @@ function Comanda({ mesas }) {
       setComanda([...comanda, { ...item, qtd: 1 }]);
       console.log(item.grupoc)
       if (item.grupoc === 1) {
+        setTipoItem(1)
+        toggleModal()
+      }
+      else if (item.grupoc === 2) {
+        setTipoItem(2)
         toggleModal()
       }
 
     }
-  };
-
-
-
-  const removerItem = (index) => {
-
-    setComanda(comanda.filter((_, i) => i !== index));
   };
 
   const calcularTotal = () => {
@@ -224,7 +217,7 @@ function Comanda({ mesas }) {
               </div>
 
               <div className='operadores'>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
 
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
@@ -239,7 +232,7 @@ function Comanda({ mesas }) {
                 <button onClick={() => handleClick('fechar')} className='D' disabled>COMANDA</button>
               </div>
               <div className='operadores'>
-                
+
                 <button onClick={() => handleClick('fechar')} className='C' disabled>DESCONTO</button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
                 <button onClick={() => handleClick('fechar')} className='D' disabled>ATENDENTE</button>
@@ -298,20 +291,22 @@ function Comanda({ mesas }) {
       </div>
       <div className="comandar">
 
-        <Modal isOpen={showModal} onRequestClose={toggleModal}>
-          <Opt id={1} />
+        <Modal isOpen={showModal} >
+          <Opt id={tipoItem} />
           <button onClick={toggleModal}>Fechar</button>
         </Modal>
         <div style={{ height: '950px', overflow: 'auto' }}>
           <table>
             <thead>
               <tr className='titulo-tb'>
-                <td>ID</td>
-                <td>PRODUTO</td>
                 <td>QTD</td>
+
+                <td>PRODUTO</td>
+
                 <td>V UND</td>
                 <td>V TOTAL</td>
-                <td>...</td>
+                <td></td>
+
               </tr>
             </thead>
             <tbody>
@@ -324,26 +319,24 @@ function Comanda({ mesas }) {
                 <>
 
                   <tr key={index} className='linhas-tb'>
-                    <td className='idd'>{item.produto_id}</td>
+                    <td className='itemNormalB'>
+                      {item.qtd !== 0 ? item.qtd : '▲'}
+                    </td>
 
-                    <td className='ndd'>
+
+                    <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
                       {item.nomefantasia}
                     </td>
-                    <td>
-                      {item.qtd}
-                    </td>
-                    <td>
 
-                      {item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...'}
+                    <td className='itemNormalB'>
+                      {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
 
                     </td>
-                    <td>
-                      {(item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido'}
+                    <td className='itemNormalB'>
+                      {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
+
                     </td>
-
-
-                    <td onClick={() => removerItem(index)} key={index}> x </td>
-
+                    <td className='idd'>0</td>
 
                   </tr>
                 </>
