@@ -31,7 +31,7 @@ function Comanda({ mesas }) {
   useEffect(() => {
     function carregarComanda() {
 
-      fetch(`http://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
@@ -45,7 +45,7 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`http://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`https://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => setItens(data.produtos))
         .catch(error => console.error(error));

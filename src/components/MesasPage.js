@@ -18,7 +18,7 @@ const MesasPage = () => {
     const [comanda, setComanda] = useState();
     const [comandasAbertas, setComandasAbertas] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const socket = useSocket('http://192.168.0.50:8000');
+    const socket = useSocket('https://dagesico.pythonanywhere.com:8000');
     const nome = 'maquina'
     const token = 'abc123'
 
@@ -70,7 +70,7 @@ const MesasPage = () => {
     useEffect(() => {
         // Carrega as comandas abertas nas mesas
         setIsLoading(true);
-        axios.get(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&version=100a`)
+        axios.get(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&version=100a`)
             .then(response => {
                 setComandas(response.data);
             })
