@@ -11,7 +11,7 @@ function InventarioGrupo({ filtrarPorGrupo, mostrarTodos }) {
             <button className='GPX10' onClick={() => filtrarPorGrupo(10)}>Executivo</button>
             <button className='GPX7106' onClick={() => filtrarPorGrupo(7106)}>Sobremesas</button>
             <button className='GPX12' onClick={() => filtrarPorGrupo(12)}>Ribs</button>
-            <button className='GPX6' onClick={() => filtrarPorGrupo(6)}>Peixes</button>
+            <button className='GPX12' onClick={() => filtrarPorGrupo(600)}>Acompanha...</button>
             <button className='GPX7' onClick={() => filtrarPorGrupo(6)}>Frango</button>
             <button className='GPX8' onClick={() => filtrarPorGrupo(6)}>Drinks</button>
             <button className='GPX9' onClick={() => filtrarPorGrupo(6)}>Doses</button>

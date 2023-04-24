@@ -3,7 +3,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
-import Inventario from './Inventario';
 import InventarioGrupo from './InventarioGrupo';
 
 Modal.setAppElement("#root");
@@ -113,7 +112,7 @@ function Comanda({ mesas }) {
     const xal = inventario.filter(d => d.produto_id === produto_id)
     if (xal.length > 0 && xal[0].nomeproduto) {
       return (<>
-        {`${xal[0].nomeproduto}`}<br />-----------------</>)
+        {`${xal[0].nomeproduto}`}</>)
 
     }
 
@@ -125,7 +124,7 @@ function Comanda({ mesas }) {
   const nomeProduto = (produto_id) => {
 
     const val = itens.filter(o => o.id === produto_id)
-    if (produto_id === 30 || produto_id === 31) {
+    if (produto_id === 30 || produto_id === 31 || produto_id === 33) {
       if (val.length > 0 && val[0].nomeproduto) {
         return ''
 
@@ -168,6 +167,34 @@ function Comanda({ mesas }) {
       }
       else if (item.grupoc === 3) {
         setTipoItem(3)
+        toggleModal()
+      }
+      else if (item.grupoc === 4) {
+        setTipoItem(4)
+        toggleModal()
+      }
+      else if (item.grupoc === 5) {
+        setTipoItem(5)
+        toggleModal()
+      }
+      else if (item.grupoc === 6) {
+        setTipoItem(6)
+        toggleModal()
+      }
+      else if (item.grupoc === 7) {
+        setTipoItem(7)
+        toggleModal()
+      }
+      else if (item.grupoc === 8) {
+        setTipoItem(8)
+        toggleModal()
+      }
+      else if (item.grupoc === 9) {
+        setTipoItem(9)
+        toggleModal()
+      }
+      else if (item.grupoc === 4) {
+        setTipoItem(4)
         toggleModal()
       }
 
@@ -228,11 +255,28 @@ function Comanda({ mesas }) {
           </thead>
         </table>
         <div className='minventario'>
-          <Inventario itensFiltrados={itensFiltrados} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
 
-          <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
+          <div className='inventario'>
+            <ul ref={listaRef} style={{ height: '483px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+              {itensFiltrados.map((item, index) => (
+                <li key={index}>
+                  <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
+                </li>
+              ))}
+            </ul>
+
+            <div>
+              <button onClick={handleScrollUp}>↑</button>
+              <button onClick={handleScrollDown}>↓</button>
+
+            </div>
+
+          </div>
+
+          
 
         </div>
+        <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
         <div className='container-controles-main'>
 
           <div className="controles">
@@ -352,14 +396,13 @@ function Comanda({ mesas }) {
 
 
                     {item.combinac === 0 ? (
-                      <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
-                      </td>) : <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
+                      <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
+                      </td>) : <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}>
                       {nomeProdutos(item.produto_id)}
                     </td>}
 
                     <Modal isOpen={showModal} >
                       <h1>{nomeProduto(item.produto_id)}</h1>
-
                       <InventarioOption opt={item.grupoc} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
                     </Modal>
                     <td className='itemNormalB'>

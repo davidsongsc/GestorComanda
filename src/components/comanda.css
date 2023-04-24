@@ -29,7 +29,7 @@
     display: flex;
     border-width: 10px;
     border-style: outset;
-    width: 534px;
+    width: 539px;
     background: darkgray;
     flex-direction: row-reverse;
 }
@@ -55,10 +55,12 @@
 }
 
 .grupo-produto {
-    width: 252px;
+    width: 257px;
     background: brown;
     border-width: 3px;
-    border-style: double;
+    position: relative;
+    border-style: none;
+    margin: -506px 0px 63px 0;
 }
 
 .itens .grupo-produto button {
