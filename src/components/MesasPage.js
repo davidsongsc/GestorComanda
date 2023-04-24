@@ -70,7 +70,8 @@ const MesasPage = () => {
     useEffect(() => {
         // Carrega as comandas abertas nas mesas
         setIsLoading(true);
-        axios.get(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&version=100a`)
+        //axios.get(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&version=100a`)
+        axios.get(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&version=100a`)
             .then(response => {
                 setComandas(response.data);
             })

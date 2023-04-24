@@ -1,5 +1,4 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-import React from 'react';
 
 import MesasPage from './components/MesasPage';
 import Comanda from './components/Comanda';

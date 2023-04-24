@@ -324,12 +324,15 @@ option {
     display: flex;
     justify-content: left;
     color: white;
+    text-transform: uppercaseobs;
+    margin: 5px 0;
 }
 
 .obs {
     display: flex;
     justify-content: center;
     color: #0992d1;
+    margin:  0 0 15px 0;
 }
 
 .itemNormalB {

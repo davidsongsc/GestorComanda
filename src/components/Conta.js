@@ -272,9 +272,8 @@ function Comanda({ mesas }) {
           <table>
             <thead>
               <tr className='titulo-tb'>
-                <td>ID</td>
-                <td>PRODUTO</td>
                 <td>QTD</td>
+                <td>PRODUTO</td>
                 <td>V UND</td>
                 <td>V TOTAL</td>
                 <td>...</td>

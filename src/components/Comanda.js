@@ -1,8 +1,10 @@
 import './comanda.css';
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from "react-modal";
-import Opt from './Opt';
+import InventarioOption from './InventarioOption';
+import Inventario from './Inventario';
+import InventarioGrupo from './InventarioGrupo';
 
 Modal.setAppElement("#root");
 const GORJETA = 0.10;
@@ -24,12 +26,13 @@ function Comanda({ mesas }) {
   const [atendente, setAtendente] = useState([]);
   const [comanda, setComanda] = useState([]);
   const [tipoItem, setTipoItem] = useState();
-
+  const [inventario, setInventario] = useState();
 
   useEffect(() => {
     function carregarComanda() {
 
-      fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      //fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
@@ -37,28 +40,38 @@ function Comanda({ mesas }) {
           comandaMesa.map(listaComanda => (
 
             setMesa(listaComanda.mesa),
-            setComanda(listaComanda.itens[0].map(item => ({ ...item, }))),
-            console.log(listaComanda)
+            setComanda(listaComanda.itens[0].map(item => ({ ...item, })))
+
           ));
         })
         .catch(error => console.error(error));
 
-      fetch(`https://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`http://192.168.0.50:5000/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
-        .then(data => setItens(data.produtos))
+        .then(data => {
+          setItens(data.produtos);
+          localStorage.setItem('produtos', JSON.stringify(data.produtos));
+        })
+        .catch(error => console.error(error));
+
+      fetch(`http://192.168.0.50:5000/inventario?nome=${nome}&token=${token}&version=100a`)
+        .then(response => response.json())
+        .then(data => {
+          setInventario(data.inventario);
+          localStorage.setItem('inventario', JSON.stringify(data.inventario));
+        })
         .catch(error => console.error(error));
     }
 
     carregarComanda();
-  }, []);
-  useEffect(() => {
-    console.log(mesas)
-  }, []);
+  }, [id, nome, token]);
 
+  // Pagina Options On/Off 
   const toggleModal = () => {
     setShowModal(!showModal);
   };
 
+  // Itens Menu Seta ↓
   const handleScrollUp = () => {
     listaRef.current.scrollBy({
       top: -470,
@@ -66,6 +79,7 @@ function Comanda({ mesas }) {
     });
   };
 
+  // Itens Menu Seta ↑
   const handleScrollDown = () => {
     listaRef.current.scrollBy({
       top: 470,
@@ -73,6 +87,7 @@ function Comanda({ mesas }) {
     });
   };
 
+  // Click Botão Menu
   const handleClick = (id) => {
     if (id === 'fechar') {
       navigation(`/`);
@@ -83,7 +98,7 @@ function Comanda({ mesas }) {
       alert('Imprimindo Conta...')
       navigation(`/`);
     } else {
-      alert('Pedido Enviado!')
+
       navigation(`/`);
     }
 
@@ -92,23 +107,57 @@ function Comanda({ mesas }) {
 
 
   // demais códigos de renderização e manipulação de estado
+  const nomeProdutos = (produto_id) => {
+
+
+    const xal = inventario.filter(d => d.produto_id === produto_id)
+    if (xal.length > 0 && xal[0].nomeproduto) {
+      return (<>
+        {`${xal[0].nomeproduto}`}<br />-----------------</>)
+
+    }
+
+    else {
+      return produto_id
+    }
+  }
+
+  const nomeProduto = (produto_id) => {
+
+    const val = itens.filter(o => o.id === produto_id)
+    if (produto_id === 30 || produto_id === 31) {
+      if (val.length > 0 && val[0].nomeproduto) {
+        return ''
+
+      }
+
+    }
+    else if (val.length > 0 && val[0].nomeproduto) {
+      return val[0].nomeproduto
+    }
+
+
+    else {
+      return (<td className={`ndd obs`}>
+        {nomeProdutos(produto_id)}
+      </td>)
+    }
+  }
 
   const adicionarItem = (item) => {
 
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
 
-
     if (itemExistente) {
 
       setComanda(
         comanda.map((i) =>
-          i.nome === item.nomeproduto ? { ...i, qtd: i.qtd + 1 } : i
+          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
         )
       );
     } else {
+      setComanda([...comanda, { ...item, qtd: 1, produto_id: item.id }]);
       console.log(item)
-      setComanda([...comanda, { ...item, qtd: 1 }]);
-      console.log(item.grupoc)
       if (item.grupoc === 1) {
         setTipoItem(1)
         toggleModal()
@@ -117,8 +166,16 @@ function Comanda({ mesas }) {
         setTipoItem(2)
         toggleModal()
       }
+      else if (item.grupoc === 3) {
+        setTipoItem(3)
+        toggleModal()
+      }
 
     }
+  };
+  const removerItem = (index) => {
+
+    setComanda(comanda.filter((_, i) => i !== index));
   };
 
   const calcularTotal = () => {
@@ -171,37 +228,10 @@ function Comanda({ mesas }) {
           </thead>
         </table>
         <div className='minventario'>
+          <Inventario itensFiltrados={itensFiltrados} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
 
-          <div className='inventario'>
-            <ul ref={listaRef} style={{ height: '483px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
-              {itensFiltrados.map((item, index) => (
-                <li key={index}>
-                  <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
-                </li>
-              ))}
-            </ul>
+          <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
 
-            <div>
-              <button onClick={handleScrollUp}>↑</button>
-              <button onClick={handleScrollDown}>↓</button>
-
-            </div>
-
-          </div>
-          <div className='grupo-produto'>
-            <button onClick={mostrarTodos}>Todos</button>
-            <button className='GPX6615' onClick={() => filtrarPorGrupo(6615)}>Entradas</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(9)}>Combinados</button>
-            <button className='GPX13' onClick={() => filtrarPorGrupo(13)}>Burguer</button>
-            <button className='GPX2' onClick={() => filtrarPorGrupo(2)}>Bebidas</button>
-            <button className='GPX10' onClick={() => filtrarPorGrupo(10)}>Executivo</button>
-            <button className='GPX7106' onClick={() => filtrarPorGrupo(7106)}>Sobremesas</button>
-            <button className='GPX12' onClick={() => filtrarPorGrupo(12)}>Ribs</button>
-            <button className='GPX6' onClick={() => filtrarPorGrupo(6)}>Peixes</button>
-            <button className='GPX7' onClick={() => filtrarPorGrupo(6)}>Frango</button>
-            <button className='GPX8' onClick={() => filtrarPorGrupo(6)}>Drinks</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(6)}>Doses</button>
-          </div>
         </div>
         <div className='container-controles-main'>
 
@@ -217,7 +247,7 @@ function Comanda({ mesas }) {
               </div>
 
               <div className='operadores'>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+                <button onClick={() => handleClick('fechar')} className='B'>EXTRA</button>
 
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
                 <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
@@ -291,15 +321,12 @@ function Comanda({ mesas }) {
       </div>
       <div className="comandar">
 
-        <Modal isOpen={showModal} >
-          <Opt id={tipoItem} />
-          <button onClick={toggleModal}>Fechar</button>
-        </Modal>
+
         <div style={{ height: '950px', overflow: 'auto' }}>
           <table>
             <thead>
               <tr className='titulo-tb'>
-                <td>QTD</td>
+                <td >QTD</td>
 
                 <td>PRODUTO</td>
 
@@ -317,17 +344,24 @@ function Comanda({ mesas }) {
 
               {comanda.map((item, index) => (
                 <>
-
                   <tr key={index} className='linhas-tb'>
-                    <td className='itemNormalB'>
-                      {item.qtd !== 0 ? item.qtd : '▲'}
+                    <td className='itemNormalB' style={item.qtd !== 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
+                      {item.combinac === 0 ? item.qtd : '▲'}
                     </td>
 
 
-                    <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
-                      {item.nomefantasia}
-                    </td>
 
+                    {item.combinac === 0 ? (
+                      <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
+                      </td>) : <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
+                      {nomeProdutos(item.produto_id)}
+                    </td>}
+
+                    <Modal isOpen={showModal} >
+                      <h1>{nomeProduto(item.produto_id)}</h1>
+
+                      <InventarioOption opt={item.grupoc} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
+                    </Modal>
                     <td className='itemNormalB'>
                       {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
 
