@@ -1,3 +1,30 @@
+
+//  O import de react inclui funções que são usadas no componente, como useState, useRef e useEffect.
+
+// useParams é um hook do react-router-dom usado para obter parâmetros de rota, como o ID da mesa na qual a comanda é exibida.
+
+//  Modal é um componente de terceiros usado para exibir um menu de opções.
+
+// GORJETA, TX e DESCONTO são constantes que definem os valores de gorjeta, taxa e desconto que serão aplicados à conta.
+
+// Comanda é o componente principal que representa a comanda. Ele usa vários hooks para gerenciar o estado do componente, como useState para gerenciar os itens da comanda, useRef para obter uma referência à lista de itens e useEffect para carregar os dados da API.
+
+// A função carregarComanda é uma função auxiliar que é usada pelo useEffect para carregar os dados da API. Ele usa o fetch para carregar dados de três endpoints diferentes.
+
+// toggleModal é uma função que é chamada quando o usuário clica no botão de opções. Ele alterna o valor de showModal, que é usado para exibir ou ocultar o modal.
+
+// handleScrollUp e handleScrollDown são funções que são chamadas quando o usuário clica nas setas para cima ou para baixo na lista de itens. Eles usam a referência à lista obtida com useRef para rolar a lista para cima ou para baixo.
+
+//  handleClick é uma função que é chamada quando o usuário clica em um botão no menu. Ele redireciona o usuário para a página inicial ou exibe um alerta se o botão de conta ou caixa for clicado.
+
+//  nomeProdutos é uma função auxiliar que é usada para obter o nome de um produto a partir do ID do produto. Ele procura o produto no inventário e retorna o nome do produto se encontrado, ou o ID do produto se não encontrado.
+
+//  nomeProduto é uma função auxiliar que é usada para obter o nome de um produto a partir do ID do produto. Ele procura o produto na lista de itens e retorna o nome do produto se encontrado, ou chama nomeProdutos se não encontrado.
+
+// adicionarItem é uma função que é chamada quando o usuário clica em um item na lista de itens. Ele adiciona o item à lista de itens da comanda ou aumenta a quantidade do item se já estiver presente na lista.
+
+
+
 import './comanda.css';
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
@@ -30,8 +57,8 @@ function Comanda({ mesas }) {
   useEffect(() => {
     function carregarComanda() {
 
-      //fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
-      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      //fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
@@ -45,7 +72,7 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`http://192.168.0.50:5000/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`https://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
           setItens(data.produtos);
@@ -53,7 +80,7 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`http://192.168.0.50:5000/inventario?nome=${nome}&token=${token}&version=100a`)
+      fetch(`https://dagesico.pythonanywhere.com/inventario?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
           setInventario(data.inventario);
@@ -109,7 +136,7 @@ function Comanda({ mesas }) {
   const nomeProdutos = (produto_id) => {
 
 
-    const xal = inventario.filter(d => d.produto_id === produto_id)
+    const xal = inventario ? inventario.filter(d => d.produto_id === produto_id) : [];
     if (xal.length > 0 && xal[0].nomeproduto) {
       return (<>
         {`${xal[0].nomeproduto}`}</>)
@@ -119,11 +146,12 @@ function Comanda({ mesas }) {
     else {
       return produto_id
     }
+
   }
 
   const nomeProduto = (produto_id) => {
 
-    const val = itens.filter(o => o.id === produto_id)
+    const val = itens ? itens.filter(o => o.id === produto_id) : [];
     if (produto_id === 30 || produto_id === 31 || produto_id === 33) {
       if (val.length > 0 && val[0].nomeproduto) {
         return ''
@@ -143,7 +171,7 @@ function Comanda({ mesas }) {
     }
   }
 
-  const adicionarItem = (item) => {
+  const adicionarItem = (item, t) => {
 
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
 
@@ -156,7 +184,7 @@ function Comanda({ mesas }) {
       );
     } else {
       setComanda([...comanda, { ...item, qtd: 1, produto_id: item.id }]);
-      console.log(item)
+
       if (item.grupoc === 1) {
         setTipoItem(1)
         toggleModal()
@@ -193,18 +221,11 @@ function Comanda({ mesas }) {
         setTipoItem(9)
         toggleModal()
       }
-      else if (item.grupoc === 4) {
-        setTipoItem(4)
-        toggleModal()
-      }
+
 
     }
   };
-  const removerItem = (index) => {
-
-    setComanda(comanda.filter((_, i) => i !== index));
-  };
-
+ 
   const calcularTotal = () => {
     return comanda.reduce((total, item) => total + item.valor * item.qtd, 0);
   };
@@ -245,7 +266,7 @@ function Comanda({ mesas }) {
         <table>
           <thead>
             <tr className='titulo-tb'>
-              <td>MESA: {mesa}</td>
+              <td>COMANDA: {mesa}</td>
               <td>ID: {comandaid}</td>
               <td>GORJETA: R${calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td>ATENDENTE: {atendente}</td>
@@ -273,7 +294,7 @@ function Comanda({ mesas }) {
 
           </div>
 
-          
+
 
         </div>
         <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
@@ -403,13 +424,14 @@ function Comanda({ mesas }) {
 
                     <Modal isOpen={showModal} >
                       <h1>{nomeProduto(item.produto_id)}</h1>
-                      <InventarioOption opt={item.grupoc} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
+                      <InventarioOption opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
+                      <button onClick={()=> toggleModal()}>O.K.</button>
                     </Modal>
                     <td className='itemNormalB'>
                       {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
 
                     </td>
-                    <td className='itemNormalB'>
+                    <td className='itemNormalB' style={{ fontSize: '25px', fontWeight: '700', color: 'goldenrod' }}>
                       {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
 
                     </td>

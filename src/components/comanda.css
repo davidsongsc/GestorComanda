@@ -34,7 +34,17 @@
     flex-direction: row-reverse;
 }
 
-.inventario div button {
+.inventarioOption {
+    display: flex;
+    border-width: 10px;
+    border-style: outset;
+    width: 519px;
+    background: darkgray;
+    flex-direction: row-reverse;
+}
+
+.inventario div button,
+.inventarioOption div button {
     margin: 5px;
     font-size: 40px;
 
@@ -151,6 +161,11 @@ table tbody div {
 
 }
 
+.ndd {
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
 .linhas-tb .idd {
     width: 50px;
     color: white;
@@ -164,6 +179,8 @@ table tbody div {
     font-size: 26px;
     /* background-color: #2e1e1e;*/
     text-align: left;
+    text-indent: 40px;
+
 }
 
 .A {
@@ -258,6 +275,9 @@ button {
     cursor: pointer;
     transition: .151s;
     transition-delay: .151s;
+    margin: 0 8px;
+    box-shadow: 1px 1px 5px black;
+    text-transform: uppercase;
 }
 
 button:hover {
@@ -334,9 +354,16 @@ option {
     display: flex;
     justify-content: center;
     color: #0992d1;
-    margin:  0 0 15px 0;
+    margin: 0 0 15px 0;
+    text-transform: capitalize;
 }
 
 .itemNormalB {
     color: white;
+}
+
+.ReactModal__Content {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
