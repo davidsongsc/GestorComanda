@@ -1,11 +1,6 @@
-.comanda {
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: flex-start;
-    padding: 10px;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    background-color: cadetblue;
+.container-comanda {
+    width: 1530px;
+    margin: 5px auto;
 }
 
 .totais {
@@ -18,20 +13,12 @@
     text-align: right;
 }
 
-.minventario {
-    width: 814px;
-    display: flex;
-    flex-direction: row-reverse;
-    height: 54vh;
-}
-
 .inventario {
-    display: flex;
-    border-width: 10px;
-    border-style: outset;
-    width: 539px;
+    position: absolute;
+    right: 6px;
+    top: 0;
     background: darkgray;
-    flex-direction: row-reverse;
+
 }
 
 .inventarioOption {
@@ -51,56 +38,80 @@
     box-shadow: 1px 1px 1px black;
 }
 
+.inventario li button {
+    height: 75px;
+    width: 141px;
+}
+
 .inventario ul button {
     margin: 0 9px;
     font-size: 16px;
-    text-transform: capitalize;
-
+    text-transform: uppercase;
     box-shadow: 1px 1px 1px black;
 }
 
-.itens {
-    width: 40%;
-    margin-right: 20px;
-}
+
 
 .grupo-produto {
-    width: 257px;
     background: brown;
+    padding: 5px;
     border-width: 3px;
-    position: relative;
+    position: absolute;
     border-style: none;
-    margin: -506px 0px 63px 0;
+    width: 251px;
+    top: 2px;
+    left: 729px;
+    height: 503px;
+
 }
 
-.itens .grupo-produto button {
-    margin: 5px;
-    height: 56px;
-    width: 116px;
-    font-size: 14px;
-    text-indent: -8px;
-    font-weight: 800;
-    text-transform: uppercase;
-    box-shadow: 1px 1px 5px black;
+
+.grupo-produto button {
+    margin: 5px 3px;
+    width: 118px;
+    height: 50px;
 }
 
-.itens ul {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+.GPX0 {
+    background-image: linear-gradient(rgb(235, 142, 21), rgb(235, 162, 6), rgb(235, 142, 21));
+    text-shadow: 0px 0px 1px;
+
+    color: white;
 }
 
 .GPX1 {
-    background-color: #d16309;
+    background-image: linear-gradient(rgb(30, 255, 0), rgb(41, 248, 0), rgb(114, 253, 0));
+    text-shadow: 0px 0px 1px;
+
+    color: black;
 }
 
 .GPX2 {
-    background-color: #0992d1;
+    background-image: linear-gradient(rgb(0, 153, 255), rgb(4, 86, 141), rgb(0, 194, 253));
+    text-shadow: 0px 0px 1px;
+
+    color: black;
+}
+
+.GPX3 {
+    background-image: linear-gradient(rgb(140, 0, 255), rgb(40, 4, 141));
+    text-shadow: 0px 0px 1px;
+
+    color: white;
+}
+
+.GPX7106 {
+    background-image: linear-gradient(rgb(255, 187, 0), rgb(0, 17, 255), rgb(0, 17, 255),rgb(0, 17, 255), rgb(0, 17, 255));
+    text-decoration: underline black double;
+    font-size: 15px;
 }
 
 .GPX10 {
+    background-image: linear-gradient(gainsboro, gray, gray, gray, gainsboro);
     background-color: gainsboro;
-    color: #000;
+    text-shadow: 1px 1px 2px black;
+
+    color: rgb(255, 255, 255);
 }
 
 .GPX7106 {
@@ -109,16 +120,20 @@
 }
 
 .GPX12 {
-    background-color: goldenrod;
+    background-image: linear-gradient(goldenrod, gold, goldenrod);
     color: #000;
+    text-shadow: 1px 1px 2px;
+    box-shadow: 1px 1px 4px black;
 }
 
 .GPX13 {
     background-color: #d16309;
+    background-image: linear-gradient(#d16309, #d13109, #d16309);
 }
 
 .GPX6615 {
     background-color: #073d70;
+    background-image: linear-gradient(#073d70, #125594, #073d70);
     color: white;
 }
 
@@ -127,23 +142,14 @@
     color: white;
 }
 
-.itens ul li button {
-    width: 100px;
-    height: 87px;
-    font-size: 14px;
-}
 
-.comandar {
-    width: 50%;
-    margin-left: 20px;
-}
 
 table {
     text-align: center;
-    width: 818px;
+    width: 727px;
     background-color: rgb(0, 0, 0);
     border-radius: 5px;
-    line-height: 20px;
+    line-height: 15px;
 
 }
 
@@ -174,10 +180,10 @@ table tbody div {
 }
 
 .linhas-tb .ndd {
-    width: 350px;
+    /* width: 419px; */
     font-weight: bold;
-    font-size: 26px;
-    /* background-color: #2e1e1e;*/
+    font-size: 21px;
+    /* background-color: #2e1e1e; */
     text-align: left;
     text-indent: 40px;
 
@@ -236,19 +242,39 @@ H {
     text-shadow: 1px 1px 1px black;
 }
 
+::-webkit-scrollbar-button {
+    background-color: rgb(184, 26, 26);
+    /* cor de fundo das setas */
+    /* cor das setas */
+    height: 25px;
+}
+
+/* seta para cima */
+ul::-webkit-scrollbar-button:start:decrement {
+    content: "▲";
+}
+
+/* seta para baixo */
+ul::-webkit-scrollbar-button:end:increment {
+
+    content: "▼";
+}
+
 ul::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    height: 15px;
+    width: 45px;
+    left: 5px;
+    position: relative;
 }
 
 ul::-webkit-scrollbar-thumb {
-    background-color: red;
-    border-radius: 10px;
+    background-image: linear-gradient(black, black);
+    border-radius: 33px;
+
 }
 
 ul::-webkit-scrollbar-track {
-    background-color: black;
-    border-radius: 10px;
+    background-image: linear-gradient(white, white);
 }
 
 ul {
@@ -315,12 +341,21 @@ input[type="submit"]:hover {
     background-color: #3e8e41;
 }
 
-.controles {
-    margin-top: 20px;
+.controlea {
+    position: absolute;
+    bottom: 5px;
+    background: brown;
+    right: 540px;
+    padding: 9px;
 }
 
-.controle {
-    float: left;
+.controleb {
+    position: absolute;
+    bottom: -105px;
+    background: brown;
+    right: 4px;
+    height: 110px;
+    width: 798px;
 }
 
 select {
@@ -335,11 +370,6 @@ option {
     font-size: 1.2em;
     background-color: #f2f2f2;
     color: #000;
-}
-
-.container-controles-main {
-    width: 818px;
-
 }
 
 .itemNormal {
@@ -366,4 +396,23 @@ option {
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+.comandar {
+    position: relative;
+    top: 0px;
+    left: 0;
+}
+
+.tabela-fixa {
+    position: absolute;
+    bottom: -109px;
+    left: 4px;
+    height: 110px;
+    width: 719px;
+}
+
+.tabela-fixa .linha-table {
+    color: white;
+    font-size: 30px;
 }

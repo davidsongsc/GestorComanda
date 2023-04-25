@@ -53,12 +53,16 @@ function Comanda({ mesas }) {
   const [comanda, setComanda] = useState([]);
   const [tipoItem, setTipoItem] = useState();
   const [inventario, setInventario] = useState();
+  const [teclado, setTeclado] = useState(1);
+  const [mostrarInventario, setMostrarInventario] = useState(false);
+  const [mostrarInventario2, setMostrarInventario2] = useState(true);
+  const [mostrarInventario3, setMostrarInventario3] = useState(true);
 
   useEffect(() => {
     function carregarComanda() {
 
-      fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
-      //fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      //fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
@@ -72,7 +76,8 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`https://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
+      //fetch(`https://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`http://192.168.0.50:5000/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
           setItens(data.produtos);
@@ -80,7 +85,8 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      fetch(`https://dagesico.pythonanywhere.com/inventario?nome=${nome}&token=${token}&version=100a`)
+      //fetch(`https://dagesico.pythonanywhere.com/inventario?nome=${nome}&token=${token}&version=100a`)
+      fetch(`http://192.168.0.50:5000/inventario?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
           setInventario(data.inventario);
@@ -112,7 +118,18 @@ function Comanda({ mesas }) {
       behavior: 'smooth'
     });
   };
+  const handleTeclado = (tecla) => {
+    console.log(typeof tecla)
+    console.log(tecla)
+    if (tecla === 0) {
+      setTeclado(1)
+    }
+    else {
+      setTeclado(tecla)
+    }
+    console.log(teclado)
 
+  }
   // Click Botão Menu
   const handleClick = (id) => {
     if (id === 'fechar') {
@@ -183,11 +200,12 @@ function Comanda({ mesas }) {
         )
       );
     } else {
-      setComanda([...comanda, { ...item, qtd: 1, produto_id: item.id }]);
-
+      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
+      setTeclado(1);
       if (item.grupoc === 1) {
-        setTipoItem(1)
+        setTipoItem(1);
         toggleModal()
+
       }
       else if (item.grupoc === 2) {
         setTipoItem(2)
@@ -220,12 +238,34 @@ function Comanda({ mesas }) {
       else if (item.grupoc === 9) {
         setTipoItem(9)
         toggleModal()
+      } else if (item.grupoc === 11) {
+        setTipoItem(11)
+        toggleModal()
       }
 
 
     }
   };
- 
+
+  const adicionarItemOption = (item, t) => {
+
+    const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
+
+    if (itemExistente) {
+
+      setComanda(
+        comanda.map((i) =>
+          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
+        )
+      );
+    } else {
+      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
+      if (item.grupoc !==1)
+      toggleModal()
+   
+    }
+  };
+
   const calcularTotal = () => {
     return comanda.reduce((total, item) => total + item.valor * item.qtd, 0);
   };
@@ -259,199 +299,183 @@ function Comanda({ mesas }) {
 
 
   return (
+    <div className='container-comanda'>
 
-    <div className="comanda">
+      <div className="comanda">
+        <div className="comandar">
 
-      <div className="itens">
-        <table>
-          <thead>
-            <tr className='titulo-tb'>
-              <td>COMANDA: {mesa}</td>
-              <td>ID: {comandaid}</td>
-              <td>GORJETA: R${calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td>ATENDENTE: {atendente}</td>
-              <td>CONTA: {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
 
-            </tr>
-          </thead>
-        </table>
-        <div className='minventario'>
+          <div style={{ height: '854px', width: '730px', overflow: 'auto' }}>
 
-          <div className='inventario'>
-            <ul ref={listaRef} style={{ height: '483px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
-              {itensFiltrados.map((item, index) => (
-                <li key={index}>
-                  <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
-                </li>
-              ))}
-            </ul>
+            <table>
+              <thead>
+                <tr className='titulo-tb'>
+                  <td >QTD</td>
 
+                  <td>PRODUTO</td>
+
+                  <td>V UND</td>
+                  <td>V TOTAL</td>
+
+
+                </tr>
+              </thead>
+              <tbody>
+
+
+
+
+
+                {comanda.map((item, index) => (
+                  <>
+                    <tr key={index} className='linhas-tb'>
+                      <td className='itemNormalB' style={item.qtd !== 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
+                        {item.combinac === 0 ? item.qtd : '▲'}
+                      </td>
+
+
+
+                      {item.combinac === 0 ? (
+                        <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
+                        </td>) : <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}>
+                        {nomeProdutos(item.produto_id)}
+                      </td>}
+
+                      <Modal isOpen={showModal} >
+                        <h1>{nomeProduto(item.produto_id)}</h1>
+                        <InventarioOption mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} mostrarInventario3={mostrarInventario3} setMostrarInventario3={setMostrarInventario3} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
+                        <button onClick={() => toggleModal()}>O.K.</button>
+                      </Modal>
+                      <td className='itemNormalB' style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '2px' }}>
+                        {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
+
+                      </td>
+                      <td className='itemNormalB' style={{ fontSize: '25px', fontWeight: '800', color: 'goldenrod', letterSpacing: '4px' }}>
+                        {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
+
+                      </td>
+
+
+                    </tr>
+                  </>
+                ))}
+
+
+              </tbody>
+
+            </table>
+            <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
+            <div className='inventario'>
+              <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', height: '833px', width: '495px', overflow: 'auto', position: 'relative', right: '15px', top: `${scrollTop}px` }}>
+                {itensFiltrados.map((item, index) => (
+                  <li key={index}>
+                    <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
+                  </li>
+                ))}
+              </ul>
+              {/*
             <div>
               <button onClick={handleScrollUp}>↑</button>
               <button onClick={handleScrollDown}>↓</button>
 
             </div>
-
-          </div>
-
-
-
-        </div>
-        <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
-        <div className='container-controles-main'>
-
-          <div className="controles">
-
-            <div className='controle'>
-              <div className='operadores'>
-                <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
-                <button className='B'>COZINHA</button>
-                <button onClick={() => handleClick('fechar')} className='B'>FECHAR</button>
-                <button onClick={() => handleClick('caixa')} className='I' >CAIXA</button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              </div>
-
-              <div className='operadores'>
-                <button onClick={() => handleClick('fechar')} className='B'>EXTRA</button>
-
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              </div>
-              <div className='operadores'>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>OBS</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>PEDIDO</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>COMANDA</button>
-              </div>
-              <div className='operadores'>
-
-                <button onClick={() => handleClick('fechar')} className='C' disabled>DESCONTO</button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>ATENDENTE</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>CONTA</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>GORJETA</button>
-
-              </div>
-              <div className='operadores'>
-                <button onClick={() => handleClick('O.K.')} className='H' >O.K.</button>
-                <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>PRODUTO</button>
-                <button onClick={() => handleClick('fechar')} className='D' disabled>MESA</button>
-                <button onClick={() => handleClick('fechar')} className='E' disabled>ALTERAR</button>
-
-
-              </div>
-
+            */}
 
             </div>
-            <div className='controle'>
+
+
+
+
+
+
+            <div className='controlea'>
               <div className='digitos'>
                 <div className='g1'>
-                  <button>1</button>
-                  <button>2</button>
-                  <button>3</button>
+                  <button onClick={() => handleTeclado(1)}>1</button>
+                  <button onClick={() => handleTeclado(2)}>2</button>
+                  <button onClick={() => handleTeclado(3)}>3</button>
                 </div>
                 <div className='g1'>
-                  <button>4</button>
-                  <button>5</button>
-                  <button>6</button>
+                  <button onClick={() => handleTeclado(4)}>4</button>
+                  <button onClick={() => handleTeclado(5)}>5</button>
+                  <button onClick={() => handleTeclado(6)}>6</button>
                 </div>
                 <div className='g1'>
-                  <button>7</button>
-                  <button>8</button>
-                  <button>9</button>
+                  <button onClick={() => handleTeclado(7)}>7</button>
+                  <button onClick={() => handleTeclado(8)}>8</button>
+                  <button onClick={() => handleTeclado(9)}>9</button>
                 </div>
                 <div className='g1'>
-                  <button>A</button>
-                  <button>0</button>
-                  <button >C</button>
+                  <button onClick={() => handleTeclado('A')}>A</button>
+                  <button onClick={() => handleTeclado(0)}>0</button>
+                  <button onClick={() => handleTeclado('B')}>B</button>
                 </div>
                 <div className='g1'>
-                  <button onClick={() => handleClick('fechar')} className='T' disabled>D</button>
-                  <button onClick={() => handleClick('fechar')} className='T' disabled>E</button>
-                  <button onClick={() => handleClick('fechar')} className='T' disabled>F</button>
+                  <button onClick={() => handleTeclado('C')}>C</button>
+                  <button onClick={() => handleTeclado('D')}>D</button>
+                  <button onClick={() => handleTeclado('E')}>E</button>
                 </div>
               </div>
             </div>
-            <div>
-              <div className='totais'>
 
-              </div>
-            </div>
+
           </div>
-        </div>
-      </div>
-      <div className="comandar">
+          <div className='controleb'>
+            <div className='operadores'>
+              <button onClick={() => handleClick('O.K.')} className='H' >O.K.</button>
+
+              <button className='B'>COZINHA</button>
+              <button onClick={() => handleClick('fechar')} className='F'>FECHAR</button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+            </div>
+
+            <div className='operadores'>
+              <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
+              <button onClick={() => handleClick('caixa')} className='C' >CAIXA</button>
 
 
-        <div style={{ height: '950px', overflow: 'auto' }}>
-          <table>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+            </div>
+
+
+          </div>
+
+
+
+
+
+
+
+
+          <table className='tabela-fixa'>
             <thead>
               <tr className='titulo-tb'>
-                <td >QTD</td>
-
-                <td>PRODUTO</td>
-
-                <td>V UND</td>
-                <td>V TOTAL</td>
-                <td></td>
+                <td className='titulo-table'>COMANDA </td>
+                <td className='titulo-table'>ID</td>
+                <td className='titulo-table'>GORJETA</td>
+                <td className='titulo-table'>ATENDENTE</td>
+                <td className='titulo-table'>CONTA</td>
 
               </tr>
             </thead>
             <tbody>
-
-
-
-
-
-              {comanda.map((item, index) => (
-                <>
-                  <tr key={index} className='linhas-tb'>
-                    <td className='itemNormalB' style={item.qtd !== 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
-                      {item.combinac === 0 ? item.qtd : '▲'}
-                    </td>
-
-
-
-                    {item.combinac === 0 ? (
-                      <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
-                      </td>) : <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}>
-                      {nomeProdutos(item.produto_id)}
-                    </td>}
-
-                    <Modal isOpen={showModal} >
-                      <h1>{nomeProduto(item.produto_id)}</h1>
-                      <InventarioOption opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItem} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
-                      <button onClick={()=> toggleModal()}>O.K.</button>
-                    </Modal>
-                    <td className='itemNormalB'>
-                      {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
-
-                    </td>
-                    <td className='itemNormalB' style={{ fontSize: '25px', fontWeight: '700', color: 'goldenrod' }}>
-                      {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
-
-                    </td>
-                    <td className='idd'>0</td>
-
-                  </tr>
-                </>
-              ))}
-
-
+              <tr>
+                <td className='linha-table'>{mesa}</td>
+                <td className='linha-table'>{comandaid}</td>
+                <td className='linha-table'>R$ {calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className='linha-table'>{atendente}</td>
+                <td className='linha-table'>R$ {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              </tr>
             </tbody>
-
           </table>
-
-
-        </div>
-
-      </div>
-
-
+        </div>  </div>
     </div>
   );
 }

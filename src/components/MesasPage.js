@@ -70,8 +70,8 @@ const MesasPage = () => {
     useEffect(() => {
         // Carrega as comandas abertas nas mesas
         setIsLoading(true);
-        axios.get(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&version=100a`)
-        //axios.get(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&version=100a`)
+        //axios.get(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&version=100a`)
+        axios.get(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&version=100a`)
             .then(response => {
                 setComandas(response.data);
             })
@@ -108,8 +108,8 @@ const MesasPage = () => {
                 </div>
             </div>
             <div className="senha-area">
-                <h2>Mesas: {comandas.length} | Ocupadas:  | Conta: </h2>
-                <h2>Área do Garçom</h2>
+                <h2>Comandas: {comandas.length} </h2>
+                <h2>Área do Atendente</h2>
                 <input type="password" placeholder="Digite a senha" value={senha} onChange={handleSenhaChange} />
                 {erroSenha && <p className="senha-erro">Senha incorreta. Tente novamente.</p>}
                 {mesaSelecionada !== null && (
