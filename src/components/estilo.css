@@ -20,15 +20,19 @@
   font-family: Arial, sans-serif;
   background-color: #f7f7f7;
   height: 86vh;
+  margin: -11px;
   width: 99%;
   padding: 11px;
   transition: 1.9s;
 }
 
 .mesas-list {
-  background-color: #cd4d2182;
-  border-radius: 10px;
-  background-image: linear-gradient(45deg, black, transparent);
+  background-color: #9f9b8d54;
+  border-radius: 1px;
+  background-image: url(https://dagesico.pythonanywhere.com/static/img/demas/icone.png);
+  background-repeat: no-repeat;
+  background-position: 50% 93%;
+  background-size: 281px;
   /* height: 86vh; */
   /* padding: 20px; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -66,7 +70,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  height: 83vh;
+  height: 81vh;
   align-items: flex-start;
   align-content: flex-start;
 }
@@ -86,7 +90,6 @@
   position: relative;
   width: 58%;
   left: 2px;
-  background-color: rgb(46 26 24 / 36%);
   font-size: 36px;
   border-radius: 15px;
   padding: 3px 3px;
@@ -265,8 +268,8 @@
 .digitos div button,
 .digitosLogin div button {
   background-color: gray;
-  font-size: 40px;
-  width: 72px;
+  font-size: 26px;
+  width: 180px;
   margin: 4px;
   transition-delay: .2s;
   transition: .2s;
@@ -418,7 +421,7 @@
 
 ::-webkit-scrollbar-thumb {
   background-color: black;
-  border-radius: 5px;
+  border-radius: 1px;
 }
 
 .custom-alert {
@@ -633,6 +636,15 @@
 }
 
 @media only screen and (max-width: 415px) {
+  .custom-alert {
+    position: fixed;
+    top: 0;
+    left: -128px;
+     width:auto; 
+    transform: scale(.5);
+    height: 100%;
+  }
+
   .senha-area {
 
     top: -27px;

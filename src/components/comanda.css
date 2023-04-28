@@ -21,6 +21,18 @@
 
 }
 
+.i-inventario {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    height: 833px;
+    width: 495px;
+    overflow: auto;
+    position: relative;
+    right: 15px;
+    top: 0px;
+}
+
 .inventarioOp {
     position: relative;
     right: 6px;
@@ -153,7 +165,7 @@
 
 table {
     text-align: center;
-    width: 720px;
+    width: 100%;
     background-color: rgb(0, 0, 0);
     border-radius: 5px;
     line-height: 15px;
@@ -172,6 +184,11 @@ table tbody {
     color: black;
     font-weight: bold;
 
+}
+.server-status-table {
+    background: white;
+    margin: -16px auto;
+    width: 300px;
 }
 
 .ndd {
@@ -251,10 +268,10 @@ I {
 }
 
 ::-webkit-scrollbar-button {
-    background-color: rgb(184, 26, 26);
+    background-color: rgb(5, 5, 5);
     /* cor de fundo das setas */
     /* cor das setas */
-    height: 5px;
+    height: 0px;
 }
 
 /* seta para cima */
@@ -277,12 +294,12 @@ ul::-webkit-scrollbar {
 
 ul::-webkit-scrollbar-thumb {
     background-image: linear-gradient(black, black);
-    border-radius: 33px;
+    border-radius: 6px;
 
 }
 
 ul::-webkit-scrollbar-track {
-    background-image: linear-gradient(white, white);
+    background-image: linear-gradient(rgba(255, 240, 240, 0), rgba(255, 255, 255, 0));
 }
 
 ul {
@@ -436,6 +453,13 @@ option {
     left: 0;
 }
 
+.cm-comanda-pn {
+    height: 854px;
+    width: 730px;
+    overflow: auto;
+    background: beige;
+}
+
 .operadores {
     display: flex;
 }
@@ -467,4 +491,63 @@ option {
     transition: .8s;
     font-size: xxx-large;
     transform: rotateX(180deg);
+}
+
+@media only screen and (max-width: 415px) {
+    .comandar {
+        position: relative;
+        top: -13px;
+        left: -21px;
+    }
+
+    .cm-comanda-pn {
+        height: 138vh;
+        width: 381px;
+        overflow: auto;
+        top: 9px;
+        left: 21px;
+        position: relative;
+
+    }
+
+
+    table {
+        transform: scale(2.5);
+        width: 40%;
+    }
+
+    .tabela-fixa {
+        left: 67vh;
+        bottom: -249vh;
+        width: 90vh;
+    }
+
+    .menu-itens-catal {
+        left: 0px;
+        top: 0vh;
+        width: 56vh;
+        position: relative;
+        transform: scale(1);
+    }
+
+    .linhas-tb .ndd {
+
+        font-size: 12px;
+    }
+
+  
+    .inventario {
+        top: 43vh;
+    }
+
+    .i-inventario {
+
+        height: 349px;
+        width: 504px;
+        overflow: auto;
+
+        right: 61px;
+
+        top: 77px;
+    }
 }

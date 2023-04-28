@@ -363,9 +363,9 @@ function Comanda({ onClose, redirect, hAlerta }) {
         <div className="comandar">
 
 
-          <div style={{ height: '854px', width: '730px', overflow: 'auto', background: 'beige' }}>
+          <div className='cm-comanda-pn'>
 
-            <table>
+            <table className='menu-itens-catal'>
               <thead>
                 <tr className='titulo-tb'>
                   <td >QTD</td>
@@ -424,7 +424,7 @@ function Comanda({ onClose, redirect, hAlerta }) {
             </table>
             <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
             <div className='inventario'>
-              <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', height: '833px', width: '495px', overflow: 'auto', position: 'relative', right: '15px', top: `${scrollTop}px` }}>
+              <ul ref={listaRef} className='i-inventario'>
                 {itensFiltrados.map((item, index) => (
                   <li key={index}>
                     <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>

@@ -6,7 +6,8 @@ import './estilo.css';
 import io from 'socket.io-client';
 import AlertaPersonalizado from './AlertaPersonalizado';
 
-
+import ServerStatus from './ServerStatus';
+//<ServerStatus onClick={handleAlertClose} />
 const socket = io('http://192.168.0.50:8000');
 //const ipNucleo = 'https://dagesico.pythonanywhere.com;'
 const ipNucleo = 'http://192.168.0.50:5000';
@@ -41,15 +42,68 @@ const cargos = {
 function funcao(codigo) {
     switch (codigo) {
         case 's1':
-            return 'atendente de salão';
+            return 'aux limpeza';
         case 's2':
-            return 'bartender';
+            return 'aux sv geral';
+        case 's3':
+            return 'aux manutenção';
         case 'c1':
-            return 'auxiliar de cozinha';
-        case 'l1':
-            return 'auxiliar de limpeza';
+            return 'aux limpeza';
+        case 'c2':
+            return 'aux copa';
+        case 'c3':
+            return 'aux preparo';
+        case 'c4':
+            return 'aux linha';
+        case 'c5':
+            return 'aux cozinha';
+        case 'b1':
+            return 'aux limpeza';
+        case 'b2':
+            return 'cummim';
+        case 'b3':
+            return 'recepcionista';
+        case 'b4':
+            return 'garçom';
+        case 'b5':
+            return 'bartender';
+        case 'a1':
+            return 'aprendiz';
+        case 'a2':
+            return 'treinamento';
+        case 'a3':
+            return 'apoio operacional';
+        case 'a4':
+            return 'delivery';
+        case 'a5':
+            return 'supervisor';
+        case 'g1':
+            return 'assistente gerente';
+        case 'g2':
+            return 'gerente';
+        case 'g3':
+            return 'assistente rh';
+        case 'g4':
+            return 'recursos humanos';
+        case 'g5':
+            return 'assistente financeiro';
+        case 'g6':
+            return 'financeiro';
+        case 'g7':
+            return 'assistente administrativo';
+        case 'g8':
+            return 'administrador';
+        case 'g9':
+            return 'assistente t.i.';
+        case 'g10':
+            return 'gerente de projetos';
+        case 'g11':
+            return 'socio';
+        case 'g12':
+            return 'proprietario';
         case 'dev':
             return 'Desenvolvedor Sistema'
+
         default:
             return '';
     }
@@ -255,8 +309,9 @@ const MesasPage = () => {
     return (
 
         <div className='comandeira-comanda'>
+         
             <div className={isAuthenticated === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && atendente.auth === 'dt9' ? 'senha-background' : '')}>
-          
+
                 <div className="mesas-list">
 
                     <ul className='area-mesas'>
@@ -365,6 +420,7 @@ const MesasPage = () => {
                     </div>
                 }
                 <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
+                <ServerStatus />
             </div>
 
 
