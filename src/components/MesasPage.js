@@ -126,7 +126,7 @@ const MesasPage = () => {
     const [tipoAlertaId, setTipoAlertaId] = useState(0);
     const [areaActive, setActive] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
-
+    let timeoutId;
 
     const enviarDadosUsuario = () => {
         console.log(senha)
@@ -141,7 +141,7 @@ const MesasPage = () => {
                 handleClickMostrar();
                 setSenha('');
                 setIsAuthenticated(true);
-                setTimeout(() => {
+                timeoutId = setTimeout(() => {
                     setAtendente({ "usuario": null });;
                     setIsAuthenticated(false)
                 }, 11000);
@@ -219,18 +219,8 @@ const MesasPage = () => {
         setMostrarAlerta(false);
     }
 
-    const handleOkClick = () => {
-        // Verificar se a senha está correta e permitir acesso à mesa correspondente
-        if (senha === '1234') {
-            setMesaSelecionada(parseInt(senha.charAt(0))); // seleciona a mesa correspondente
-            setSenha(''); // limpa o campo de senha
-            setErroSenha(false); // esconde a mensagem de erro, se estiver sendo exibida
-
-        } else {
-            setErroSenha(true); // exibe mensagem de erro
-        }
-    };
     function handleSairLogin() {
+        clearTimeout(timeoutId);
         setAtendente({ "usuario": null });
         setIsAuthenticated(false);
         handleClickMostrar();
@@ -243,9 +233,7 @@ const MesasPage = () => {
             setActive(false)
         }
     };
-    const handleCancelarClick = () => {
-        setSenha('');
-    };
+
     const handleStatusMesaClick = (idMesa) => {
         const statusMesas = mesas.find((mesa) => mesa.mesa === idMesa);
     }
@@ -309,7 +297,7 @@ const MesasPage = () => {
     return (
 
         <div className='comandeira-comanda'>
-         
+
             <div className={isAuthenticated === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && atendente.auth === 'dt9' ? 'senha-background' : '')}>
 
                 <div className="mesas-list">
@@ -394,24 +382,24 @@ const MesasPage = () => {
 
                 {isAuthenticated &&
                     <div className='digitos'>
-                        <h1>Menu</h1>
+                        <h1><em>Menu</em></h1>
 
-                        <div className='g1'>
+                        <div className='g1s'>
                             <button onClick={handleSairLogin}>SAIR</button>
                             <button>status</button>
                             <button>fila</button>
                         </div>
-                        <div className='g1'>
+                        <div className='g1s'>
                             <button>BAR</button>
                             <button>VARANDA</button>
                             <button>RESERVA</button>
                         </div>
-                        <div className='g1'>
+                        <div className='g1s'>
                             <button>SALÃO</button>
                             <button>COZINHA</button>
                             <button>LIMPEZA</button>
                         </div>
-                        <div className='g1'>
+                        <div className='g1s'>
                             <button>GERENTE</button>
                             <button>SV</button>
 

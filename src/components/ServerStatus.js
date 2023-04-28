@@ -84,6 +84,12 @@ function ServerStatus() {
         } catch (error) {
             setSiteStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
         }
+        try {
+            const siteResponse = await axios.get('http://192.168.0.50:8080');
+            setCardapioDigitalStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
+        } catch (error) {
+            setCardapioDigitalStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
+        }
 
         try {
             const siteResponse = await axios.get('http://192.168.0.50:3000');
