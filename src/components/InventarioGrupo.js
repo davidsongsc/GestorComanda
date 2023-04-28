@@ -1,23 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
-function InventarioGrupo({ filtrarPorGrupo, mostrarTodos }) {
+const nome = 'maquina';
+const token = 'abc123';
+const ipNucleo = 'http://192.168.0.50:5000';
+
+function InventarioGrupo({ filtrarPorGrupo, mostrarTodos, id }) {
+    const [grupo, setGrupo] = useState([]);
+
+    //console.log(filtrarPorGrupo)
+    useEffect(() => {
+
+        fetch(`${ipNucleo}/grupos?nome=${nome}&token=${token}&version=100a`)
+            .then(response => response.json())
+            .then(data => {
+                const grupoArray = data.grupos.filter(comad => comad.grupoc === 1);
+
+                setGrupo(grupoArray.map(listaGrupo => (
+                    {
+                        nome: listaGrupo.nome,
+                        id: listaGrupo.estilo
+                    }
+                )
+                ));
+            })
+            .catch(error => console.error(error));
+
+
+    }, [id, nome, token]);
     return (
         <div className='grupo-produto'>
-            <button className='GPX1' onClick={mostrarTodos}>Todos</button>
-            <button className='GPX6615' onClick={() => filtrarPorGrupo(6615)}>Entradas</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(9)}>Combinados</button>
-            <button className='GPX13' onClick={() => filtrarPorGrupo(13)}>Burguer</button>
-            <button className='GPX2' onClick={() => filtrarPorGrupo(50)}>Bebidas</button>
-            <button className='GPX3' onClick={() => filtrarPorGrupo(31)}>Drinks</button>
-            <button className='GPX10' onClick={() => filtrarPorGrupo(10)}>Executivo</button>
-            <button className='GPX7106' onClick={() => filtrarPorGrupo(7106)}>Sobremesas</button>
-            <button className='GPX12' onClick={() => filtrarPorGrupo(12)}>Ribs</button>
-            <button className='GPX12' onClick={() => filtrarPorGrupo(600)}>Acompanha...</button>
-            <button className='GPX7' onClick={() => filtrarPorGrupo(6)}>Frango</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(6)}>Doses</button>
-            <button className='GPX9' onClick={() => filtrarPorGrupo(6)}>Doses</button>
-            <button className='GPX0' onClick={() => filtrarPorGrupo(0)}>EXTRAS</button>
-        </div>
+        {grupo.map(item => (
+          <button className={`GPX${item.id}`} onClick={() => filtrarPorGrupo(item.id)}>{item.nome}</button>
+        ))}
+      </div>
     )
 }
 export default InventarioGrupo;

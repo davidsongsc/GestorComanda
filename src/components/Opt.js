@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 
 function Opt({ id, mesas }) {
     const [selectedValue, setSelectedValue] = useState("");
-    const [acompanhamentoAC, setAC] = useState("");
     const [acompanhamentoAC2, setAC2] = useState("");
     const nome = 'maquina'
     const token = 'abc123'
@@ -82,9 +81,7 @@ function Opt({ id, mesas }) {
     const handleChange = (event) => {
         setSelectedValue(event.target.value);
     };
-    const handleChangeAC = (event) => {
-        setAC(event.target.value);
-    };
+    
     const handleChangeAC2 = (event) => {
         setAC2(event.target.value);
     };

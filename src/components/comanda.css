@@ -21,11 +21,19 @@
 
 }
 
+.inventarioOp {
+    position: relative;
+    right: 6px;
+    top: 0;
+    background: darkgray;
+
+}
+
 .inventarioOption {
     display: flex;
     border-width: 10px;
     border-style: outset;
-    width: 519px;
+    width: 1304px;
     background: darkgray;
     flex-direction: row-reverse;
 }
@@ -73,7 +81,7 @@
 }
 
 .GPX0 {
-    background-image: linear-gradient(rgb(235, 142, 21), rgb(235, 162, 6), rgb(235, 142, 21));
+    background-image: linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0), rgb(0, 0, 0));
     text-shadow: 0px 0px 1px;
 
     color: white;
@@ -86,14 +94,14 @@
     color: black;
 }
 
-.GPX2 {
+.GPX50 {
     background-image: linear-gradient(rgb(0, 153, 255), rgb(4, 86, 141), rgb(0, 194, 253));
     text-shadow: 0px 0px 1px;
 
-    color: black;
+    color: white;
 }
 
-.GPX3 {
+.GPX31 {
     background-image: linear-gradient(rgb(140, 0, 255), rgb(40, 4, 141));
     text-shadow: 0px 0px 1px;
 
@@ -101,9 +109,8 @@
 }
 
 .GPX7106 {
-    background-image: linear-gradient(rgb(255, 187, 0), rgb(0, 17, 255), rgb(0, 17, 255),rgb(0, 17, 255), rgb(0, 17, 255));
-    text-decoration: underline black double;
-    font-size: 15px;
+    background-image: linear-gradient(rgb(255, 187, 0), rgba(0, 110, 255, 0.486), rgba(86, 16, 216, 0.459), rgb(0, 17, 255), rgba(0, 17, 255, 0));
+    font-size: 13px;
 }
 
 .GPX10 {
@@ -137,7 +144,7 @@
     color: white;
 }
 
-.GPX9 {
+.GPX600 {
     background-color: #2e2650;
     color: white;
 }
@@ -146,17 +153,17 @@
 
 table {
     text-align: center;
-    width: 727px;
+    width: 720px;
     background-color: rgb(0, 0, 0);
     border-radius: 5px;
     line-height: 15px;
 
 }
 
-table tbody div {
-    /*background-color: black;*/
+table tbody {
+    background-color: rgba(126, 113, 113, 0.24);
     border-radius: 5px;
-    color: white;
+    color: rgb(0, 0, 0);
     cursor: pointer;
 }
 
@@ -226,9 +233,9 @@ table tbody div {
 }
 
 em {
-    background-color: red;
-    padding: 1px 5px;
-    border-radius: 50%;
+
+    position: relative;
+    top: -5px;
 }
 
 A,
@@ -238,7 +245,8 @@ D,
 E,
 F,
 G,
-H {
+H,
+I {
     text-shadow: 1px 1px 1px black;
 }
 
@@ -246,7 +254,7 @@ H {
     background-color: rgb(184, 26, 26);
     /* cor de fundo das setas */
     /* cor das setas */
-    height: 25px;
+    height: 5px;
 }
 
 /* seta para cima */
@@ -343,19 +351,23 @@ input[type="submit"]:hover {
 
 .controlea {
     position: absolute;
-    bottom: 5px;
+    bottom: 3px;
     background: brown;
-    right: 540px;
+    right: 541px;
+    height: 318px;
+    width: 242px;
     padding: 9px;
 }
 
 .controleb {
     position: absolute;
-    bottom: -105px;
+    bottom: -109px;
     background: brown;
     right: 4px;
-    height: 110px;
-    width: 798px;
+    height: 108px;
+    width: 794px;
+    border-width: 2px;
+    border-style: double;
 }
 
 select {
@@ -395,7 +407,27 @@ option {
 .ReactModal__Content {
     display: flex;
     justify-content: space-around;
+    flex-direction: column;
     align-items: center;
+    background-color: rgb(33, 33, 33);
+    overflow: hidden;
+
+}
+
+.ReactModal__Overlay {
+    overflow: hidden;
+
+}
+
+.ReactModal__Content h1 {
+    background-color: black;
+    border-radius: 15px;
+    color: white;
+    padding: 20px;
+    text-transform: uppercase;
+    position: relative;
+    left: -150px;
+
 }
 
 .comandar {
@@ -404,15 +436,35 @@ option {
     left: 0;
 }
 
+.operadores {
+    display: flex;
+}
+
 .tabela-fixa {
     position: absolute;
     bottom: -109px;
-    left: 4px;
+    left: -2px;
     height: 110px;
-    width: 719px;
+    width: 732px;
 }
 
 .tabela-fixa .linha-table {
     color: white;
-    font-size: 30px;
+    font-size: 22px;
+}
+
+.butaoUps {
+    position: relative;
+    left: -100px;
+    top: -15px;
+    background-color: #2e2650;
+    transition: .8s;
+}
+
+.senha-active .butaoUps {
+    top: -15px;
+    left: -7px;
+    transition: .8s;
+    font-size: xxx-large;
+    transform: rotateX(180deg);
 }

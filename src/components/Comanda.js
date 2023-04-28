@@ -31,44 +31,58 @@ import { useParams, useNavigate } from 'react-router-dom';
 import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
+import AlertaPersonalizado from './AlertaPersonalizado';
 
 Modal.setAppElement("#root");
-const GORJETA = 0.10;
 const TX = 0;
 const DESCONTO = 0;
+const nome = 'maquina';
+const token = 'abc123';
+//const ipNucleo = 'https://dagesico.pythonanywhere.com;'
+const ipNucleo = 'http://192.168.0.50:5000';
 
-function Comanda({ mesas }) {
+const usuarioError = [{
+  "titulo": "Impressora!",
+  "mensagem": "Por favor Aguarde! ...",
+  "btn1": "OK",
+  "fnb1": "",
+  "btn2": "fechar",
+  "fnb2": ""
+}]
+function Comanda({ onClose, redirect, hAlerta }) {
   const { id } = useParams();
+  const [tipoAlertaId, setTipoAlertaId] = useState(0);
   const [showModal, setShowModal] = useState(false);
   const [scrollTop, setScrollTop] = useState(0);
-  const [grupoSelecionado, setGrupoSelecionado] = useState(null);
+  const [grupoSelecionado, setGrupoSelecionado] = useState(6615);
   const navigation = useNavigate();
   const listaRef = useRef(null);
-  const nome = 'maquina'
-  const token = 'abc123'
   const [itens, setItens] = useState([]);
-  const [mesa, setMesa] = useState(mesas);
-  const [comandaid, setComandaID] = useState([]);
-  const [atendente, setAtendente] = useState([]);
+  const [mesa, setMesa] = useState();
+  const [grupo, setGrupo] = useState([]);
+  const [usuario, setUsuario] = useState([]);
+  const [areaActive, setActive] = useState(false);
   const [comanda, setComanda] = useState([]);
   const [tipoItem, setTipoItem] = useState();
   const [inventario, setInventario] = useState();
   const [teclado, setTeclado] = useState(1);
   const [mostrarInventario, setMostrarInventario] = useState(false);
-  const [mostrarInventario2, setMostrarInventario2] = useState(true);
-  const [mostrarInventario3, setMostrarInventario3] = useState(true);
+  const [mostrarInventario2, setMostrarInventario2] = useState(false);
+  const [GORJETA, setGorjeta] = useState(0);
+  const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
   useEffect(() => {
     function carregarComanda() {
 
-      //fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
-      fetch(`http://192.168.0.50:5000/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+
+      fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
 
           comandaMesa.map(listaComanda => (
-
+            console.log(listaComanda.operador),
+            setUsuario(listaComanda.operador),
             setMesa(listaComanda.mesa),
             setComanda(listaComanda.itens[0].map(item => ({ ...item, })))
 
@@ -76,8 +90,7 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      //fetch(`https://dagesico.pythonanywhere.com/produtos?nome=${nome}&token=${token}&version=100a`)
-      fetch(`http://192.168.0.50:5000/produtos?nome=${nome}&token=${token}&version=100a`)
+      fetch(`${ipNucleo}/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
           setItens(data.produtos);
@@ -85,24 +98,51 @@ function Comanda({ mesas }) {
         })
         .catch(error => console.error(error));
 
-      //fetch(`https://dagesico.pythonanywhere.com/inventario?nome=${nome}&token=${token}&version=100a`)
-      fetch(`http://192.168.0.50:5000/inventario?nome=${nome}&token=${token}&version=100a`)
+      fetch(`${ipNucleo}/inventario?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
           setInventario(data.inventario);
           localStorage.setItem('inventario', JSON.stringify(data.inventario));
         })
         .catch(error => console.error(error));
+
     }
 
     carregarComanda();
   }, [id, nome, token]);
+
+  
+  function handleFecharAlerta() {
+    setMostrarAlerta(false);
+  }
 
   // Pagina Options On/Off 
   const toggleModal = () => {
     setShowModal(!showModal);
   };
 
+  const removerGorjeta = () => {
+    setGorjeta(0);
+  };
+
+  const adicionarGorjeta = (valor) => {
+    if (valor === 10) {
+      setGorjeta(0.10);
+    } else if (valor === 11) {
+      setGorjeta(0.11)
+    } else if (valor === 12) {
+      setGorjeta(0.12)
+    }
+
+  };
+  const handleClickMostrar = () => {
+    if (areaActive === false) {
+      setActive(true)
+    }
+    else {
+      setActive(false)
+    }
+  };
   // Itens Menu Seta ↓
   const handleScrollUp = () => {
     listaRef.current.scrollBy({
@@ -118,6 +158,7 @@ function Comanda({ mesas }) {
       behavior: 'smooth'
     });
   };
+
   const handleTeclado = (tecla) => {
     console.log(typeof tecla)
     console.log(tecla)
@@ -128,27 +169,30 @@ function Comanda({ mesas }) {
       setTeclado(tecla)
     }
     console.log(teclado)
-
+  }
+  function handleAlertClose() {
+    console.log("Alerta fechado!");
   }
   // Click Botão Menu
   const handleClick = (id) => {
     if (id === 'fechar') {
       navigation(`/`);
     } else if (id === 'conta') {
-      alert('Imprimindo Conta...')
-      navigation(`/`);
+      setMostrarAlerta(true);
+      setTimeout(() => {
+        navigation(`/`);
+      }, 2000);
+
+
     } else if (id === 'caixa') {
       alert('Imprimindo Conta...')
       navigation(`/`);
     } else {
-
       navigation(`/`);
     }
-
   }
+
   // carregar itens da API
-
-
   // demais códigos de renderização e manipulação de estado
   const nomeProdutos = (produto_id) => {
 
@@ -242,17 +286,25 @@ function Comanda({ mesas }) {
         setTipoItem(11)
         toggleModal()
       }
+      else if (item.grupoc === 11) {
+        setTipoItem(11)
+        toggleModal()
+      }
+      else if (item.grupoc === 15) {
+        setTipoItem(15)
+        toggleModal()
+      }
 
 
     }
   };
 
   const adicionarItemOption = (item, t) => {
-
+    console.log(item)
+    setMostrarInventario(false);
+    setMostrarInventario2(false);
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
-
     if (itemExistente) {
-
       setComanda(
         comanda.map((i) =>
           i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
@@ -260,9 +312,8 @@ function Comanda({ mesas }) {
       );
     } else {
       setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
-      if (item.grupoc !==1)
-      toggleModal()
-   
+      if (item.grupoc === 6)
+        toggleModal()
     }
   };
 
@@ -276,7 +327,7 @@ function Comanda({ mesas }) {
     return calcularTotal() * TX
   }
   const calcularDesconto = () => {
-    return -DESCONTO
+    return DESCONTO
   }
   const calcularConta = () => {
     return calcularTotal() + calcularGorjeta() - calcularDesconto() + calcularTaxa()
@@ -296,16 +347,23 @@ function Comanda({ mesas }) {
     itensFiltrados = itens.filter((item) => item.grupo === grupoSelecionado);
   }
 
+  const removerItem = (index) => {
 
+    setComanda(comanda.filter((_, i) => i !== index));
+  };
+
+  const tTeste = (t) => {
+    console.log(t);
+  }
 
   return (
-    <div className='container-comanda'>
+    <div className='container-comanda fade-in'>
 
       <div className="comanda">
         <div className="comandar">
 
 
-          <div style={{ height: '854px', width: '730px', overflow: 'auto' }}>
+          <div style={{ height: '854px', width: '730px', overflow: 'auto', background: 'beige' }}>
 
             <table>
               <thead>
@@ -341,10 +399,10 @@ function Comanda({ mesas }) {
                         {nomeProdutos(item.produto_id)}
                       </td>}
 
-                      <Modal isOpen={showModal} >
-                        <h1>{nomeProduto(item.produto_id)}</h1>
-                        <InventarioOption mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} mostrarInventario3={mostrarInventario3} setMostrarInventario3={setMostrarInventario3} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} />
-                        <button onClick={() => toggleModal()}>O.K.</button>
+                      <Modal isOpen={showModal} style={{ backgroundColor: "black" }}>
+                        <h1>{nomeProduto(item.produto_id)}{item.push}</h1>
+                        <InventarioOption id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
+
                       </Modal>
                       <td className='itemNormalB' style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '2px' }}>
                         {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
@@ -390,32 +448,41 @@ function Comanda({ mesas }) {
 
             <div className='controlea'>
               <div className='digitos'>
-                <div className='g1'>
+                <div className='g2'>
                   <button onClick={() => handleTeclado(1)}>1</button>
                   <button onClick={() => handleTeclado(2)}>2</button>
                   <button onClick={() => handleTeclado(3)}>3</button>
                 </div>
-                <div className='g1'>
+                <div className='g2'>
                   <button onClick={() => handleTeclado(4)}>4</button>
                   <button onClick={() => handleTeclado(5)}>5</button>
                   <button onClick={() => handleTeclado(6)}>6</button>
                 </div>
-                <div className='g1'>
+                <div className='g2'>
                   <button onClick={() => handleTeclado(7)}>7</button>
                   <button onClick={() => handleTeclado(8)}>8</button>
                   <button onClick={() => handleTeclado(9)}>9</button>
                 </div>
-                <div className='g1'>
+                <div className='g2'>
                   <button onClick={() => handleTeclado('A')}>A</button>
                   <button onClick={() => handleTeclado(0)}>0</button>
                   <button onClick={() => handleTeclado('B')}>B</button>
                 </div>
-                <div className='g1'>
+                <div className='g2'>
                   <button onClick={() => handleTeclado('C')}>C</button>
                   <button onClick={() => handleTeclado('D')}>D</button>
                   <button onClick={() => handleTeclado('E')}>E</button>
                 </div>
               </div>
+              {mostrarAlerta && (
+                <AlertaPersonalizado
+                  usuarioError={usuarioError}
+                  tipoAlertaId={tipoAlertaId}
+                  message={usuarioError[tipoAlertaId].mensagem}
+                  onClose={handleFecharAlerta}
+                  hAlerta={handleClickMostrar}
+                />
+              )}
             </div>
 
 
@@ -426,52 +493,48 @@ function Comanda({ mesas }) {
 
               <button className='B'>COZINHA</button>
               <button onClick={() => handleClick('fechar')} className='F'>FECHAR</button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick()} className='C' >CANCELA</button>
+              <button onClick={() => removerGorjeta()} className={GORJETA === 0 ? 'C' : 'B'} >REMOVER GORJETA</button>
+              <button onClick={() => adicionarGorjeta(10)} className={GORJETA === 0.10 ? 'A' : 'B'} >GORJETA 10%</button>
+              <button onClick={() => adicionarGorjeta(11)} className={GORJETA === 0.11 ? 'A' : 'B'} >GORJETA 11%</button>
+
             </div>
 
             <div className='operadores'>
               <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
               <button onClick={() => handleClick('caixa')} className='C' >CAIXA</button>
+              <button className='D' >Delivery</button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
 
-
               <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled> </button>
+              <button onClick={() => adicionarGorjeta(12)} className={GORJETA === 0.12 ? 'A' : 'B'} >GORJETA 12%</button>
             </div>
 
-
           </div>
-
-
-
-
-
-
-
 
           <table className='tabela-fixa'>
             <thead>
               <tr className='titulo-tb'>
                 <td className='titulo-table'>COMANDA </td>
-                <td className='titulo-table'>ID</td>
+                <td className='titulo-table'>ATENDIMENTO</td>
+
                 <td className='titulo-table'>GORJETA</td>
-                <td className='titulo-table'>ATENDENTE</td>
+                <td className='titulo-table'>DESCONTOS</td>
                 <td className='titulo-table'>CONTA</td>
+                <td className='titulo-table'>TOTAL</td>
 
               </tr>
             </thead>
             <tbody>
               <tr>
-                <td className='linha-table'>{mesa}</td>
-                <td className='linha-table'>{comandaid}</td>
-                <td className='linha-table'>R$ {calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td className='linha-table'>{atendente}</td>
-                <td className='linha-table'>R$ {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>{mesa}</td>
+                <td className='linha-table'><em>{usuario}</em></td>
+
+                <td className='linha-table'>{calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>{calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>{calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+                <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               </tr>
             </tbody>
           </table>

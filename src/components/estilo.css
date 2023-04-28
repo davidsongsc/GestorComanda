@@ -6,9 +6,10 @@
 
 .comandeira-comanda {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  align-content: center;
+  position: relative;
+  flex-direction: column;
+  top: 0;
+  overflow: auto;
 
 }
 
@@ -18,17 +19,18 @@
   display: flex;
   font-family: Arial, sans-serif;
   background-color: #f7f7f7;
-  height: 100vh;
-  width: 78%;
+  height: 86vh;
+  width: 99%;
   padding: 11px;
   transition: 1.9s;
 }
 
 .mesas-list {
-  background-color: #fff;
+  background-color: #cd4d2182;
   border-radius: 10px;
-  height: 85vh;
-  padding: 20px;
+  background-image: linear-gradient(45deg, black, transparent);
+  /* height: 86vh; */
+  /* padding: 20px; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
@@ -52,7 +54,6 @@
 .mesas-list li {
   display: flex;
   font-size: 18px;
-  margin-bottom: 10px;
   flex-direction: column;
   justify-content: center;
 }
@@ -66,12 +67,14 @@
   flex-wrap: wrap;
   justify-content: space-around;
   height: 83vh;
+  align-items: flex-start;
+  align-content: flex-start;
 }
 
 
 .mesa-menu {
-  width: 120px;
-  height: 120px;
+  width: 83px;
+  height: 81px;
   justify-content: center;
   border-radius: 6px;
   box-shadow: 2px 2px 2px black;
@@ -83,9 +86,10 @@
   position: relative;
   width: 58%;
   left: 2px;
-  background-color: rgba(58, 54, 44, 0.555);
+  background-color: rgb(46 26 24 / 36%);
   font-size: 36px;
-  border-radius: 5px;
+  border-radius: 15px;
+  padding: 3px 3px;
 
 }
 
@@ -106,17 +110,31 @@
 }
 
 .senha-area {
-  background-color: #fff;
-  border-radius: 10px;
+  background-color: #932626;
+  /* border-radius: 10px; */
   padding: 20px;
-  width: 16%;
-  margin-top: 20px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  display: flex;
+  width: auto;
+  position: relative;
+  text-align: center;
+  box-shadow: 0 0 10px rgb(34 30 30);
+  transition: .9s ease-in-out;
+  top: -34px;
+}
+
+.senha-active {
+  top: -512px;
 }
 
 .senha-area h2 {
-  font-size: 24px;
-  margin-bottom: 10px;
+  font-size: 26px;
+  margin-bottom: -28px;
+  position: relative;
+  top: -38px;
+  text-transform: uppercase;
+  text-shadow: 1px 1px 1px black;
+  color: white;
+  transition: .8s;
 }
 
 .area-digito {
@@ -139,11 +157,12 @@
 
 .senha-area input[type=password] {
   padding: 10px;
-  font-size: 18px;
+  font-size: 38px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  width: 85%;
   margin-bottom: 10px;
+  transition-delay: .2s;
+  transition: .8s;
 }
 
 .senha-area button {
@@ -163,30 +182,106 @@
   background-color: #28a745;
 }
 
+.status-mesa-comanda {
+  display: flex;
+  position: absolute;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 50vh;
+}
+
 .button {
   font-size: 16px;
   font-weight: bold;
   text-align: center;
 
 }
-.operadores button{
+
+.operadores button {
   width: 105px;
   margin: 4px;
   height: 47px;
   box-shadow: 1px 1px 2px black;
 }
 
-.digitos div button {
+.digitos,
+.digitosLogin {
+  margin-top: 15vh;
+}
+
+.digitos .g1,
+.digitosLogin .g1 {
+  width: 572px;
+}
+
+.digitos .g2,
+.digitosLogin .g2 {
+  width: 287px;
+}
+
+.senha-active .digitos input[type=password] {
+  padding: 10px;
+  font-size: 38px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  width: 67%;
+  margin-bottom: 10px;
+  transition-delay: .2s;
+  transition: .8s;
+}
+
+.senha-active .g1 button {
+  background-color: gray;
+  font-size: 20px;
+  width: 121px;
+  margin: 4px;
+  transition-delay: .2s;
+  transition: .8s;
+}
+
+@keyframes gradiente {
+  0% {
+    background-color: #008080;
+  }
+
+
+  50% {
+    background-color: #28a745;
+  }
+
+
+  100% {
+    background-color: #932626;
+  }
+}
+
+.senha-background {
+  animation-name: gradiente;
+  animation-duration: 21s;
+  animation-fill-mode: forwards;
+}
+
+.digitos div button,
+.digitosLogin div button {
   background-color: gray;
   font-size: 40px;
-  width: 73px;
+  width: 72px;
   margin: 4px;
+  transition-delay: .2s;
+  transition: .2s;
 }
 
 .digitos div button:hover {
   background-color: brown;
 
 }
+
+.digitosLogin div button:hover {
+  background-color: rgb(0, 0, 0);
+
+}
+
 .button-livre {
   background-color: green;
   color: white;
@@ -209,6 +304,7 @@
 
   color: white;
 }
+
 .button-ocupado h4 {
 
   border-radius: 10px;
@@ -265,45 +361,405 @@
   color: black;
 }
 
-.painel-cozinha{
+.painel-cozinha {
   display: flex;
 }
-.opt-pedido{
-   margin: 10px;
+
+.opt-pedido {
+  margin: 10px;
 }
+
 .opt-pedido input[type="radio"] {
   list-style-type: dashed;
 }
 
 .opt-pedido label {
 
-  cursor: pointer; /* Define o cursor como uma mão quando o mouse estiver sobre o texto */
-  position: relative; /* Permite a estilização do marcador */
-  padding-left: 25px; /* Cria um espaço para o marcador */
+  cursor: pointer;
+  /* Define o cursor como uma mão quando o mouse estiver sobre o texto */
+  position: relative;
+  /* Permite a estilização do marcador */
+  padding-left: 25px;
+  /* Cria um espaço para o marcador */
 }
 
 .opt-pedido label:before {
-  content: ""; /* Cria um espaço para o marcador */
+  content: "";
+  /* Cria um espaço para o marcador */
 
-  position: absolute; /* Permite a estilização do marcador */
-  left: 0; /* Posiciona o marcador à esquerda do texto */
-  top: 2px; /* Centraliza o marcador verticalmente */
-  width: 17px; /* Define a largura do marcador */
-  height: 17px; /* Define a altura do marcador */
-  border: 1px solid #ccc; /* Define a borda do marcador */
-  border-radius: 50%; /* Define o raio da borda do marcador como 50% para criar um círculo */
+  position: absolute;
+  /* Permite a estilização do marcador */
+  left: 0;
+  /* Posiciona o marcador à esquerda do texto */
+  top: 2px;
+  /* Centraliza o marcador verticalmente */
+  width: 17px;
+  /* Define a largura do marcador */
+  height: 17px;
+  /* Define a altura do marcador */
+  border: 1px solid #ccc;
+  /* Define a borda do marcador */
+  border-radius: 50%;
+  /* Define o raio da borda do marcador como 50% para criar um círculo */
 }
 
-.opt-pedido input[type="radio"]:checked + label:before {
-  background-color: #008080; /* Muda a cor do fundo do marcador quando estiver selecionado */
-  border-color: #008080; /* Muda a cor da borda do marcador quando estiver selecionado */
+.opt-pedido input[type="radio"]:checked+label:before {
+  background-color: #008080;
+  /* Muda a cor do fundo do marcador quando estiver selecionado */
+  border-color: #008080;
+  /* Muda a cor da borda do marcador quando estiver selecionado */
 }
+
 ::-webkit-scrollbar {
   width: 10px;
-  background-color: #f0f0f0; /* cor cinza */
+  background-color: #f0f0f0;
+  /* cor cinza */
 }
 
 ::-webkit-scrollbar-thumb {
   background-color: black;
   border-radius: 5px;
+}
+
+.custom-alert {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgb(0 0 0 / 43%);
+  z-index: 9999;
+  transition: .8s;
+}
+
+@keyframes fundo {
+  0% {
+    background-color: rgb(0 0 0 / 43%);
+  }
+
+  50% {
+    background-color: rgb(0 0 0 / 88%);
+  }
+
+  100% {
+    background-color: rgb(0 0 0 / 43%);
+  }
+}
+
+/* Definindo a animação */
+@keyframes fade {
+  from {
+    background-color: #05050556;
+  }
+
+  to {
+    background-color: #fbff003b;
+  }
+}
+
+/* Aplicando a animação a div com a classe "fade-in" */
+.fade-in {
+  animation-name: fade;
+  animation-duration: 22s;
+  animation-fill-mode: forwards;
+  /* Faz a animação manter o estado final após a conclusão */
+  animation-delay: 0.5s;
+  /* Atrasando a animação por 0.5 segundos */
+  animation-iteration-count: 1;
+  /* Executando a animação apenas uma vez */
+}
+
+.message {
+  background-color: brown;
+
+  width: 466px;
+  height: 466px;
+  padding: 20px;
+  border-radius: 10px;
+  border-style: double;
+  border-width: 8px;
+  animation-name: shadow;
+  animation-duration: 9s;
+  animation-iteration-count: infinite;
+}
+
+@keyframes shadow {
+  0% {
+    box-shadow: 5px 4px 8px black, -5px -4px 8px black;
+  }
+
+  50% {
+    box-shadow: 3px 8px 16px #ff8801ed, -3px -8px 16px #ff8801ed;
+  }
+
+  100% {
+    box-shadow: 5px 4px 8px black, -5px -4px 8px black;
+  }
+}
+
+.message h1 {
+  text-align: center;
+  font-size: 50px;
+  text-transform: uppercase;
+}
+
+.message p {
+  font-size: 35px;
+  background: black;
+  padding: 18px;
+  border-radius: 11px;
+  box-shadow: 2px 3px 10px #502c0fdb;
+  color: white;
+}
+
+.close-button {
+
+  top: 572px;
+  /* right: 10px; */
+  border: none;
+  background-color: transparent;
+  font-size: 20px;
+  cursor: pointer;
+  background: brown;
+  transition: .8s;
+  height: 85px;
+  width: 85px;
+}
+
+.painel-alerta-botoes {
+  display: flex;
+  flex-direction: row;
+  position: relative;
+  top: 173px;
+  left: -373px;
+}
+
+@media only screen and (max-width: 1024px) {
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 13vh;
+  }
+
+  .senha-area h2 {
+    font-size: 21px;
+    padding: 2px 0;
+
+  }
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 28vh;
+  }
+
+  .senha-area button {
+
+    width: 76px;
+    height: 59px;
+
+  }
+}
+
+@media only screen and (max-width: 912px) {
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 13vh;
+  }
+}
+
+@media only screen and (max-width: 820px) {
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 13vh;
+  }
+}
+
+@media only screen and (max-width: 768px) {
+  /* Inclua aqui as regras de estilo para dispositivos móveis */
+
+  .senha-area button {
+    top: -77px;
+    height: 50px;
+    left: -291px;
+  }
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 39vh;
+    margin-left: -32px;
+  }
+
+  .senha-active .butaoUps {
+    top: 185px;
+    left: -216px;
+    height: 75px;
+  }
+
+  .senha-area h2 {
+    font-size: 16px;
+    margin-bottom: -8px;
+  }
+
+  .status-mesa-comanda {
+
+    top: 33px;
+
+  }
+}
+
+@media only screen and (max-width: 541px) {
+
+
+  .senha-area .senha-active {
+    top: -412px;
+  }
+
+  .senha-area button {
+    top: -22px;
+    height: 35px;
+    left: -291px;
+  }
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 39vh;
+  }
+
+}
+
+@media only screen and (max-width: 415px) {
+  .senha-area {
+
+    top: -27px;
+  }
+
+  .senha-active {
+    top: -512px;
+  }
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 26vh;
+  }
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 36vh;
+    margin-left: -100px;
+  }
+
+  .senha-area input[type=password] {
+    width: 300px;
+  }
+
+  .senha-active .butaoUps {
+    top: 108px;
+    left: -323px;
+    height: 75px;
+  }
+
+  .senha-area button {
+    top: -63px;
+    height: 39px;
+    left: -291px;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+
+  /* Inclua aqui as regras de estilo para dispositivos móveis */
+  .digitos,
+  .digitosLogin {
+
+    width: 375px;
+  }
+
+  .digitosLogin {
+    margin-top: 33vh;
+    margin-left: -20px;
+  }
+
+  .digitos .g1,
+  .digitosLogin .g1 {
+    width: 387px;
+  }
+
+  .senha-active .g1 button {
+
+    width: 87px;
+
+  }
+
+  .senha-area {
+
+    top: -50px;
+  }
+
+  .senha-active {
+    top: -506px;
+  }
+
+  .senha-active .butaoUps {
+    top: 131px;
+    left: -230px;
+    height: 75px;
+  }
+
+  .senha-area button {
+    top: -19px;
+    height: 36px;
+    left: -83px;
+  }
+
+  .senha-area input[type=password] {
+    padding: 10px;
+    font-size: 38px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    width: 250px;
+    transition-delay: .2s;
+    transition: .8s;
+  }
+}
+
+@media only screen and (max-width: 375px) {
+  ::-webkit-scrollbar {
+    width: 2px;
+    background-color: #f0f0f000;
+    /* cor cinza */
+  }
+
+  .mesas-list li {
+    display: flex;
+    font-size: 8px;
+    flex-direction: column;
+    justify-content: center;
+    height: 42px;
+    width: 52px;
+  }
+
+  .senha-area button {
+    left: -162px;
+  }
+
+  .digitos,
+  .digitosLogin {
+    margin-top: 33vh;
+    margin-left: -71px;
+  }
+
+  .senha-area button {
+    left: -110px;
+  }
+
+  .senha-active .g1 button {
+    width: 79px;
+
+  }
 }
