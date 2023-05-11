@@ -29,8 +29,8 @@ function InventarioGrupo({ filtrarPorGrupo, mostrarTodos, id }) {
     }, [id, nome, token]);
     return (
         <div className='grupo-produto'>
-        {grupo.map(item => (
-          <button className={`GPX${item.id}`} onClick={() => filtrarPorGrupo(item.id)}>{item.nome}</button>
+        {grupo.map((item, index) => (
+          <button key={index} className={`GPX${item.id}`} onClick={() => filtrarPorGrupo(item.id)}>{item.nome}</button>
         ))}
       </div>
     )

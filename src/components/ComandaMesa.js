@@ -49,7 +49,7 @@ const usuarioError = [{
   "btn2": "fechar",
   "fnb2": ""
 }]
-function Comanda() {
+function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
   const navigation = useNavigate();
   const { id } = useParams();
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
@@ -73,20 +73,26 @@ function Comanda() {
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
 
   useEffect(() => {
+    console.log(mesaId);
     function carregarComanda() {
-      fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
+    
+     fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
         .then(response => response.json())
         .then(data => {
-          const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
+          const comandaMesa = data.filter(comad => comad.mesa === parseInt(mesaId));
           comandaMesa.map(listaComanda => (
             // console.log(listaComanda.operador),
             setUsuario(listaComanda.operador),
             setMesa(listaComanda.mesa),
-            setComanda(listaComanda.itens[0].map(item => ({ ...item, })))
+            setComanda(listaComanda.itens[0].map(item => ({ ...item, }))),
+            console.log(listaComanda),
+            console.log(comandaLis)
           ));
+          
         })
         .catch(error => console.error(error));
-
+ 
+      //setComanda(clManad[0].itens[0].map(item => ({ ...item, })))
       fetch(`${ipNucleo}/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
@@ -170,20 +176,24 @@ function Comanda() {
   const handleClick = (id) => {
     if (id === 'fechar') {
       //handleCloseModalMesa()
-      navigation('/');
+      //navigation('/');
+      handleCloseModalMesa();
     } else if (id === 'conta') {
       setMostrarAlerta(true);
       setTimeout(() => {
-        navigation('/');
+        //navigation('/');
+        handleCloseModalMesa();
       }, 2000);
 
 
     } else if (id === 'caixa') {
       alert('Imprimindo Conta...')
-      navigation('/');
+      //navigation('/');
+      handleCloseModalMesa();
 
     } else {
-      navigation('/');
+      //navigation('/');
+      handleCloseModalMesa();
 
     }
   }
@@ -349,7 +359,7 @@ function Comanda() {
   }
 
   return (
-    <div className='container-comanda fade-in'>
+    <div className='container-comanda fade-in' style={{position: 'relative', top: '10px', left: '35px'}}>
       {mostrarAlerta && (
         <AlertaPersonalizado
           usuarioError={usuarioError}
@@ -420,9 +430,9 @@ function Comanda() {
 
             </table>
             {comanda.map((item, index) => (
-              <Modal isOpen={showModal} style={{ backgroundColor: "black" }}>
+              <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
                 <h1>{nomeProduto(item.produto_id)}{item.push}</h1>
-                <InventarioOption style={{backgroundColor: 'black'}} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
+                <InventarioOption style={{ backgroundColor: 'black' }} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
 
               </Modal>
             ))}

@@ -25,9 +25,6 @@ function AlertaPersonalizado({ usuarioError, tipoAlertaId, onClose, redirect, hA
     navigation(`${redirect}`);
   }
 
-  function showAlertAgain() {
-    setMostrarAlerta(true);
-  }
 
   function handleKeyPress(e) {
     if (e.key === "Enter") {

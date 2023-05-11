@@ -16,6 +16,8 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
     const larguraBotao = '15vh';
     const [mostrarInventario3, setMostrarInventario3] = useState(false);
     const [comandas, setComandas] = useState([]);
+    const [observacao, setObservacao] = useState('true');
+
     console.log(item)
     const handleAbrirInventario = () => {
         setMostrarInventario(true);
@@ -28,6 +30,9 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
         setMostrarInventario3(true);
     };
 
+    function ocultarObservacao() {
+        setObservacao('false');
+    }
     function ivAdd(item, i) {
         adicionarItem(item)
         if (i === 1) {
@@ -62,7 +67,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                             </li>
                         ))}
                         {/* Extras Opção Ponto */}
-                        <li key={'d01'}>
+                        <li key={'d01'}  onClick={() => ocultarObservacao()}>
                             <button onClick={() => adicionarItem({
                                 id: 2003,
                                 nomeproduto: '',
@@ -70,7 +75,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                                 valor: 0,
                                 descricao: '-',
                                 grupoc: 1,
-                            }, 'M')} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >So no Sal</button>
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >So no Sal</button>
                         </li>
                         <li key={'d02'}>
                             <button onClick={() => adicionarItem({
@@ -80,7 +85,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                                 valor: 0,
                                 descricao: '-',
                                 grupoc: 1,
-                            }, 'M')} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Pouco Tempero</button>
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Pouco Tempero</button>
                         </li>
                         <li key={'d03'}>
                             <button onClick={() => adicionarItem({
@@ -90,7 +95,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                                 valor: 0,
                                 descricao: '-',
                                 grupoc: 1,
-                            }, 'M')} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Mais Tempero</button>
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Mais Tempero</button>
                         </li>
                         <li key={'d04'}>
                             <button onClick={() => adicionarItem({
@@ -100,7 +105,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                                 valor: 0,
                                 descricao: '-',
                                 grupoc: 1,
-                            }, 'M')} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Sem Sal</button>
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Sem Sal</button>
                         </li>
                     </ul>
 
@@ -161,7 +166,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                             </li>
                         ))}
                         {/* Extras Opção Ponto */}
-              
+
                     </ul>
 
                 </div>

@@ -16,6 +16,7 @@ function ServerStatus() {
     const [estoqueStatus, setEstoqueStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [cardapioDigitalStatus, setCardapioDigitalStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [serverTesteStatus, setServerTesteStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
+    const [servicosStatus, setServicosStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [impressoraOpStatus, setImpressoraOpStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [terminais, setTerminaisStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
 
@@ -84,13 +85,13 @@ function ServerStatus() {
         } catch (error) {
             setSiteStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
         }
-        try {
+       /* try {
             const siteResponse = await axios.get('http://192.168.0.50:8080');
             setCardapioDigitalStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
         } catch (error) {
             setCardapioDigitalStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
         }
-
+*/
         try {
             const siteResponse = await axios.get('http://192.168.0.50:3000');
             setServerTesteStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
@@ -106,6 +107,16 @@ function ServerStatus() {
             });
         } catch (error) {
             setSocketStatus(<AiOutlineExclamationCircle color={corFalha} size={tamanhoIcon} />);
+        }
+
+        try {
+            const socket = await connectSocket();
+            setServicosStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
+            socket.on('disconnect', () => {
+                setSocketStatus(<AiOutlineCheckCircle color={corDesconectado} size={tamanhoIcon} />);
+            });
+        } catch (error) {
+            setServicosStatus(<AiOutlineExclamationCircle color={corFalha} size={tamanhoIcon} />);
         }
 
         try {
@@ -198,6 +209,10 @@ function ServerStatus() {
                     <tr>
                         <td>Modolo Testes</td>
                         <td>{serverTesteStatus}</td>
+                    </tr>
+                    <tr>
+                        <td>Versão</td>
+                        <td>beta 1.00a</td>
                     </tr>
                 </tbody>
             </table>

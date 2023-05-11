@@ -1,24 +1,23 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Modal, Button } from 'react-bootstrap';
 import Mesa from './Mesa';
-import Comanda from './Comanda';
+import Comanda from './ComandaMesa';
 import './estilo.css';
 import io from 'socket.io-client';
 import AlertaPersonalizado from './AlertaPersonalizado';
-
+import { AiOutlineUser } from 'react-icons/ai';
+import { FaUtensils } from 'react-icons/fa';
+import { BiUserPin } from 'react-icons/bi';
 import ServerStatus from './ServerStatus';
 //<ServerStatus onClick={handleAlertClose} />
 const socket = io('http://192.168.0.50:8000');
-//const ipNucleo = 'https://dagesico.pythonanywhere.com;'
-const ipNucleo = 'http://192.168.0.50:5000';
-//const ipSokkect = 'https://dagesico.pythonanywhere.com:8000'
-const ipSokkect = 'http://192.168.0.50:8000'
 
 // ALERTA DE ERRO USUARIO NÃO AUTENTICADO
 const usuarioError = [{
-    "titulo": "Usuario Erro!",
-    "mensagem": "Para acessar a mesa ou imprimir a conta, por favor identifique-se com sua credencial!",
-    "btn1": "logar",
+    "titulo": "Login",
+    "mensagem": "Você deve entrar primeiro.",
+    "btn1": "login",
     "fnb1": "cmdlogar",
     "btn2": "o.k.",
     "fnb2": ""
@@ -32,6 +31,7 @@ const usuarioError = [{
     "fnb2": ""
 
 }]
+
 const cargos = {
     s1: () => 'Atendente de Salão',
     s2: () => 'Bartender',
@@ -58,15 +58,23 @@ function funcao(codigo) {
         case 'c5':
             return 'aux cozinha';
         case 'b1':
-            return 'aux limpeza';
+            return 'Clean';
         case 'b2':
-            return 'cummim';
+            return 'Apoio';
         case 'b3':
-            return 'recepcionista';
+            return 'Hostess ';
         case 'b4':
-            return 'garçom';
+            return 'Delivery ';
         case 'b5':
-            return 'bartender';
+            return 'Cummim';
+        case 'b6':
+            return 'Garçom';
+        case 'b7':
+            return 'Bartender';
+        case 'b8':
+            return 'Sommelier';
+        case 'b9':
+            return 'Trainee Manager';
         case 'a1':
             return 'aprendiz';
         case 'a2':
@@ -78,9 +86,9 @@ function funcao(codigo) {
         case 'a5':
             return 'supervisor';
         case 'g1':
-            return 'assistente gerente';
+            return 'Assistant Manager';
         case 'g2':
-            return 'gerente';
+            return 'Manager';
         case 'g3':
             return 'assistente rh';
         case 'g4':
@@ -111,48 +119,54 @@ function funcao(codigo) {
 const MesasPage = () => {
     const [ws, setWs] = useState(null);
     const [nome, setNome] = useState('');
-
+    const [showModalMesa, setShowModalMesa] = useState(false);
     const navigation = useNavigate();
     const [mesas, setMesas] = useState([...Array(126)].map((_, index) => ({ mesa: index + 1, ocupada: false, status: 0, aberta: false, conta: null, atendente: null })));
     const [senha, setSenha] = useState('');
     const [fullscreen, setFullscreen] = useState(false);
     const [mesaSelecionada, setMesaSelecionada] = useState(null);
-    const [messages, setMessages] = useState([]);
     const [erroSenha, setErroSenha] = useState(false);
     const [comandas, setComandas] = useState([]);
     const [atendente, setAtendente] = useState({ "usuario": null, "nivel": null, "auth": '0' });
-    const [comanda, setComanda] = useState();
+    const [mesaAberta, setMesaAberta] = useState(null);
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
     const [tipoAlertaId, setTipoAlertaId] = useState(0);
     const [areaActive, setActive] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [nivel, setNivel] = useState(1);
     let timeoutId;
 
     const enviarDadosUsuario = () => {
-        console.log(senha)
         socket.emit('dados_usuario', { senha });
 
         // Ouça o evento 'autenticacao' para receber a resposta do servidor
         socket.on('autenticacao', (data) => {
             if (data.success) {
                 console.log(`Usuário autenticado com sucesso, nível: ${data.nivel}`);
-                console.log(data);
+ 
                 setAtendente({ "usuario": data.usuario, "nivel": data.nivel, "auth": data.auth });
                 handleClickMostrar();
                 setSenha('');
                 setIsAuthenticated(true);
+                /*
                 timeoutId = setTimeout(() => {
                     setAtendente({ "usuario": null });;
                     setIsAuthenticated(false)
                 }, 11000);
-
+                */
             } else {
                 console.log('Falha na autenticação do usuário');
 
             }
         })
     }
-
+    
+    const handleShowModalMesa = () => {
+        setShowModalMesa(true);
+    }
+    const handleCloseModalMesa = () => {
+        setShowModalMesa(false);
+    }
     const fetchComandas = () => {
         socket.emit('get_comandas');
     };
@@ -162,11 +176,12 @@ const MesasPage = () => {
             console.log('Conectado ao servidor');
         });
     }, []);
+
     useEffect(() => {
         fetchComandas();
 
-        // atualiza as comandas a cada 1,5 segundos
-        const intervalId = setInterval(fetchComandas, 1500);
+        // atualiza as comandas a cada 1 segundos
+        const intervalId = setInterval(fetchComandas, 1000);
 
         return () => {
             clearInterval(intervalId);
@@ -223,6 +238,7 @@ const MesasPage = () => {
         clearTimeout(timeoutId);
         setAtendente({ "usuario": null });
         setIsAuthenticated(false);
+        handleCloseModalMesa();
         handleClickMostrar();
     }
     const handleClickMostrar = () => {
@@ -234,15 +250,11 @@ const MesasPage = () => {
         }
     };
 
-    const handleStatusMesaClick = (idMesa) => {
-        const statusMesas = mesas.find((mesa) => mesa.mesa === idMesa);
-    }
+
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
         if (atendente.usuario) {
-
-            if (mesa.aberta) {
-                console.log(mesa)
+            if (mesa.ocupada) {
                 handleClick(idMesa);
                 // Abrir comanda
                 setMesas((prevState) =>
@@ -250,12 +262,14 @@ const MesasPage = () => {
                         prevMesa.mesa === idMesa ? { ...prevMesa, aberta: true, status: 2 } : prevMesa
                     )
                 );
-
             }
 
             else {
-                handleStatusMesaClick(idMesa);
+                console.log('modifique-aqui')
+                
                 setMostrarAlerta(true);
+                handleClick(idMesa);
+                
             }
         } else {
             setMostrarAlerta(true);
@@ -265,7 +279,14 @@ const MesasPage = () => {
     };
 
     const handleClick = (mesaId) => {
-        navigation(`/mesa/${mesaId}/comanda`);
+        if (mesaId) {
+            setMesaAberta(mesaId);
+            navigation(`/mesa/${mesaId}/comanda`);
+            //handleShowModalMesa();
+            
+        } else {
+            console.log('MesaId é null, não faz nada.');
+        }
     }
 
     function mudarTipoAlertaId(novoId) {
@@ -273,13 +294,16 @@ const MesasPage = () => {
     }
 
     useEffect(() => {
-        if (atendente.usuario !== null) {
-            mudarTipoAlertaId(1);
+        
+        if (atendente.usuario === null) {
+            mudarTipoAlertaId(0);
+            setNivel(1);
             console.log(atendente.usuario);
         } else {
-            mudarTipoAlertaId(0);
+            mudarTipoAlertaId(1);
+            setNivel(atendente.nivel);
         }
-    }, []);
+    }, [atendente]);
 
     const handleButtonClick = (event) => {
         const value = event.target.value;
@@ -298,6 +322,22 @@ const MesasPage = () => {
 
         <div className='comandeira-comanda'>
 
+            <Modal show={showModalMesa} onHide={handleCloseModalMesa}
+                style={{
+                    position: 'absolute',
+                    top: '-27px',
+                    left: '-6px'
+                }}>
+                <Modal.Header closeButton>
+                    <Modal.Title></Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Comanda comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleCloseModalMesa={handleCloseModalMesa} />
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={handleCloseModalMesa}>Fechar</Button>
+                </Modal.Footer>
+            </Modal>
             <div className={isAuthenticated === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && atendente.auth === 'dt9' ? 'senha-background' : '')}>
 
                 <div className="mesas-list">
@@ -325,13 +365,26 @@ const MesasPage = () => {
             <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && atendente.auth === 'dev' ? ' senha-background' : '')}>
 
                 <div className='status-mesa-comanda'>
-                    <h2>Comandas: {comandas.length} </h2>
+                    <table className='vertical'>
+                        <thead>
+                            <tr>
+                                <th><em>{atendente.usuario}</em></th>
+                                <th>{funcao(atendente.auth)}</th>
+                                <th>{comandas.length}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><AiOutlineUser size={32} /></td>
+                                <td><BiUserPin size={32} /></td>
+                                <td>
+                                    <FaUtensils size={32} />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
-                    <h2>Atendente: <em>{atendente.usuario}</em> </h2>
-                    <div style={{ display: "flex" }}>
-                        <h2>Nivel: {atendente.nivel} - </h2>
-                        <h2>- {funcao(atendente.auth)}</h2>
-                    </div>
+
                 </div>
                 {!isAuthenticated &&
                     <div className='digitosLogin'>
@@ -382,29 +435,33 @@ const MesasPage = () => {
 
                 {isAuthenticated &&
                     <div className='digitos'>
-                        <h1><em>Menu</em></h1>
-
-                        <div className='g1s'>
-                            <button onClick={handleSairLogin}>SAIR</button>
-                            <button>status</button>
+                        <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative', left: '20px' }}>SAIR</button>
+                        {nivel >= 2 ? <div className='g1s'>
+                            <button>reserva</button>
                             <button>fila</button>
-                        </div>
-                        <div className='g1s'>
+                            <button>status</button>
+                        </div> : <></>}
+
+                        {nivel >= 3 ? <div className='g1s'>
                             <button>BAR</button>
                             <button>VARANDA</button>
                             <button>RESERVA</button>
-                        </div>
-                        <div className='g1s'>
+                        </div> : <></>}
+
+                        {nivel >= 4 ? <div className='g1s'>
                             <button>SALÃO</button>
                             <button>COZINHA</button>
                             <button>LIMPEZA</button>
-                        </div>
-                        <div className='g1s'>
-                            <button>GERENTE</button>
-                            <button>SV</button>
+                        </div> : <></>}
+                        {nivel >= 5 ?
+                            <div className='g1s'>
+                                <button>GESTOR</button>
+                                <button>SV</button>
 
-                            <button onClick={handleFullscreen}>TELA</button>
-                        </div>
+                                <button onClick={handleFullscreen}>TELA</button>
+                            </div> : <></>}
+
+
                     </div>
                 }
                 <button className='butaoUps' onClick={handleClickMostrar}>↑</button>

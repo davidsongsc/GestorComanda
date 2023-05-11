@@ -8,11 +8,11 @@ import Conta from './components/Conta';
 const App = () => {
   return (
     <BrowserRouter>
+
       <Routes>
-        <Route path="/" element={<MesasPage />} />
-        <Route path="/mesa/:id/comanda" element={<Comanda />} />
-        <Route path="/mesa/:id/conta" element={<Conta />} />
-        
+          <Route path="/" element={<MesasPage />} />
+          <Route path="/mesa/:id/comanda" element={<Comanda />} />
+          <Route path="/mesa/:id/conta" element={<Conta />} />
       </Routes>
     </BrowserRouter>
   );

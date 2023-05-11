@@ -130,8 +130,8 @@
 }
 
 .senha-area h2 {
-  font-size: 26px;
-  margin-bottom: -28px;
+  font-size: 18px;
+  margin-bottom: -6px;
   position: relative;
   top: -38px;
   text-transform: uppercase;
@@ -216,6 +216,20 @@
 .digitos .g1,
 .digitosLogin .g1 {
   width: 572px;
+}
+
+.digitosComanda {
+  width: 249px;
+
+}
+
+.digitosComanda .g2 button {
+  background-color: gray;
+  font-size: 20px;
+  width: 74px;
+  margin: 4px;
+  transition-delay: .2s;
+  transition: .8s;
 }
 
 .digitos .g2,
@@ -424,6 +438,24 @@
   border-radius: 1px;
 }
 
+.vertical {
+  writing-mode: vertical-rl;
+  background: cornsilk;
+}
+
+.vertical thead th {
+  transform: rotate(-90deg);
+  width: 280px;
+  height: 50px;
+}
+
+.vertical tbody th {
+  transform: rotate(-90deg);
+  width: 80px;
+  height: 125px;
+  width: 57px;
+}
+
 .custom-alert {
   position: fixed;
   top: 0;
@@ -437,7 +469,9 @@
   z-index: 9999;
   transition: .8s;
 }
-
+.false{
+  display: none;
+}
 @keyframes fundo {
   0% {
     background-color: rgb(0 0 0 / 43%);
@@ -543,73 +577,100 @@
 @media only screen and (min-width: 1370px) {
   .comandeira-comanda {
     flex-direction: row;
-    height: 100vh;
+    height: 102vh;
   }
+
   .mesas-list {
     width: 926px;
     height: 100vh;
 
-}
-.digitos{
-  margin-bottom: 25px;
-}
-.controlea .digitos{
-  position: relative;
+  }
 
-}
-.mesas-list ul {
-  margin: 0 14px;
-}
-.mesas-page{
-  height: 98.8vh;
-}
-.area-mesas {
+  .senha-active .g1 button {
 
-  height: 99.5vh;
-}
-.digitosLogin {
-  margin-top: 19vh;
-  top: -71px;
-  position: relative;
-}
+    width: 96px;
+  }
 
-.mesas-list {
-  width: auto;
-}
-.senha-area {
-  display: flex ;
-   top: 0px; 
-   flex-direction: column;
-   width: 430px;
-}
-.status-mesa-comanda {
-  width: 430px;
-}
-.senha-area .butaoUps{
-  display: none;
-}
- .digitosLogin .g1 {
-  width: 413px;
-}
-.g1s{
-  width: 413px;
-}
-.digitos div button{
-  font-size: 18px;
-    width: 120px;
-}
-.digitosLogin div button {
+  .digitos {
+    margin-bottom: 25px;
+    margin-left: -40px;
+    margin-top: 30vh;
+  }
 
-  width: 85px;
+  .controlea .digitos {
+    position: relative;
 
-}
+  }
 
-.digitosLogin input{
-  width: 258px;
-}
-.status-mesa-comanda {
-  top: 32px;
-}
+  .mesas-list ul {
+    margin: 0 14px;
+  }
+
+  .mesas-page {
+    height: 98.8vh;
+  }
+
+  .area-mesas {
+
+    height: 99.5vh;
+  }
+
+  .digitosLogin {
+    margin-top: 19vh;
+    margin-bottom: 4vh;
+    top: -5px;
+    position: relative;
+  }
+
+  .mesas-list {
+    width: auto;
+  }
+
+  .senha-area {
+    display: flex;
+    top: 0px;
+    flex-direction: column;
+    width: 323px;
+  }
+
+  .status-mesa-comanda {
+    width: 331px;
+  }
+
+  .senha-area .butaoUps {
+    display: none;
+  }
+
+  .digitosLogin .g1 {
+    width: 335px;
+  }
+
+  .g1s {
+    width: 400px;
+  }
+
+  .digitos div button {
+    font-size: 18px;
+    width: 109px;
+  }
+
+  .digitosLogin div button {
+
+    width: 85px;
+
+  }
+
+  .digitosLogin input {
+    width: 258px;
+  }
+
+  .status-mesa-comanda {
+    top: 5px;
+  }
+
+  th em {
+    text-transform: uppercase;
+  }
 }
 
 @media only screen and (max-width: 1024px) {
