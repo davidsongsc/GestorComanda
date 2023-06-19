@@ -1,18 +1,21 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
-
 import MesasPage from './components/MesasPage';
-import Comanda from './components/Comanda';
-import Conta from './components/Conta';
+import Notification from './components/Notification';
+import { useState } from 'react';
 
 
 const App = () => {
+  const [notification, setNotification] = useState('');
+  
+  const handleNotification = (text) => {
+    setNotification(text);
+  };
   return (
     <BrowserRouter>
-
+      <Notification notification={notification} />
       <Routes>
-          <Route path="/" element={<MesasPage />} />
-          <Route path="/mesa/:id/comanda" element={<Comanda />} />
-          <Route path="/mesa/:id/conta" element={<Conta />} />
+        <Route path="/" element={<MesasPage setNotification={handleNotification} />} />
+
       </Routes>
     </BrowserRouter>
   );

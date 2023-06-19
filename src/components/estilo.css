@@ -77,9 +77,8 @@
 
 
 .mesa-menu {
-  width: 83px;
-  height: 81px;
-  justify-content: center;
+  width: 70px;
+  height: 70px;
   border-radius: 6px;
   box-shadow: 2px 2px 2px black;
   margin: 3px;
@@ -90,7 +89,7 @@
   position: relative;
   width: 58%;
   left: 2px;
-  font-size: 36px;
+  font-size: 24px;
   border-radius: 15px;
   padding: 3px 3px;
 
@@ -115,7 +114,7 @@
 .senha-area {
   background-color: #932626;
   /* border-radius: 10px; */
-  padding: 20px;
+  padding: 5px;
   display: flex;
   width: auto;
   position: relative;
@@ -171,8 +170,8 @@
 .senha-area button {
   padding: 10px 20px;
   border-radius: 5px;
-  width: 76px;
-  height: 76px;
+  width: 74px;
+  height: 74px;
   border: none;
   font-size: 18px;
   color: #fff;
@@ -181,7 +180,7 @@
 }
 
 .senha-area button:first-child {
-  margin-right: 10px;
+
   background-color: #28a745;
 }
 
@@ -205,7 +204,7 @@
   width: 105px;
   margin: 4px;
   height: 47px;
-  box-shadow: 1px 1px 2px black;
+
 }
 
 .digitos,
@@ -469,9 +468,68 @@
   z-index: 9999;
   transition: .8s;
 }
-.false{
+
+
+.notification-container {
+  position: fixed;
+  bottom: 20px;
+  right: 18px;
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  z-index: 9999;
+  transition: .9s ease-in-out;
+
+}
+
+
+
+.notification-text {
+  transition: .9s ease-in-out;
+  margin: 0;
+}
+
+.notification-list {
+  width: 360px;
+  position: absolute;
+  right: 1.5px;
+  z-index: 999;
+  top: 1px;
+  overflow-y: visible;
+  transition: .9s ease-in-out;
+
+}
+
+.notification-icon {
+  position: fixed;
+  bottom: 20px;
+  right: 40px;
+  width: 40px;
+  height: 40px;
+  background-color: #ffffff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+  z-index: 995;
+  transition-property: background-color;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+}
+
+.notification-icon i {
+  font-size: 20px;
+  color: #000000;
+}
+
+
+.false {
   display: none;
 }
+
 @keyframes fundo {
   0% {
     background-color: rgb(0 0 0 / 43%);
@@ -577,7 +635,7 @@
 @media only screen and (min-width: 1370px) {
   .comandeira-comanda {
     flex-direction: row;
-    height: 102vh;
+    height: 100vh;
   }
 
   .mesas-list {
@@ -630,7 +688,7 @@
     display: flex;
     top: 0px;
     flex-direction: column;
-    width: 323px;
+    width: auto;
   }
 
   .status-mesa-comanda {
@@ -646,12 +704,14 @@
   }
 
   .g1s {
-    width: 400px;
+    width: 375px;
   }
 
   .digitos div button {
-    font-size: 18px;
-    width: 109px;
+    font-size: 13px;
+    width: 93px;
+
+    text-align: left;
   }
 
   .digitosLogin div button {
@@ -752,159 +812,22 @@
 
 
   .senha-area .senha-active {
-    top: -412px;
+    top: -112px;
+    right: 2px;
+    z-index: 999;
   }
 
   .senha-area button {
-    top: -22px;
+    top: -82px;
     height: 35px;
     left: -291px;
   }
 
   .digitos,
   .digitosLogin {
-    margin-top: 39vh;
-  }
+    margin-top: 10vh;
 
-}
-
-@media only screen and (max-width: 415px) {
-  .custom-alert {
-    position: fixed;
-    top: 0;
-    left: -128px;
-    width: auto;
-    transform: scale(.5);
-    height: 100%;
-  }
-
-  .senha-area {
-
-    top: -27px;
-  }
-
-  .senha-active {
-    top: -512px;
-  }
-
-  .digitos,
-  .digitosLogin {
-    margin-top: 26vh;
-  }
-
-  .digitos,
-  .digitosLogin {
-    margin-top: 36vh;
-    margin-left: -100px;
-  }
-
-  .senha-area input[type=password] {
-    width: 300px;
-  }
-
-  .senha-active .butaoUps {
-    top: 108px;
-    left: -323px;
-    height: 75px;
-  }
-
-  .senha-area button {
-    top: -63px;
-    height: 39px;
-    left: -291px;
-  }
-}
-
-@media only screen and (max-width: 375px) {
-
-  /* Inclua aqui as regras de estilo para dispositivos móveis */
-  .digitos,
-  .digitosLogin {
-
-    width: 375px;
-  }
-
-  .digitosLogin {
-    margin-top: 33vh;
-    margin-left: -20px;
-  }
-
-  .digitos .g1,
-  .digitosLogin .g1 {
-    width: 387px;
-  }
-
-  .senha-active .g1 button {
-
-    width: 87px;
 
   }
 
-  .senha-area {
-
-    top: -50px;
-  }
-
-  .senha-active {
-    top: -506px;
-  }
-
-  .senha-active .butaoUps {
-    top: 131px;
-    left: -230px;
-    height: 75px;
-  }
-
-  .senha-area button {
-    top: -19px;
-    height: 36px;
-    left: -83px;
-  }
-
-  .senha-area input[type=password] {
-    padding: 10px;
-    font-size: 38px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    margin-bottom: 10px;
-    width: 250px;
-    transition-delay: .2s;
-    transition: .8s;
-  }
-}
-
-@media only screen and (max-width: 375px) {
-  ::-webkit-scrollbar {
-    width: 2px;
-    background-color: #f0f0f000;
-    /* cor cinza */
-  }
-
-  .mesas-list li {
-    display: flex;
-    font-size: 8px;
-    flex-direction: column;
-    justify-content: center;
-    height: 42px;
-    width: 52px;
-  }
-
-  .senha-area button {
-    left: -162px;
-  }
-
-  .digitos,
-  .digitosLogin {
-    margin-top: 33vh;
-    margin-left: -71px;
-  }
-
-  .senha-area button {
-    left: -110px;
-  }
-
-  .senha-active .g1 button {
-    width: 79px;
-
-  }
 }

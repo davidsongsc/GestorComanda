@@ -27,11 +27,12 @@
 
 import './comanda.css';
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from './AlertaPersonalizado';
+
 
 Modal.setAppElement("#root");
 const TX = 0;
@@ -49,49 +50,62 @@ const usuarioError = [{
   "btn2": "fechar",
   "fnb2": ""
 }]
-function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
-  const navigation = useNavigate();
+function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatus, mesaId, handleSairLogin, handleEmitStatus, setNotification, handleShowModalMesa }) {
   const { id } = useParams();
+  // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [scrollTop, setScrollTop] = useState(0);
   const [grupoSelecionado, setGrupoSelecionado] = useState(6615);
-
   const listaRef = useRef(null);
   const [itens, setItens] = useState([]);
   const [mesa, setMesa] = useState();
+  // eslint-disable-next-line no-unused-vars
   const [grupo, setGrupo] = useState([]);
   const [usuario, setUsuario] = useState([]);
   const [areaActive, setActive] = useState(false);
   const [comanda, setComanda] = useState([]);
-  const [tipoItem, setTipoItem] = useState();
   const [inventario, setInventario] = useState();
   const [teclado, setTeclado] = useState(1);
   const [mostrarInventario, setMostrarInventario] = useState(false);
   const [mostrarInventario2, setMostrarInventario2] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const handleNotification = (text) => {
+    setNotification(text);
+  };
 
+  const handleDelComanda = (comanda) => {
+    handleDeletarComanda(comanda);
+  }
+
+  const handleMostrarCaixaStatus = () => {
+    setCaixaStatus(true);
+    handleEmitStatus(mesa, 4);
+  }
   useEffect(() => {
-    console.log(mesaId);
+
     function carregarComanda() {
-    
-     fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
+
+      fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(mesaId));
+
           comandaMesa.map(listaComanda => (
-            // console.log(listaComanda.operador),
-            setUsuario(listaComanda.operador),
+     
+            // eslint-disable-next-line no-sequences
             setMesa(listaComanda.mesa),
-            setComanda(listaComanda.itens[0].map(item => ({ ...item, }))),
-            console.log(listaComanda),
-            console.log(comandaLis)
+            setUsuario(listaComanda.operador),
+            setGorjeta(listaComanda.gorjeta),
+            setComanda(listaComanda.itens[0].map(item => ({ ...item, })))
+
           ));
-          
+
         })
         .catch(error => console.error(error));
- 
+
       //setComanda(clManad[0].itens[0].map(item => ({ ...item, })))
       fetch(`${ipNucleo}/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
@@ -111,12 +125,15 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
     }
 
     carregarComanda();
-  }, [id, nome, token]);
+  }, [mesaId]);
 
   function handleFecharAlerta() {
     setMostrarAlerta(false);
-  }
+  };
 
+  const handleFecharComanda = () => {
+    handleShowModalMesa();
+  };
   // Pagina Options On/Off 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -124,16 +141,33 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
 
   const removerGorjeta = () => {
     setGorjeta(0);
+    handleNotification('Gorjeta alterada ');
+    handleGorjeta(mesaId, 0)
   };
 
   const adicionarGorjeta = (valor) => {
-    if (valor === 10) {
-      setGorjeta(0.10);
-    } else if (valor === 11) {
-      setGorjeta(0.11)
-    } else if (valor === 12) {
-      setGorjeta(0.12)
+    if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) {
+      if (valor === 10) {
+        setGorjeta(0.10);
+        console.log(mesa)
+        handleGorjeta(mesaId, 0.10)
+        handleNotification(atendente.usuario+ ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
+      } else if (valor === 11) {
+        setGorjeta(0.11)
+        handleGorjeta(mesaId, 0.11)
+        handleNotification(atendente.usuario+ ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
+      } else if (valor === 12) {
+        setGorjeta(0.12)
+        handleGorjeta(mesaId, 0.12)
+        handleNotification(atendente.usuario+ ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
+      }
+
+
     }
+    else {
+      handleNotification('Usuario: ' + atendente.usuario + ' sem privilégios para modificar a gorjeta da mesa ' + mesaId + '.')
+    }
+
 
   };
   const handleClickMostrar = () => {
@@ -174,26 +208,34 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
 
   // Click Botão Menu
   const handleClick = (id) => {
-    if (id === 'fechar') {
-      //handleCloseModalMesa()
-      //navigation('/');
-      handleCloseModalMesa();
+    if (id === 'O.K.') {
+      handleFecharComanda();
+      handleEmitStatus(mesa, 3);
+      handleSairLogin();
     } else if (id === 'conta') {
-      setMostrarAlerta(true);
-      setTimeout(() => {
-        //navigation('/');
-        handleCloseModalMesa();
-      }, 2000);
+      handleNotification('Imprimindo conferência mesa: ' + mesa);
+      handleEmitStatus(mesa, 5);
+      handleSairLogin();
+
+    } else if (id === 'fechar') {
+      handleFecharComanda();
+      handleEmitStatus(mesa, 3);
+      handleSairLogin();
 
 
-    } else if (id === 'caixa') {
-      alert('Imprimindo Conta...')
-      //navigation('/');
-      handleCloseModalMesa();
+    } else if (id === 'cancelar') {
+      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+        handleDelComanda(mesaId);
+        handleNotification('Comanda encerrada');
+        handleSairLogin();
+      } else {
+        handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
+      }
+
 
     } else {
-      //navigation('/');
-      handleCloseModalMesa();
+      handleSairLogin(mesa);
 
     }
   }
@@ -243,57 +285,48 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
       setComanda(
         comanda.map((i) =>
           i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
+
         )
       );
+
     } else {
       setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
       setTeclado(1);
       if (item.grupoc === 1) {
-        setTipoItem(1);
+
         toggleModal()
 
       }
       else if (item.grupoc === 2) {
-        setTipoItem(2)
         toggleModal()
       }
       else if (item.grupoc === 3) {
-        setTipoItem(3)
         toggleModal()
       }
       else if (item.grupoc === 4) {
-        setTipoItem(4)
         toggleModal()
       }
       else if (item.grupoc === 5) {
-        setTipoItem(5)
         toggleModal()
       }
       else if (item.grupoc === 6) {
-        setTipoItem(6)
         toggleModal()
       }
       else if (item.grupoc === 7) {
-        setTipoItem(7)
         toggleModal()
       }
       else if (item.grupoc === 8) {
-        setTipoItem(8)
         toggleModal()
       }
       else if (item.grupoc === 9) {
-        setTipoItem(9)
         toggleModal()
       } else if (item.grupoc === 11) {
-        setTipoItem(11)
         toggleModal()
       }
       else if (item.grupoc === 11) {
-        setTipoItem(11)
         toggleModal()
       }
       else if (item.grupoc === 15) {
-        setTipoItem(15)
         toggleModal()
       }
 
@@ -345,21 +378,18 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
   }
 
   let itensFiltrados = itens;
-  if (grupoSelecionado !== null) {
+  if (grupoSelecionado != null) {
     itensFiltrados = itens.filter((item) => item.grupo === grupoSelecionado);
   }
-
+  // eslint-disable-next-line no-unused-vars
   const removerItem = (index) => {
 
-    setComanda(comanda.filter((_, i) => i !== index));
+    setComanda(comanda.filter((_, i) => i != index));
   };
 
-  const tTeste = (t) => {
-    console.log(t);
-  }
 
   return (
-    <div className='container-comanda fade-in' style={{position: 'relative', top: '10px', left: '35px'}}>
+    <div className='container-comanda fade-in' style={{ position: 'relative', top: '10px', left: '35px' }}>
       {mostrarAlerta && (
         <AlertaPersonalizado
           usuarioError={usuarioError}
@@ -397,25 +427,25 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
                 {comanda.map((item, index) => (
                   <>
                     <tr key={index} className='linhas-tb'>
-                      <td className='itemNormalB' style={item.qtd !== 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
+                      <td className='itemNormalB' style={item.qtd != 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
                         {item.combinac === 0 ? item.qtd : '▲'}
                       </td>
 
 
 
                       {item.combinac === 0 ? (
-                        <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
-                        </td>) : <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}>
+                        <td className={`ndd ${item.combinac != 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
+                        </td>) : <td className={`ndd ${item.combinac != 0 ? 'obs' : 'itemNormal'}`}>
                         {nomeProdutos(item.produto_id)}
                       </td>}
 
 
                       <td className='itemNormalB' style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '2px' }}>
-                        {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
+                        {item.valor != 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
 
                       </td>
                       <td className='itemNormalB' style={{ fontSize: '25px', fontWeight: '800', color: 'goldenrod', letterSpacing: '4px' }}>
-                        {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
+                        {item.valor != 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
 
                       </td>
 
@@ -502,7 +532,7 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
               <button className='B'>COZINHA</button>
               <button onClick={() => handleClick('fechar')} className='F'>FECHAR</button>
               <button onClick={() => handleClick()} className='C' >DESCONTO</button>
-              <button onClick={() => removerGorjeta()} className={GORJETA === 0 ? 'C' : 'B'} >REMOVER GORJETA</button>
+              <button onClick={() => handleMostrarCaixaStatus()} className={atendente.auth === 'j5' ? 'B' : 'C'} >CAIXA</button>
               <button onClick={() => adicionarGorjeta(10)} className={GORJETA === 0.10 ? 'A' : 'B'} >GORJETA 10%</button>
               <button onClick={() => adicionarGorjeta(11)} className={GORJETA === 0.11 ? 'A' : 'B'} >GORJETA 11%</button>
 
@@ -510,12 +540,12 @@ function Comanda({ mesaId, comandaLis, handleCloseModalMesa }) {
 
             <div className='operadores'>
               <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
-              <button onClick={() => handleClick('caixa')} className='C' disabled>CANCELAR</button>
+              <button onClick={() => handleClick('cancelar')} className={atendente.auth === 'j5' ? 'A' : 'C'}>CANCELAR</button>
               <button className='D' disabled>Delivery</button>
               <button onClick={() => handleClick('fechar')} className='F' disabled>Dividir Conta</button>
               <button onClick={() => handleClick('fechar')} className='F' disabled>Juntar Conta</button>
 
-              <button onClick={() => handleClick('fechar')} className='F' disabled>Nomear Comanda</button>
+              <button onClick={() => removerGorjeta()} className={GORJETA === 0 ? 'A' : 'B'} >Zerar Gorjeta</button>
               <button onClick={() => adicionarGorjeta(12)} className={GORJETA === 0.12 ? 'A' : 'B'} >GORJETA 12%</button>
             </div>
 

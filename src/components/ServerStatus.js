@@ -4,7 +4,7 @@ import Relogio from './Relogio';
 import io from 'socket.io-client';
 import { AiOutlineCheckCircle, AiOutlineCloseCircle, AiOutlineExclamationCircle } from 'react-icons/ai';
 
-function ServerStatus() {
+function ServerStatus({setNotification}) {
     const tamanhoIcon = 20;
     const corDesconectado = '#f2310d'
     const corConectado = '#089919'
@@ -19,6 +19,9 @@ function ServerStatus() {
     const [servicosStatus, setServicosStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [impressoraOpStatus, setImpressoraOpStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [terminais, setTerminaisStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
+    const handleNotification = (text) => {
+        setNotification(text);
+    };
 
     async function connectSocket() {
         return new Promise((resolve, reject) => {
@@ -82,8 +85,10 @@ function ServerStatus() {
         try {
             const siteResponse = await axios.get('http://192.168.0.50:5000');
             setSiteStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
+            handleNotification('Servidor Conectado!');
         } catch (error) {
             setSiteStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
+            handleNotification('Servidor Desconectado!');
         }
        /* try {
             const siteResponse = await axios.get('http://192.168.0.50:8080');
@@ -94,16 +99,20 @@ function ServerStatus() {
 */
         try {
             const siteResponse = await axios.get('http://192.168.0.50:3000');
+            handleNotification('Modelo Conectado!');
             setServerTesteStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
         } catch (error) {
             setServerTesteStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
+            handleNotification('Modelo Desconectado!');
         }
 
         try {
             const socket = await connectSocket();
             setSocketStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
+            handleNotification('Serviços OK!');
             socket.on('disconnect', () => {
                 setSocketStatus(<AiOutlineCheckCircle color={corDesconectado} size={tamanhoIcon} />);
+                handleNotification('Serviços Indisponiveis');
             });
         } catch (error) {
             setSocketStatus(<AiOutlineExclamationCircle color={corFalha} size={tamanhoIcon} />);

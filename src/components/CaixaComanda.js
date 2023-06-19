@@ -27,11 +27,12 @@
 
 import './comanda.css';
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from './AlertaPersonalizado';
+
 
 Modal.setAppElement("#root");
 const TX = 0;
@@ -49,44 +50,57 @@ const usuarioError = [{
   "btn2": "fechar",
   "fnb2": ""
 }]
-function Comanda() {
-  const navigation = useNavigate();
+function CaixaComanda({ atendente, setCaixaStatus, handleGorjeta, mesaId, handleSairLogin, handleEmitStatus, setNotification, handleShowModalMesa }) {
   const { id } = useParams();
+  // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
   const [showModal, setShowModal] = useState(false);
+  // eslint-disable-next-line no-unused-vars
   const [scrollTop, setScrollTop] = useState(0);
   const [grupoSelecionado, setGrupoSelecionado] = useState(6615);
-
   const listaRef = useRef(null);
   const [itens, setItens] = useState([]);
   const [mesa, setMesa] = useState();
+  // eslint-disable-next-line no-unused-vars
   const [grupo, setGrupo] = useState([]);
   const [usuario, setUsuario] = useState([]);
   const [areaActive, setActive] = useState(false);
   const [comanda, setComanda] = useState([]);
-  const [tipoItem, setTipoItem] = useState();
   const [inventario, setInventario] = useState();
   const [teclado, setTeclado] = useState(1);
   const [mostrarInventario, setMostrarInventario] = useState(false);
   const [mostrarInventario2, setMostrarInventario2] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const handleNotification = (text) => {
+    setNotification(text);
+  };
 
+  const handleOcultarCaixaStatus = () => {
+    setCaixaStatus(false);
+  }
   useEffect(() => {
+    console.log(mesaId);
     function carregarComanda() {
+
       fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
         .then(response => response.json())
         .then(data => {
-          const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));
+          const comandaMesa = data.filter(comad => comad.mesa === parseInt(mesaId));
+
           comandaMesa.map(listaComanda => (
-            // console.log(listaComanda.operador),
-            setUsuario(listaComanda.operador),
+            // eslint-disable-next-line no-sequences
             setMesa(listaComanda.mesa),
+            setUsuario(listaComanda.operador),
+            setGorjeta(listaComanda.gorjeta),
             setComanda(listaComanda.itens[0].map(item => ({ ...item, })))
+
           ));
+
         })
         .catch(error => console.error(error));
 
+      //setComanda(clManad[0].itens[0].map(item => ({ ...item, })))
       fetch(`${ipNucleo}/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
@@ -105,12 +119,15 @@ function Comanda() {
     }
 
     carregarComanda();
-  }, [id, nome, token]);
+  }, [mesaId]);
 
   function handleFecharAlerta() {
     setMostrarAlerta(false);
-  }
+  };
 
+  const handleFecharComanda = () => {
+    handleShowModalMesa();
+  };
   // Pagina Options On/Off 
   const toggleModal = () => {
     setShowModal(!showModal);
@@ -118,15 +135,29 @@ function Comanda() {
 
   const removerGorjeta = () => {
     setGorjeta(0);
+    handleNotification('Gorjeta alterada');
+    handleGorjeta(mesaId, 0)
   };
 
   const adicionarGorjeta = (valor) => {
-    if (valor === 10) {
-      setGorjeta(0.10);
-    } else if (valor === 11) {
-      setGorjeta(0.11)
-    } else if (valor === 12) {
-      setGorjeta(0.12)
+    if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+      (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+      if (valor === 10) {
+        setGorjeta(0.10);
+        console.log(mesa)
+        handleGorjeta(mesaId, 0.10)
+        handleNotification('Gorjeta da mesa ' + mesaId + ' alterada para ' + valor + '%.');
+      } else if (valor === 11) {
+        setGorjeta(0.11)
+        handleGorjeta(mesaId, 0.11)
+        handleNotification('Gorjeta da mesa ' + mesaId + ' alterada para ' + valor + '%.');
+      } else if (valor === 12) {
+        setGorjeta(0.12)
+        handleGorjeta(mesaId, 0.12)
+        handleNotification('Gorjeta da mesa ' + mesaId + ' alterada para ' + valor + '%.');
+      }
+
+
     }
 
   };
@@ -168,22 +199,32 @@ function Comanda() {
 
   // Click Botão Menu
   const handleClick = (id) => {
-    if (id === 'fechar') {
-      //handleCloseModalMesa()
-      navigation('/');
+    if (id === 'O.K.') {
+      handleFecharComanda();
+      handleEmitStatus(mesa, 3);
+      handleSairLogin();
     } else if (id === 'conta') {
-      setMostrarAlerta(true);
-      setTimeout(() => {
-        navigation('/');
-      }, 2000);
+      handleNotification('Imprimindo conferência!');
+      handleEmitStatus(mesa, 4);
+
+
+    } else if (id === 'fechar') {
+      handleFecharComanda();
+      handleEmitStatus(mesa, 3);
+
 
 
     } else if (id === 'caixa') {
-      alert('Imprimindo Conta...')
-      navigation('/');
+      setMostrarAlerta(true);
+
+
+      //navigation('/');
+
+      handleSairLogin(mesa);
 
     } else {
-      navigation('/');
+      //navigation('/');
+      handleSairLogin(mesa);
 
     }
   }
@@ -233,57 +274,48 @@ function Comanda() {
       setComanda(
         comanda.map((i) =>
           i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
+
         )
       );
+
     } else {
       setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
       setTeclado(1);
       if (item.grupoc === 1) {
-        setTipoItem(1);
+
         toggleModal()
 
       }
       else if (item.grupoc === 2) {
-        setTipoItem(2)
         toggleModal()
       }
       else if (item.grupoc === 3) {
-        setTipoItem(3)
         toggleModal()
       }
       else if (item.grupoc === 4) {
-        setTipoItem(4)
         toggleModal()
       }
       else if (item.grupoc === 5) {
-        setTipoItem(5)
         toggleModal()
       }
       else if (item.grupoc === 6) {
-        setTipoItem(6)
         toggleModal()
       }
       else if (item.grupoc === 7) {
-        setTipoItem(7)
         toggleModal()
       }
       else if (item.grupoc === 8) {
-        setTipoItem(8)
         toggleModal()
       }
       else if (item.grupoc === 9) {
-        setTipoItem(9)
         toggleModal()
       } else if (item.grupoc === 11) {
-        setTipoItem(11)
         toggleModal()
       }
       else if (item.grupoc === 11) {
-        setTipoItem(11)
         toggleModal()
       }
       else if (item.grupoc === 15) {
-        setTipoItem(15)
         toggleModal()
       }
 
@@ -335,21 +367,18 @@ function Comanda() {
   }
 
   let itensFiltrados = itens;
-  if (grupoSelecionado !== null) {
+  if (grupoSelecionado != null) {
     itensFiltrados = itens.filter((item) => item.grupo === grupoSelecionado);
   }
-
+  // eslint-disable-next-line no-unused-vars
   const removerItem = (index) => {
 
-    setComanda(comanda.filter((_, i) => i !== index));
+    setComanda(comanda.filter((_, i) => i != index));
   };
 
-  const tTeste = (t) => {
-    console.log(t);
-  }
 
   return (
-    <div className='container-comanda fade-in'>
+    <div className='container-comanda fade-in' style={{ position: 'relative', top: '10px', left: '35px' }}>
       {mostrarAlerta && (
         <AlertaPersonalizado
           usuarioError={usuarioError}
@@ -387,25 +416,25 @@ function Comanda() {
                 {comanda.map((item, index) => (
                   <>
                     <tr key={index} className='linhas-tb'>
-                      <td className='itemNormalB' style={item.qtd !== 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
+                      <td className='itemNormalB' style={item.qtd != 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
                         {item.combinac === 0 ? item.qtd : '▲'}
                       </td>
 
 
 
                       {item.combinac === 0 ? (
-                        <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
-                        </td>) : <td className={`ndd ${item.combinac !== 0 ? 'obs' : 'itemNormal'}`}>
+                        <td className={`ndd ${item.combinac != 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
+                        </td>) : <td className={`ndd ${item.combinac != 0 ? 'obs' : 'itemNormal'}`}>
                         {nomeProdutos(item.produto_id)}
                       </td>}
 
 
                       <td className='itemNormalB' style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '2px' }}>
-                        {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
+                        {item.valor != 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
 
                       </td>
                       <td className='itemNormalB' style={{ fontSize: '25px', fontWeight: '800', color: 'goldenrod', letterSpacing: '4px' }}>
-                        {item.valor !== 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
+                        {item.valor != 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
 
                       </td>
 
@@ -419,77 +448,16 @@ function Comanda() {
               </tbody>
 
             </table>
-            {comanda.map((item, index) => (
-              <Modal isOpen={showModal} style={{ backgroundColor: "black" }}>
-                <h1>{nomeProduto(item.produto_id)}{item.push}</h1>
-                <InventarioOption style={{backgroundColor: 'black'}} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
-
-              </Modal>
-            ))}
 
 
-            <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
-            <div className='inventario'>
-              <ul ref={listaRef} className='i-inventario'>
-                {itensFiltrados.map((item, index) => (
-                  <li key={index}>
-                    <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
-                  </li>
-                ))}
-              </ul>
-              {/*
-            <div>
-              <button onClick={handleScrollUp}>↑</button>
-              <button onClick={handleScrollDown}>↓</button>
-
-            </div>
-            */}
-
-            </div>
-
-
-
-
-
-
-            <div className='controlea'>
-              <div className='digitosComanda'>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado(1)}>1</button>
-                  <button onClick={() => handleTeclado(2)}>2</button>
-                  <button onClick={() => handleTeclado(3)}>3</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado(4)}>4</button>
-                  <button onClick={() => handleTeclado(5)}>5</button>
-                  <button onClick={() => handleTeclado(6)}>6</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado(7)}>7</button>
-                  <button onClick={() => handleTeclado(8)}>8</button>
-                  <button onClick={() => handleTeclado(9)}>9</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado('A')}>A</button>
-                  <button onClick={() => handleTeclado(0)}>0</button>
-                  <button onClick={() => handleTeclado('B')}>B</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado('C')}>C</button>
-                  <button onClick={() => handleTeclado('D')}>D</button>
-                  <button onClick={() => handleTeclado('E')}>E</button>
-                </div>
-              </div>
-
-            </div>
 
 
           </div>
-          <div className='controleb'>
+          <div className='controleb' style={{ top: '0px', height: '88.8vh' }}>
             <div className='operadores'>
               <button onClick={() => handleClick('O.K.')} className='H' >O.K.</button>
 
-              <button className='B'>COZINHA</button>
+              <button onClick={() => handleOcultarCaixaStatus()} className={atendente.auth === 'j5' ? 'B' : 'C'}>Comanda</button>
               <button onClick={() => handleClick('fechar')} className='F'>FECHAR</button>
               <button onClick={() => handleClick()} className='C' >DESCONTO</button>
               <button onClick={() => removerGorjeta()} className={GORJETA === 0 ? 'C' : 'B'} >REMOVER GORJETA</button>
@@ -541,4 +509,4 @@ function Comanda() {
   );
 }
 
-export default Comanda;
+export default CaixaComanda;
