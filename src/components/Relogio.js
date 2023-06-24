@@ -23,9 +23,9 @@ class Relogio extends Component {
 
   render() {
     return (
-      <div>
-        <h1>{this.state.horario.toLocaleTimeString()}</h1>
-      </div>
+      <>
+        {this.state.horario.toLocaleTimeString()}
+      </>
     );
   }
 }

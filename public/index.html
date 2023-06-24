@@ -25,19 +25,17 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Gerenciador</title>
+
   </head>
-  <body>
-    <noscript>Você precisa do javascript para usar este app.</noscript>
+ <body>
     <div id="root"></div>
-    <!--
-      This HTML file is a template.
-      If you open it directly in the browser, you will see an empty page.
 
-      You can add webfonts, meta tags, or analytics to this file.
-      The build step will place the bundled scripts into the <body> tag.
-
-      To begin the development, run `npm start` or `yarn start`.
-      To create a production bundle, use `npm run build` or `yarn build`.
-    -->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load("current", { packages: ["corechart"] });
+      google.charts.setOnLoadCallback(() => {
+        ReactDOM.render(<App />, document.getElementById("root"));
+      });
+    </script>
   </body>
 </html>

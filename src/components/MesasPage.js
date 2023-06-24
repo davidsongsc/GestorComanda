@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Modal/*, Button*/ } from 'react-bootstrap';
-
+import { useNavigate } from 'react-router-dom';
 import Mesa from './Mesa';
 import Comanda from './ComandaMesa';
 import ComandaMesa from './CaixaComanda';
 import './estilo.css';
-import io from 'socket.io-client';
 import AlertaPersonalizado from './AlertaPersonalizado';
 import { AiOutlineUser } from 'react-icons/ai';
 import { FaUtensils } from 'react-icons/fa';
 import { BiUserPin } from 'react-icons/bi';
-import ServerStatus from './ServerStatus';
-const socket = io('http://192.168.0.50:8000');
+import FuncaoComponent from './FuncaoComponent';
+
+
 
 // ALERTA DE ERRO USUARIO NÃO AUTENTICADO
 const usuarioError = [{
@@ -119,49 +119,49 @@ function funcao(codigo) {
         case 'a2':
             return 'treinamento';
         case 'j3':
-            return 'apoio operacional';
-        case 'j4':
             return 'delivery';
+        case 'j4':
+            return 'Supervisor Delivery';
         case 'j5':
             return 'Operador Caixa';
-        case 'a5':
-            return 'supervisor';
         case 'g1':
-            return 'Assistente de Confiança';
+            return 'Supervisor Caixa';
         case 'g2':
-            return 'Assistente de Supervisão';
+            return 'Assistente de Confiança';
         case 'g3':
+            return 'Assistente de Supervisão';
+        case 'g4':
             return 'Assistente de Gerência';
-        case 'x1':
+        case 'g6':
             return 'Supervisor de Compras';
-        case 'x2':
+        case 'g7':
             return 'Gerente de Compras';
-        case 'x3':
+        case 'g8':
             return 'Supervisor de Pagamentos';
-        case 'x4':
+        case 'g9':
             return 'Gerente de Pagamentos';
-        case 'x5':
+        case 'g10':
             return 'Supervisor de Recurso Humanos';
-        case 'x6':
+        case 'g11':
             return 'Gerente de Recursos Humanos';
-        case 'x7':
+        case 'g12':
             return 'Supervisor de T.I.';
-        case 'x8':
+        case 'g13':
             return 'Gerente de T.I.';
-        case 'x9':
+        case 'g14':
             return 'proprietario';
-        case 'dev':
+        case 'g15':
             return 'Dev Program'
 
         default:
             return '';
     }
 }
-const MesasPage = ({ setNotification }) => {
+const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [showModalMesa, setShowModalMesa] = useState(false);
     const [senha, setSenha] = useState('');
     const [comandas, setComandas] = useState([]);
-    const [mesas, setMesas] = useState([...Array(99)].map((_, index) => ({ mesa: index + 1, ocupada: false, status: 0, aberta: false, conta: null, atendente: null, nivel: 0 })));
+    const [mesas, setMesas] = useState([...Array(229)].map((_, index) => ({ mesa: index + 1, ocupada: false, status: 0, aberta: false, conta: null, atendente: null, nivel: 0 })));
     const [atendente, setAtendente] = useState({ "usuario": null, "nivel": null, "auth": '0' });
     const [mesaAberta, setMesaAberta] = useState(null);
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
@@ -170,20 +170,20 @@ const MesasPage = ({ setNotification }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [nivel, setNivel] = useState(1);
     const [caixaStatus, setCaixaStatus] = useState(false);
+    const navigate = useNavigate();
     // eslint-disable-next-line no-unused-vars
     const [mesaSelecionada, setMesaSelecionada] = useState(null);
     // eslint-disable-next-line no-unused-vars
     const [erroSenha, setErroSenha] = useState(false);
     let timeoutId;
 
+    const handleLoginSistema = (usuario) => {
+        handlelogin(usuario);
+    }
 
-    useEffect(() => {
-        socket.on('connect', () => {
-            console.log('Conectado ao servidor');
-            handleNotification('Conectado ao Servidor!');
-        });
-    }, []);
-
+    const handleRelatorios = () => {
+        navigate('/gestor');
+    }
 
 
     const handleNotification = (text) => {
@@ -193,22 +193,38 @@ const MesasPage = ({ setNotification }) => {
     const enviarDadosUsuario = () => {
         socket.emit('dados_usuario', { senha });
 
-        // Ouça o evento 'autenticacao' para receber a resposta do servidor
         socket.on('autenticacao', (data) => {
             if (data.success) {
                 handleNotification(`Entrou como: ${data.usuario}`);
                 setAtendente({ "usuario": data.usuario, "nivel": data.nivel, "auth": data.auth });
+                handleLoginSistema({ "usuario": data.usuario, "nivel": data.nivel, "auth": data.auth });
                 handleClickMostrar();
                 setSenha('');
                 setIsAuthenticated(true);
 
+                // Salvar os dados do usuário no localStorage
+                localStorage.setItem('usuario', JSON.stringify(data));
+
             } else {
                 handleNotification('Falha na autenticação do usuário');
                 handleSairLogin();
-
+                window.location.reload();
             }
-        })
-    }
+        });
+    };
+
+    useEffect(() => {
+        // Recuperar os dados do usuário do localStorage
+        const usuario = localStorage.getItem('usuario');
+        if (usuario) {
+            const data = JSON.parse(usuario);
+            handleNotification(`Entrou como: ${data.usuario}`);
+            setAtendente({ "usuario": data.usuario, "nivel": data.nivel, "auth": data.auth });
+            handleClickMostrar();
+            setSenha('');
+            setIsAuthenticated(true);
+        }
+    }, []);
 
     const handleShowModalMesa = () => {
         setShowModalMesa(true);
@@ -219,34 +235,49 @@ const MesasPage = ({ setNotification }) => {
 
 
 
-
     const fetchComandas = () => {
         socket.emit('get_comandas');
     };
+
     useEffect(() => {
         fetchComandas();
 
-        /*
-        // atualiza as comandas a cada 1 segundos
-        const intervalId = setInterval(fetchComandas, 1000);
+        socket.on('comandas', (data) => {
+            setComandas(data);
+            setMesas((prevState) =>
+                prevState.map((prevMesa) => {
+                    const comanda = data.find((comanda) => comanda.mesa === prevMesa.mesa);
+                    return comanda
+                        ? {
+                            ...prevMesa,
+                            atendente: comanda.operador,
+                            ocupada: true,
+                            aberta: true,
+                            conta: comanda,
+                            status: comanda.status,
+                        }
+                        : prevMesa;
+                })
+            );
+        });
+
+        // Lógica adicional para lidar com a desconexão e reconexão do cliente
+        socket.on('disconnect', () => {
+            // Implemente a lógica para lidar com a desconexão do cliente, se necessário
+        });
+
+        socket.on('connect', () => {
+            // Implemente a lógica para lidar com a reconexão do cliente, se necessário
+        });
 
         return () => {
-            clearInterval(intervalId);
+            // Limpe os listeners de eventos quando o componente for desmontado
+            socket.off('comandas');
+            socket.off('disconnect');
+            socket.off('connect');
         };
-        */
     }, []);
 
-    socket.on('comandas', (data) => {
-        setComandas(data);
-        console.log(data);
-        setMesas((prevState) =>
-            prevState.map((prevMesa) => {
-                const comanda = comandas.find((comanda) => comanda.mesa === prevMesa.mesa);
-                return comanda ? { ...prevMesa, atendente: comanda.operador, ocupada: true, aberta: true, conta: comanda, status: comanda.status } : prevMesa;
-            })
-        );
-
-    });
 
 
     const handleFullscreen = () => {
@@ -275,9 +306,12 @@ const MesasPage = ({ setNotification }) => {
         clearTimeout(timeoutId);
         //handleNotification('Usuario Desconectado!');
         setAtendente({ "usuario": null });
+        handleLoginSistema({ "usuario": null });
         setIsAuthenticated(false);
+        localStorage.removeItem('usuario');
+
         /*
-        
+        window.location.reload();
         */
 
 
@@ -328,16 +362,17 @@ const MesasPage = ({ setNotification }) => {
         };
 
         socket.emit('modificar_gorjeta_comanda', data);
-        
+
 
     };
 
-    const handleDeletarComanda = (idMesa) => {
+    const handleDeletarComanda = (idMesa, valorComanda) => {
 
         const data = {
             id: idMesa,
             status: 6,
-            atendente: atendente.usuario
+            atendente: atendente.usuario,
+            valor: valorComanda
         };
 
         socket.emit('deletar_status_comanda_nova', data);
@@ -349,6 +384,11 @@ const MesasPage = ({ setNotification }) => {
             )
         );
         // window.location.reload();
+    };
+    const handleComandaItens = (comanda, id) => {
+
+        socket.emit('anotar_item_comanda', comanda, id, atendente.usuario);
+
     };
 
     const handleNovaComanda = (idMesa, op) => {
@@ -401,7 +441,7 @@ const MesasPage = ({ setNotification }) => {
                 mudarTipoAlertaId(2);
 
                 handleEmitStatus(idMesa, 1);
-                handleNotification(atendente.usuario+' Inicia a mesa ' + mesa.mesa);
+                handleNotification(atendente.usuario + ' Inicia a mesa ' + mesa.mesa);
 
 
             } else if (mesa.status === 1) {
@@ -479,6 +519,7 @@ const MesasPage = ({ setNotification }) => {
 
         <div className='comandeira-comanda'>
 
+
             {showModalMesa != false ?
                 <Modal show={showModalMesa} onHide={handleCloseModalMesa}
                     style={{
@@ -491,7 +532,7 @@ const MesasPage = ({ setNotification }) => {
                         <Modal.Title></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {caixaStatus != false ? <ComandaMesa handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} /> : <Comanda handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} />}
+                        {caixaStatus != false ? <ComandaMesa handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} /> : <Comanda handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} />}
 
 
                     </Modal.Body>
@@ -510,7 +551,6 @@ const MesasPage = ({ setNotification }) => {
                     <ul className='area-mesas'>
                         {mesas.map((mesa) => (
                             <div key={mesa.mesa} className={`butaoMenuMesa - hmenu - princopa`} onClick={() => handleMesaClick(mesa.mesa)}><Mesa key={mesa.mesa} mesa={mesa} comandas={comandas} fazerPedido={fazerPedido} sSetMesas={setMesas} />
-
                             </div>
                         ))}
 
@@ -534,7 +574,7 @@ const MesasPage = ({ setNotification }) => {
                         <thead>
                             <tr>
                                 <th><em>{atendente.usuario}</em></th>
-                                <th>{funcao(atendente.auth)}</th>
+                                <th><FuncaoComponent codigo={atendente.auth}/></th>
                                 <th>{comandas.length}</th>
                             </tr>
                         </thead>
@@ -590,39 +630,47 @@ const MesasPage = ({ setNotification }) => {
 
                 {isAuthenticated &&
                     <div className='digitos'>
-                        <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative', left: '20px' }}>SAIR</button>
-                        {nivel >= 1 ? <div className='g1s'>
-                            <button>conta</button>
-                            <button>fila</button>
-                            <button>status</button>
+
+                            <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative'}}>SAIR</button>
+          
+                        {/*  */}
+                        {((atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
+                            (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) ? <div className='g1s'>
+                            <button>Caixa</button>
+                            <button>Reservas</button>
+                            <button>Comandas</button>
+                            <button>Cupon</button>
+                            <button>Pesquisa</button>
+                            <button onClick={handleFullscreen}>TELA</button>
+
                         </div> : <></>}
 
-                        {nivel >= 2 ? <div className='g1s'>
+                        {((atendente.auth.startsWith('b') && /^\d+$/.test(atendente.auth.slice(1))) ||
+                            (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) ? <div className='g1s'>
                             <button>BAR</button>
                             <button>VARANDA</button>
                             <button>RESERVA</button>
                         </div> : <></>}
 
-                        {nivel >= 3 ? <div className='g1s'>
+                        {((atendente.auth.startsWith('c') && /^\d+$/.test(atendente.auth.slice(1))) ||
+                            (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) ? <div className='g1s'>
                             <button>SALÃO</button>
                             <button>COZINHA</button>
                             <button>LIMPEZA</button>
                         </div> : <></>}
-                        {nivel >= 5 ?
+                        {(atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?
                             <div className='g1s'>
-                                <button>GESTOR</button>
-                                <button>SV</button>
+                                <button>Admin</button>
+                                <button onClick={handleRelatorios}>Gestor</button>
+                                <button>Radio</button>
 
-                                <button onClick={handleFullscreen}>TELA</button>
                             </div> : <></>}
 
 
                     </div>
                 }
                 <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
-                {/*
-                <ServerStatus setNotification={handleNotification} />
-                */}
+               
             </div>
 
 

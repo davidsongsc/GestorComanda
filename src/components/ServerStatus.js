@@ -178,8 +178,8 @@ function ServerStatus({setNotification}) {
             <table className='server-status-table'>
                 <thead>
                     <tr>
-                        <th>Hora</th>
-                        <th><Relogio /></th>
+                        <th style={{backgroundColor:'black', color:'white'}}>Hora</th>
+                        <th style={{backgroundColor:'black', color:'white'}}><Relogio /></th>
                     </tr>
                     <tr>
                         <th>Serviço</th>

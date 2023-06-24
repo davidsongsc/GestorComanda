@@ -50,7 +50,9 @@ const usuarioError = [{
   "btn2": "fechar",
   "fnb2": ""
 }]
-function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatus, mesaId, handleSairLogin, handleEmitStatus, setNotification, handleShowModalMesa }) {
+function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatus,
+                 mesaId, handleSairLogin, handleEmitStatus, setNotification,
+                  handleShowModalMesa, handleComandaItens }) {
   const { id } = useParams();
   // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
@@ -70,16 +72,19 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
   const [teclado, setTeclado] = useState(1);
   const [mostrarInventario, setMostrarInventario] = useState(false);
   const [mostrarInventario2, setMostrarInventario2] = useState(false);
+  const [mostrarInventario3, setMostrarInventario3] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const handleNotification = (text) => {
     setNotification(text);
   };
 
-  const handleDelComanda = (comanda) => {
-    handleDeletarComanda(comanda);
+  const handleDelComanda = (comanda, valor) => {
+    handleDeletarComanda(comanda, valor);
   }
-
+  const handleUpInsert = () => {
+    handleComandaItens(comanda, mesaId);
+  }
   const handleMostrarCaixaStatus = () => {
     setCaixaStatus(true);
     handleEmitStatus(mesa, 4);
@@ -99,7 +104,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
             setMesa(listaComanda.mesa),
             setUsuario(listaComanda.operador),
             setGorjeta(listaComanda.gorjeta),
-            setComanda(listaComanda.itens[0].map(item => ({ ...item, })))
+            setComanda(listaComanda.itens[0].map(item => ({ ...item, status: 0 })))
 
           ));
 
@@ -211,10 +216,12 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     if (id === 'O.K.') {
       handleFecharComanda();
       handleEmitStatus(mesa, 3);
+      handleUpInsert();
       handleSairLogin();
     } else if (id === 'conta') {
       handleNotification('Imprimindo conferência mesa: ' + mesa);
       handleEmitStatus(mesa, 5);
+      handleUpInsert();
       handleSairLogin();
 
     } else if (id === 'fechar') {
@@ -226,9 +233,10 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     } else if (id === 'cancelar') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
-        handleDelComanda(mesaId);
+        handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
         handleNotification('Comanda encerrada');
         handleSairLogin();
+        window.location.reload();
       } else {
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
       }
@@ -279,18 +287,19 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
   const adicionarItem = (item, t) => {
 
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
-
+    console.log(typeof comanda);
+    console.log(comanda);
     if (itemExistente) {
 
       setComanda(
         comanda.map((i) =>
-          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
+          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
 
         )
       );
 
     } else {
-      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
+      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 }]);
       setTeclado(1);
       if (item.grupoc === 1) {
 
@@ -342,11 +351,11 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     if (itemExistente) {
       setComanda(
         comanda.map((i) =>
-          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1 } : i
+          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
         )
       );
     } else {
-      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id }]);
+      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 }]);
       if (item.grupoc === 2323)
         toggleModal()
     }
@@ -462,7 +471,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
             {comanda.map((item, index) => (
               <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
                 <h1>{nomeProduto(item.produto_id)}{item.push}</h1>
-                <InventarioOption style={{ backgroundColor: 'black' }} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
+                <InventarioOption style={{ backgroundColor: 'black' }} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} mostrarInventario3={mostrarInventario3} setMostrarInventario3={setMostrarInventario3} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
 
               </Modal>
             ))}

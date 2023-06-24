@@ -472,7 +472,7 @@
 
 .notification-container {
   position: fixed;
-  bottom: 20px;
+  top: 20px;
   right: 18px;
   background-color: #ffffff;
   padding: 20px;
@@ -528,6 +528,130 @@
 
 .false {
   display: none;
+}
+
+.relatorios-container {
+  overflow-y: visible;
+  margin-top: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+}
+
+.painel-container {
+  width: 35%;
+  text-transform: capitalize;
+}
+
+.painel-container input {
+  width: 280px;
+}
+
+.botoes-container {
+  position: fixed;
+  width: 10%;
+  background-color: white;
+  width: 142px;
+  height: 95vh;
+  top: 45px;
+
+}
+
+.botoes-container button {
+  margin: 5px;
+  width: 130px;
+  height: 48px;
+  background-color: #008080;
+  border-radius: 2px;
+}
+
+.painel-dados {
+  width: 35%;
+  font-size: 13px;
+  text-transform: capitalize;
+
+}
+
+.pnconfg-table-td {
+  background-color: gray;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.pnconfg-table-th {
+  z-index: 999;
+  background-color: black;
+  font-size: 25px;
+  font-weight: 100;
+  font-family: 'Courier New', Courier, monospace;
+  height: 37px;
+  padding: 0 15px;
+}
+
+.painel-dados table {
+  height: 40vh;
+}
+
+.relatorios-container h1 {
+  font-size: 36px;
+  margin-bottom: 10px;
+  background-color: #008080;
+  width: 60%;
+  text-align: center;
+}
+
+.relatorios-container h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.relatorios-container table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+}
+
+
+.relatorios-container td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+  background-color: white;
+  text-align: center;
+}
+
+.relatorios-container table th {
+  font-weight: bold;
+  color: black;
+  font-size: 25px;
+}
+
+.relatorios-container td:hover {
+  background-color: brown;
+}
+
+.menu-painel {
+  transform: rotateX(0deg);
+  font-size: xx-large;
+  font-weight: 800;
+  font-family: 'Courier New', Courier, monospace;
+  transition: transform 0.5s ease;
+  /* Adicione uma transição de 0.5 segundos com uma função de easing suave */
+
+}
+
+.rotate-painel-btn {
+  transform: rotateX(180deg);
+  transition: transform 0.5s ease;
+  /* Adicione uma transição de 0.5 segundos com uma função de easing suave */
+
+}
+
+.img-painel-perfil {
+  width: 35px;
+  height: 35px;
+  border-radius: 70%;
+  box-shadow: 0px 1px 6px 3px;
 }
 
 @keyframes fundo {
@@ -632,6 +756,11 @@
   left: -373px;
 }
 
+.div-cont-dados {
+  background-color: grey;
+  padding: 15px;
+}
+
 @media only screen and (min-width: 1370px) {
   .comandeira-comanda {
     flex-direction: row;
@@ -725,7 +854,7 @@
   }
 
   .status-mesa-comanda {
-    top: 5px;
+    top: 6px;
   }
 
   th em {
