@@ -7,6 +7,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
     const [sistemaVisible, setSistemaVisible] = useState(false);
     const [relatoriosVisible, setRelatoriosVisible] = useState(false);
     const [cadastroVisible, setCadastroVisible] = useState(false);
+    const [estatisticas, setEstatisticas] = useState(false);
     const [usuario, setUsuario] = useState();
     const navigate = useNavigate();
     const handleNotification = (text) => {
@@ -15,7 +16,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
     };
     handleNotification('Painel do Gestor desbloqueado, Acesso concedido a ' + atendente.usuario + '.');
     const sistemaTransitions = useTransition(sistemaVisible, {
-        from: { opacity: 0, transform: "translateY(-20px)" },
+        from: { opacity: 0, transform: "translateY(-30px)" },
         enter: { opacity: 1, transform: "translateY(0px)" },
         leave: { opacity: 0, transform: "translateY(-20px)" },
     });
@@ -27,6 +28,11 @@ const PainelLateral = ({ atendente, setNotification }) => {
     });
 
     const cadastroTransitions = useTransition(cadastroVisible, {
+        from: { opacity: 0, transform: "translateY(-20px)" },
+        enter: { opacity: 1, transform: "translateY(0px)" },
+        leave: { opacity: 0, transform: "translateY(-20px)" },
+    });
+    const estatisticasTransitions = useTransition(estatisticas, {
         from: { opacity: 0, transform: "translateY(-20px)" },
         enter: { opacity: 1, transform: "translateY(0px)" },
         leave: { opacity: 0, transform: "translateY(-20px)" },
@@ -43,6 +49,9 @@ const PainelLateral = ({ atendente, setNotification }) => {
     const handleCadastroClick = () => {
         setCadastroVisible(!cadastroVisible);
     };
+    const handleEstatisticas = () => {
+        setEstatisticas(!estatisticas);
+    };
 
     const navigateTo = (route) => {
         navigate(route);
@@ -50,11 +59,11 @@ const PainelLateral = ({ atendente, setNotification }) => {
     function handleSairLogin() {
 
         localStorage.removeItem('usuario');
-       
 
-      
+
+
         window.location.reload();
-      
+
 
 
 
@@ -65,7 +74,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
                 <nav style={{ width: '100%', padding: '5px 0px', display: 'flex', justifyContent: 'space-evenly' }}>
                     <h1 style={{ margin: 0, textAlign: 'center' }}>Painel</h1>
                     <ul style={{ margin: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', listStyle: 'none', height: '46px' }}>
-              
+
                         <li style={{ textTransform: 'capitalize', width: '240px', marginRight: '10px', height: '25ox', display: 'flex', flexDirection: 'column' }}>
                             <div >
                                 <div>
@@ -89,7 +98,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
                             <div style={{ padding: '0 8px' }}>{atendente.nivel}º</div>
 
                         </li>
-                        
+
                         <li style={{ marginRight: '10px' }}>
                             <button onClick={handleSairLogin}>Sair</button>
                         </li>
@@ -107,7 +116,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
                 <div style={{ display: 'flex', alignItems: 'left' }}>
 
                     <animated.button
-                        style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }}
+                        style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }}
                         onClick={handleSistemaClick}
                     >
                         Sistema
@@ -117,12 +126,12 @@ const PainelLateral = ({ atendente, setNotification }) => {
                     {sistemaTransitions((styles, item) =>
                         item ? (
                             <animated.div style={styles} key={item}>
-                                <button style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/')}>Loja</button>
-                                <button style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Delivery</button>
-                                <button style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Cozinha</button>
-                                <button style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Serviço</button>
-                                <button style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Produtos</button>
-                                <button style={{ relatoriosTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Cardapio</button>
+                                <button style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/')}>Loja</button>
+                                <button style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Delivery</button>
+                                <button style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Cozinha</button>
+                                <button style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Serviço</button>
+                                <button style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Produtos</button>
+                                <button style={{ sistemaTransitions, background: sistemaVisible ? '#4779f4' : '' }} onClick={() => navigateTo('/gestor')}>Cardapio</button>
                             </animated.div>
                         ) : null
                     )}
@@ -154,7 +163,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
                 <div style={{ display: 'flex', alignItems: 'left' }}>
 
                     <animated.button
-                        style={{ relatoriosTransitions, background: cadastroVisible ? 'brown' : '' }}
+                        style={{ cadastroTransitions, background: cadastroVisible ? 'brown' : '' }}
                         onClick={handleCadastroClick}
                     >
                         Cadastro
@@ -164,11 +173,33 @@ const PainelLateral = ({ atendente, setNotification }) => {
                     {cadastroTransitions((styles, item) =>
                         item ? (
                             <animated.div style={styles} key={item}>
-                                <button style={{ relatoriosTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastroprodutos')}>Produto</button>
-                                <button style={{ relatoriosTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastrocolaborador')}>Funcionario</button>
-                                <button style={{ relatoriosTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastroclientes')}>Cliente</button>
-                                <button style={{ relatoriosTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastropromo')}>Promoções</button>
-                                <button style={{ relatoriosTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastroficha')}>Ficha Tecnica</button>
+                                <button style={{ cadastroTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastroprodutos')}>Produto</button>
+                                <button style={{ cadastroTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastrocolaborador')}>Funcionario</button>
+                                <button style={{ cadastroTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastroclientes')}>Cliente</button>
+                                <button style={{ cadastroTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastropromo')}>Promoções</button>
+                                <button style={{ cadastroTransitions, background: cadastroVisible ? 'brown' : '' }} onClick={() => navigateTo('/cadastroficha')}>Ficha Tecnica</button>
+                            </animated.div>
+                        ) : null
+                    )}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'left' }}>
+
+                    <animated.button
+                        style={{ estatisticasTransitions, background: estatisticas ? 'green' : '' }}
+                        onClick={handleEstatisticas}
+                    >
+                        Estatisticas
+                    </animated.button>
+                </div>
+                <div style={{ display: estatisticas ? 'block' : 'none' }}>
+                    {estatisticasTransitions((styles, item) =>
+                        item ? (
+                            <animated.div style={styles} key={item}>
+                                <button style={{ estatisticasTransitions, background: estatisticas ? 'green' : '' }} onClick={() => navigateTo('/')}>Produtividade</button>
+                                <button style={{ estatisticasTransitions, background: estatisticas ? 'green' : '' }} onClick={() => navigateTo('/')}>Pesquisa</button>
+                                <button style={{ estatisticasTransitions, background: estatisticas ? 'green' : '' }} onClick={() => navigateTo('/')}>Novos Clientes</button>
+                                <button style={{ estatisticasTransitions, background: estatisticas ? 'green' : '' }} onClick={() => navigateTo('/')}>Campanhas</button>
+                                <button style={{ estatisticasTransitions, background: estatisticas ? 'green' : '' }} onClick={() => navigateTo('/')}>Avaliações</button>
                             </animated.div>
                         ) : null
                     )}

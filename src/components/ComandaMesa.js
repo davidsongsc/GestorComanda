@@ -470,7 +470,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
             </table>
             {comanda.map((item, index) => (
               <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
-                <h1>{nomeProduto(item.produto_id)}{item.push}</h1>
+                <h1>{nomeProduto(item.produto_id)}</h1>
                 <InventarioOption style={{ backgroundColor: 'black' }} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} mostrarInventario3={mostrarInventario3} setMostrarInventario3={setMostrarInventario3} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
 
               </Modal>

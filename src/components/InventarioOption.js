@@ -36,11 +36,32 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
 
     };
 
-    function ocultarObservacao() {
+    function ocultarObservacao(v) {
         setObservacao('false');
+        if (v) {
+            toggleModal();
+        }
+
     }
     function ivAdd(item, i) {
-        adicionarItem(item)
+        adicionarItem({
+            avaliacao: item.avaliacao,
+            combinac: 0,
+            combinag: 0,
+            descricao: 0,
+            disponibilidade: item.disponibilidade,
+            grupo: item.grupo,
+            grupoc: item.grupoc,
+            id: item.id,
+            listaid: item.listaid,
+            nomefantasia: null,
+            nomeproduto: null,
+            produto_id: item.produto_id,
+            push: item.push,
+            qtd: item.qtd,
+            status: item.status,
+            valor: item.valor,
+        })
         if (i === 1) {
 
             handleAbrirInventario();
@@ -50,13 +71,12 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
 
         } else if (i === 3) {
             handleAbrirInventario3();
-            
+
         } else if (i === 4) {
             toggleModal();
         }
 
     }
-
 
     if (item.grupoc === 1) {
         const optionManualPrimario = itens.filter((item) => item.grupoc === 1);
@@ -275,6 +295,328 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
         }
 
     }
+    else if (item.grupoc === 2) {
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 4);
+        const optionManualSecundario = itens.filter((item) => item.grupoc === 4);
+
+
+
+
+
+
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index}>
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                            </li>
+                        ))}
+                        {/* Extras Opção Ponto */}
+                        <li key={'d01'} onClick={() => ocultarObservacao()}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2003,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2003,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >So no Sal</button>
+                        </li>
+                        <li key={'d02'}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2004,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2004,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Pouco Tempero</button>
+                        </li>
+                        <li key={'d03'}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2005,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2005,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Mais Tempero</button>
+                        </li>
+                        <li key={'d04'}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2006,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2006,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Sem Sal</button>
+                        </li>
+                    </ul>
+
+
+
+                </div>
+            </div>);
+        }
+        if (!mostrarInventario2) {
+            return (<div>
+                <div className='inventarioOption'>
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualSecundario.map((item, index) => (
+                            <li key={index} >
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 2)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                            </li>
+                        ))}
+
+                    </ul>
+
+                </div>
+            </div>);
+        }
+        if (!mostrarInventario3) {
+            return (<div className='inventarioOption'>
+
+                <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+
+                    {/* Extras Opção Ponto */}
+                    <li key={'d01'} onClick={() => ocultarObservacao()}>
+                        <button onClick={() => adicionarItem({
+                            avaliacao: 0,
+                            combinac: 0,
+                            combinag: 0,
+                            descricao: 0,
+                            disponibilidade: 0,
+                            grupo: 0,
+                            grupoc: 1,
+                            id: 2003,
+                            listaid: 4,
+                            nomefantasia: null,
+                            nomeproduto: null,
+                            produto_id: 2003,
+                            push: 0,
+                            qtd: 1,
+                            status: 1,
+                            valor: 0,
+                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >So no Sal</button>
+                    </li>
+                    <li key={'d02'}>
+                        <button onClick={() => adicionarItem({
+                            avaliacao: 0,
+                            combinac: 0,
+                            combinag: 0,
+                            descricao: 0,
+                            disponibilidade: 0,
+                            grupo: 0,
+                            grupoc: 1,
+                            id: 2004,
+                            listaid: 4,
+                            nomefantasia: null,
+                            nomeproduto: null,
+                            produto_id: 2004,
+                            push: 0,
+                            qtd: 1,
+                            status: 1,
+                            valor: 0,
+                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Pouco Tempero</button>
+                    </li>
+                    <li key={'d03'}>
+                        <button onClick={() => adicionarItem({
+                            avaliacao: 0,
+                            combinac: 0,
+                            combinag: 0,
+                            descricao: 0,
+                            disponibilidade: 0,
+                            grupo: 0,
+                            grupoc: 1,
+                            id: 2005,
+                            listaid: 4,
+                            nomefantasia: null,
+                            nomeproduto: null,
+                            produto_id: 2005,
+                            push: 0,
+                            qtd: 1,
+                            status: 1,
+                            valor: 0,
+                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Mais Tempero</button>
+                    </li>
+                    <li key={'d04'}>
+                        <button onClick={() => adicionarItem({
+                            avaliacao: 0,
+                            combinac: 0,
+                            combinag: 0,
+                            descricao: 0,
+                            disponibilidade: 0,
+                            grupo: 0,
+                            grupoc: 1,
+                            id: 2006,
+                            listaid: 4,
+                            nomefantasia: null,
+                            nomeproduto: null,
+                            produto_id: 2006,
+                            push: 0,
+                            qtd: 1,
+                            status: 1,
+                            valor: 0,
+                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Sem Sal</button>
+                    </li>
+                </ul>
+
+
+
+            </div>
+            );
+        }
+
+    }
+    else if (item.grupoc === 3) {
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 22);
+
+        const optionManualSecundario = itens.filter((item) => item.grupoc === 4);
+
+
+
+
+
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index}>
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                            </li>
+                        ))}
+                        {/* Extras Opção Ponto */}
+
+                    </ul>
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        <li key={'d01'} onClick={() => ocultarObservacao()}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 3,
+                                id: 52069,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 52069,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Principal</button>
+                        </li> <li key={'d02'} onClick={() => ocultarObservacao('xx')}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 6,
+                                id: 52070,
+                                listaid: 6,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 52070,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Junto</button>
+                        </li>
+                        <li key={'d03'} onClick={() => ocultarObservacao('xx')}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 5,
+                                id: 52071,
+                                listaid: 6,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 52071,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Antes</button>
+                        </li>
+                    </ul>
+
+
+                </div>
+            </div>);
+        }
+        if (!mostrarInventario2) {
+            return (<div>
+                <div className='inventarioOption'>
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualSecundario.map((item, index) => (
+                            <li key={index} >
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 2)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                            </li>
+                        ))}
+
+                    </ul>
+
+                </div>
+            </div>);
+        }
+
+    }
     else if (item.grupoc === 11) {
         const optionManualPrimario = itens.filter((item) => item.grupoc === 11);
         const optionManualSecundario = itens.filter((item) => item.grupoc === 14);
@@ -320,7 +662,10 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
         console.log(itemSelecionado);
         console.log('aquii');
 
-        if (itemSelecionado === 4) {
+        if (itemSelecionado === 22) {
+            itensFiltrados = itens.filter((item) => item.grupoc === 4);
+        }
+        else if (itemSelecionado === 4) {
             itensFiltrados = itens.filter((item) => item.grupoc === 4);
         }
         else if (itemSelecionado === 5) {
@@ -332,7 +677,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
 
 
         else {
-            itensFiltrados = itens.filter((item) => item.grupoc === 19);
+            itensFiltrados = itens.filter((item) => item.grupoc === 8);
         }
 
         return (
@@ -343,9 +688,9 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                             <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 4)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
                         </li>
                     ))}
-              
+
                     {/* Extras Opção Ponto */}
-                    <li key={'d01'} onClick={() => ocultarObservacao()}>
+                    <li key={'d01'} onClick={() => ocultarObservacao('xx')}>
                         <button onClick={() => adicionarItem({
                             avaliacao: 0,
                             combinac: 0,
@@ -365,7 +710,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                             valor: 0,
                         }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Principal</button>
                     </li>
-                    <li key={'d02'}>
+                    <li key={'d02'} onClick={() => ocultarObservacao('xx')}>
                         <button onClick={() => adicionarItem({
                             avaliacao: 0,
                             combinac: 0,
@@ -385,7 +730,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                             valor: 0,
                         }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Junto</button>
                     </li>
-                    <li key={'d03'}>
+                    <li key={'d03'} onClick={() => ocultarObservacao('xx')}>
                         <button onClick={() => adicionarItem({
                             avaliacao: 0,
                             combinac: 0,
@@ -405,7 +750,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
                             valor: 0,
                         }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Antes</button>
                     </li>
-                    
+
                 </ul>
             </div>
         )

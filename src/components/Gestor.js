@@ -123,8 +123,7 @@ const Relatorios = ({ socket, atendente, setNotification }) => {
           overflowY: 'auto',
         }} />
         <div className="painel-container">
-          <h1>Dados Sistema</h1>
-          <ServerStatus setNotification={handleNotification} />
+          
           <h1>Informação</h1>
           <div style={{
             maxHeight: '39vh',
@@ -155,8 +154,10 @@ const Relatorios = ({ socket, atendente, setNotification }) => {
                 ))}
               </tbody>
             </table>
+            
           </div>
-
+          <h1>Dados Sistema</h1>
+          <ServerStatus setNotification={handleNotification} />
         </div>
 
         <div className="painel-dados">
