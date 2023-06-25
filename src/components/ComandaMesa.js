@@ -51,8 +51,8 @@ const usuarioError = [{
   "fnb2": ""
 }]
 function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatus,
-                 mesaId, handleSairLogin, handleEmitStatus, setNotification,
-                  handleShowModalMesa, handleComandaItens }) {
+  mesaId, handleSairLogin, handleEmitStatus, setNotification,
+  handleShowModalMesa, handleComandaItens }) {
   const { id } = useParams();
   // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
@@ -99,7 +99,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(mesaId));
 
           comandaMesa.map(listaComanda => (
-     
+
             // eslint-disable-next-line no-sequences
             setMesa(listaComanda.mesa),
             setUsuario(listaComanda.operador),
@@ -156,15 +156,15 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
         setGorjeta(0.10);
         console.log(mesa)
         handleGorjeta(mesaId, 0.10)
-        handleNotification(atendente.usuario+ ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
+        handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
       } else if (valor === 11) {
         setGorjeta(0.11)
         handleGorjeta(mesaId, 0.11)
-        handleNotification(atendente.usuario+ ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
+        handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
       } else if (valor === 12) {
         setGorjeta(0.12)
         handleGorjeta(mesaId, 0.12)
-        handleNotification(atendente.usuario+ ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
+        handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
       }
 
 
@@ -436,15 +436,15 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
                 {comanda.map((item, index) => (
                   <>
                     <tr key={index} className='linhas-tb'>
-                      <td className='itemNormalB' style={item.qtd != 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
+                      <td className='itemNormalB' style={item.combinac === 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
                         {item.combinac === 0 ? item.qtd : '▲'}
                       </td>
 
 
 
                       {item.combinac === 0 ? (
-                        <td className={`ndd ${item.combinac != 0 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
-                        </td>) : <td className={`ndd ${item.combinac != 0 ? 'obs' : 'itemNormal'}`}>
+                        <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
+                        </td>) : <td className={`ndd ${item.combinac === 0 ? 'obs' : 'itemNormal'}`}>
                         {nomeProdutos(item.produto_id)}
                       </td>}
 
@@ -470,8 +470,27 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
             </table>
             {comanda.map((item, index) => (
               <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
-                <h1>{nomeProduto(item.produto_id)}</h1>
-                <InventarioOption style={{ backgroundColor: 'black' }} id={id} grupo={grupo} toggleModal={toggleModal} mostrarInventario={mostrarInventario} setMostrarInventario={setMostrarInventario} mostrarInventario2={mostrarInventario2} setMostrarInventario2={setMostrarInventario2} mostrarInventario3={mostrarInventario3} setMostrarInventario3={setMostrarInventario3} qop={parseInt(teclado)} opt={item.grupoc} opx={item.combinac} itens={inventario} listaRef={listaRef} adicionarItem={adicionarItemOption} scrollTop={scrollTop} handleScrollUp={handleScrollUp} handleScrollDown={handleScrollDown} item={item} />
+                {/**<h1>{nomeProduto(item.produto_id)}</h1> **/}
+                <InventarioOption style={{ backgroundColor: 'black' }}
+                  id={id}
+                  grupo={grupo}
+                  toggleModal={toggleModal}
+                  mostrarInventario={mostrarInventario}
+                  setMostrarInventario={setMostrarInventario}
+                  mostrarInventario2={mostrarInventario2}
+                  setMostrarInventario2={setMostrarInventario2}
+                  mostrarInventario3={mostrarInventario3}
+                  setMostrarInventario3={setMostrarInventario3}
+                  qop={parseInt(teclado)}
+                  opt={item.grupoc}
+                  opx={item.combinac}
+                  itens={inventario}
+                  listaRef={listaRef}
+                  adicionarItem={adicionarItemOption}
+                  scrollTop={scrollTop}
+                  handleScrollUp={handleScrollUp}
+                  handleScrollDown={handleScrollDown}
+                  item={item} />
 
               </Modal>
             ))}

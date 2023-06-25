@@ -596,7 +596,7 @@
   font-size: 36px;
   margin-bottom: 10px;
   background-color: #008080;
-  width: 60%;
+  width: 100%;
   text-align: center;
 }
 
@@ -758,7 +758,55 @@
 
 .div-cont-dados {
   background-color: grey;
+  width: 451px;
   padding: 15px;
+  max-height: 85vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.cadastro-produtos-vc {
+  display: flex;
+  justify-content: space-between;
+}
+
+.cadastro-produtos-vc div {
+  width: 35%;
+}
+.checkbox-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.checkbox-label {
+  margin-left: 5px;
+  color: #000;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.checkbox-input {
+  margin-right: 5px;
+  cursor: pointer;
+}
+
+.radio-container {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.radio-label {
+  margin-left: 5px;
+  color: #000;
+  cursor: pointer;
+  font-size: 20px;
+}
+
+.radio-input {
+  margin-right: 5px;
+  cursor: pointer;
 }
 
 @media only screen and (min-width: 1370px) {

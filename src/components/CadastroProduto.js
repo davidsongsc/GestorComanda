@@ -2,17 +2,64 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PainelLateral from './PainelLateral';
+import ProdutoImagem from './ProdutoConfig/ProdutoImagem';
 
+const nomeSistema = 'maquina';
+const token = 'abc123';
+const ipNucleo = 'http://192.168.0.50:5000';
 
 const CadastroProduto = ({ socket, atendente, setNotification }) => {
-    const [usuario, setUsuario] = useState('');
-    const [nome, setNome] = useState('');
-    const [snome, setSNome] = useState('');
+    const [grupo, setGrupo] = useState([]);
+    const [valor, setValor] = useState('');
+    const [idProduto, setIdProduto] = useState('');
+    const [nomeProduto, setNomeProduto] = useState('');
     const [ficha, setFicha] = useState('');
     const [email, setEmail] = useState('');
     const [cargo, setCargo] = useState('');
     const [senha, setSenha] = useState('');
     const [staff, setStaff] = useState(0);
+    const [selectedOption, setSelectedOption] = useState('');
+    const [opcoes, setOpcoes] = useState({
+        principal: false,
+        executivo: false,
+        extra: false,
+    });
+    const [opcaoSelecionada, setOpcaoSelecionada] = useState('');
+
+    const handleOpcaoChangeR = (event) => {
+        setOpcaoSelecionada(event.target.value);
+    };
+    const handleOpcaoChange = (event) => {
+        const { name, checked } = event.target;
+        setOpcoes((prevOpcoes) => ({
+            ...prevOpcoes,
+            [name]: checked,
+        }));
+    };
+    //console.log(filtrarPorGrupo)
+    useEffect(() => {
+
+        fetch(`${ipNucleo}/grupos?nome=${nomeSistema}&token=${token}&version=100a`)
+            .then(response => response.json())
+            .then(data => {
+                const grupoArray = data.grupos.filter(comad => comad.grupoc === 1);
+
+                setGrupo(grupoArray.map(listaGrupo => (
+                    {
+                        nome: listaGrupo.nome,
+                        id: listaGrupo.estilo
+                    }
+                )
+                ));
+            })
+            .catch(error => console.error(error));
+
+
+    }, [nomeSistema, token]);
+
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
 
 
     const handleSubmit = (event) => {
@@ -21,7 +68,7 @@ const CadastroProduto = ({ socket, atendente, setNotification }) => {
         // Aqui você pode adicionar a lógica para enviar os dados do colaborador para o backend
 
         // Limpar os campos do formulário após o envio
-        setNome('');
+        setNomeProduto('');
         setEmail('');
         setCargo('');
     };
@@ -57,7 +104,7 @@ const CadastroProduto = ({ socket, atendente, setNotification }) => {
     }
     return (
         <>
-           <PainelLateral atendente={atendente} setNotification={setNotification} />
+            <PainelLateral atendente={atendente} setNotification={setNotification} />
             <div className="relatorios-container">
                 <div style={{
                     maxHeight: '80vh',
@@ -69,68 +116,142 @@ const CadastroProduto = ({ socket, atendente, setNotification }) => {
                 }} className="painel-container">
                     <h1>Cadastro Produtos</h1>
                     <div className='div-cont-dados'>
-                        <h2>Cadastro de Colaborador</h2>
                         <form onSubmit={handleSubmit}>
                             <div>
-                                <label htmlFor="nome">Usuario:</label>
-                                <input
-                                    type="text"
-                                    id="nome"
-                                    value={nome}
-                                    onChange={(event) => setNome(event.target.value)}
-                                    required
-                                />
+                                <h2>Tipo:</h2>
+                                <select value={selectedOption} onChange={handleOptionChange}>
+                                    <option value="">Selecione...</option>
+                                    {grupo.map((item, index) => (
+                                        <option key={index} value={item.nome}>{item.nome}</option>
+
+                                    ))}
+
+                                </select>
+                                {selectedOption && (
+                                    <div>
+                                        <label htmlFor="lb-id">ID:</label>
+                                        <input
+                                            type="text"
+                                            id="lb-id"
+                                            placeholder='F Tirinhas'
+                                            value={idProduto}
+                                            onChange={(event) => setIdProduto(event.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                )}
+                                {idProduto && (
+                                    <div>
+                                        <label htmlFor="lb-nome">Nome:</label>
+                                        <input
+                                            type="text"
+                                            id="lb-nome"
+                                            placeholder='Tirinhas de Frango'
+                                            value={nomeProduto}
+                                            onChange={(event) => setNomeProduto(event.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                )}
+                                {nomeProduto && (
+                                    <div>
+                                        <label htmlFor="lb-nome">Valor:</label>
+                                        <input
+                                            type="text"
+                                            id="lb-nome"
+                                            placeholder='10,95'
+                                            value={valor}
+                                            onChange={(event) => setValor(event.target.value)}
+                                            required
+                                        />
+                                    </div>
+                                )}
+                                <div className='cadastro-produtos-vc'>
+                                    {valor && (
+                                        <div>
+                                            <h2>Visualização:</h2>
+                                            <div className="checkbox-container">
+                                                <input
+                                                    className="checkbox-input"
+                                                    type="checkbox"
+                                                    name="opcao1"
+                                                    id="checkbox1"
+                                                    checked={opcoes.opcao1}
+                                                    onChange={handleOpcaoChange}
+                                                />
+                                                <label className="checkbox-label" htmlFor="checkbox1">Cardapio Loja</label>
+                                            </div>
+                                            <div className="checkbox-container">
+                                                <input
+                                                    className="checkbox-input"
+                                                    type="checkbox"
+                                                    name="opcao2"
+                                                    checked={opcoes.opcao2}
+                                                    onChange={handleOpcaoChange}
+                                                />
+                                                <label className="checkbox-label">Cardapio Delivery</label>
+                                            </div>
+                                            <div className="checkbox-container">
+                                                <input
+                                                    className="checkbox-input"
+                                                    type="checkbox"
+                                                    name="opcao3"
+                                                    checked={opcoes.opcao3}
+                                                    onChange={handleOpcaoChange}
+                                                    disabled
+                                                />
+                                                <label className="checkbox-label">Cardapio Sistema</label>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {valor && (
+                                        <div>
+                                            <h2>Cardapio:</h2>
+                                            <div className="radio-container">
+                                                <input
+                                                    className="radio-input"
+                                                    type="radio"
+                                                    name="opcao"
+                                                    value="principal"
+                                                    checked={opcaoSelecionada === 'principal'}
+                                                    onChange={handleOpcaoChangeR}
+                                                />
+                                                <label className="radio-label">Cardapio Principal</label>
+                                            </div>
+                                            <div className="radio-container">
+                                                <input
+                                                    className="radio-input"
+                                                    type="radio"
+                                                    name="opcao"
+                                                    value="executivo"
+                                                    checked={opcaoSelecionada === 'executivo'}
+                                                    onChange={handleOpcaoChangeR}
+                                                />
+                                                <label className="radio-label">Almoço Executivo</label>
+                                            </div>
+                                            <div className="radio-container">
+                                                <input
+                                                    className="radio-input"
+                                                    type="radio"
+                                                    name="opcao"
+                                                    value="extra"
+                                                    checked={opcaoSelecionada === 'extra'}
+                                                    onChange={handleOpcaoChangeR}
+                                                    disabled
+                                                />
+                                                <label className="radio-label">ADD EXTRA</label>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                </div>
+                                {valor && (
+                                    <ProdutoImagem />
+                                )}
                             </div>
-                            <div>
-                                <label htmlFor="nome">Nome:</label>
-                                <input
-                                    type="text"
-                                    id="nome"
-                                    value={nome}
-                                    onChange={(event) => setNome(event.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="nome">Sobrenome:</label>
-                                <input
-                                    type="text"
-                                    id="nome"
-                                    value={nome}
-                                    onChange={(event) => setNome(event.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="email">Nivel:</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    value={email}
-                                    onChange={(event) => setEmail(event.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="cargo">Cargo:</label>
-                                <input
-                                    type="text"
-                                    id="cargo"
-                                    value={cargo}
-                                    onChange={(event) => setCargo(event.target.value)}
-                                    required
-                                />
-                            </div>
-                            <div>
-                                <label htmlFor="cargo">Setor:</label>
-                                <input
-                                    type="text"
-                                    id="cargo"
-                                    value={cargo}
-                                    onChange={(event) => setCargo(event.target.value)}
-                                    required
-                                />
-                            </div>
+
+
                             <button type="submit">Cadastrar</button>
                         </form>
                     </div>

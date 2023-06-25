@@ -1,7 +1,20 @@
 import React, { useState, useEffect } from "react";
 
 
-function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario, mostrarInventario2, setMostrarInventario2, mostrarInventario3, setMostrarInventario3, opt, itens, listaRef, adicionarItem, scrollTop }) {
+
+
+function Inventario({ item,
+    toggleModal,
+    mostrarInventario,
+    setMostrarInventario,
+    mostrarInventario2,
+    setMostrarInventario2,
+    mostrarInventario3,
+    setMostrarInventario3,
+    itens,
+    listaRef,
+    adicionarItem,
+    scrollTop }) {
     const alturaBotao = '15vh';
     const larguraBotao = '15vh';
     const [itemSelecionado, setItemSelecionado] = useState(null);
@@ -78,10 +91,12 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
 
     }
 
+    function Combo(optPrimario) {
+
+    }
     if (item.grupoc === 1) {
         const optionManualPrimario = itens.filter((item) => item.grupoc === 1);
         const optionManualSecundario = itens.filter((item) => item.grupoc === 4);
-        const optionManualTerceiro = itens.filter((item) => item.grupoc === 4);
 
 
 
@@ -298,11 +313,6 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
     else if (item.grupoc === 2) {
         const optionManualPrimario = itens.filter((item) => item.grupoc === 4);
         const optionManualSecundario = itens.filter((item) => item.grupoc === 4);
-
-
-
-
-
 
         if (!mostrarInventario) {
             return (<div>
@@ -657,13 +667,66 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
         }
 
     }
+    else if (item.grupoc === 8) {
+
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 23);
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index} >
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+
+                            </li>
+
+                        ))}
+
+                    </ul>
+
+
+                </div>
+            </div>);
+        }
+
+    }
+    else if (item.grupoc === 9) {
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 24);
+
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index} >
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+
+                            </li>
+
+                        ))}
+
+                    </ul>
+
+
+                </div>
+            </div>);
+        }
+
+
+    }
     else {
         var itensFiltrados;
         console.log(itemSelecionado);
         console.log('aquii');
 
-        if (itemSelecionado === 22) {
-            itensFiltrados = itens.filter((item) => item.grupoc === 4);
+        if (itemSelecionado === 23) {
+            itensFiltrados = itens.filter((item) => item.grupoc === 25);
+        }
+        else if (itemSelecionado === 24) {
+            itensFiltrados = itens.filter((item) => item.grupoc === 25);
+
         }
         else if (itemSelecionado === 4) {
             itensFiltrados = itens.filter((item) => item.grupoc === 4);
@@ -683,6 +746,7 @@ function Inventario({ item, toggleModal, mostrarInventario, setMostrarInventario
         return (
             <div className='inventarioOp'>
                 <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+
                     {itensFiltrados.map((item, index) => (
                         <li key={index} >
                             <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 4)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
