@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 
 import TecladoNumerico from './Teclado';
-const PagamentoForm = ({ setNotification, setPagamento, calcularTotal, calcularValorRestante, adicionarItem }) => {
+import JanelaAlerta from './JanelaAlerta';
+const PagamentoForm = ({
+    handleMostrarFormularioConfirm,
+    setNotification,
+    setPagamento,
+    finalizarComanda,
+    calcularValorRestante,
+    adicionarItem,
+}) => {
+    const [restaurarStatus, setRestaurarStatus] = useState(false);
     const [valorTotalPago, setValorTotalPago] = useState('');
     const [valorPagamento, setValorPagamento] = useState('');
     const [bandeiraCartao, setBandeiraCartao] = useState('');
-    const [teclado, setTeclado] = useState();
-    const [cnumero, setCNunero] = useState();
 
     const [metodosPagamento, setMetodosPagamento] = useState([
         { nome: 'Visa Crédito', numero: 901 },
@@ -53,7 +60,7 @@ const PagamentoForm = ({ setNotification, setPagamento, calcularTotal, calcularV
 
                     // Mantém duas casas decimais, adicionando zeros à direita, se necessário
                     valor = valor.toFixed(2);
-                    
+
                 } else {
                     // Adiciona zeros à esquerda para manter a formatação correta
                     valor = (valor + '00').slice(0, -2);
@@ -73,15 +80,16 @@ const PagamentoForm = ({ setNotification, setPagamento, calcularTotal, calcularV
 
 
     const handleSelectCartao = (bandeira) => {
-        const total = calcularTotal();
         var valorRestante = calcularValorRestante();
         console.log(valorPagamento);
         console.log(parseFloat(valorRestante.replace(',', '.')));
-        if (valorPagamento <= parseFloat(valorRestante.replace(',', '.'))) {
-            setCNunero(bandeira.numero);
-            setBandeiraCartao(bandeira.nome);
+        if (valorPagamento <= parseFloat(valorRestante.replace(',', '.')) && valorPagamento > 0) {
+
             setPagamento(valorPagamento);
-            handleNotification(`OK: O valor ${valorPagamento}  pode ser ${valorRestante}`)
+            
+            setBandeiraCartao(bandeira.nome);
+            handleNotification(`Adicionado R$ ${valorPagamento}.`)
+            setRestaurarStatus(true);
             adicionarItem(
                 {
                     avaliacao: 0,
@@ -104,60 +112,81 @@ const PagamentoForm = ({ setNotification, setPagamento, calcularTotal, calcularV
                 'M'
             );
 
+            finalizarComanda(valorPagamento.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }), valorRestante.toLocaleString('pt-BR', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+            }));
             setBandeiraCartao('');
             setValorTotalPago('');
             setValorPagamento('');
-            setTeclado('');
-            setCNunero('');
             
+
             return bandeira.nome;
         }
         else {
-            handleNotification(`NO: O valor ${valorPagamento} não pode ser ${valorRestante}`)
+            handleNotification(`R$ ${valorPagamento} é maior que o valor atual da conta.`)
         }
     };
 
 
 
+    function handleTecladoSelecionar() {
+        if (restaurarStatus === true){
+            setRestaurarStatus(false);
+        }
+        return restaurarStatus;
+    }
 
     return (
         <>
+            {handleMostrarFormularioConfirm() ? <JanelaAlerta /> :
+                <form >
 
-            <form >
+                    <div className='pagament-class-pg-div'>
+                        <input
+                            
+                            type='text'
+                            id='valorPagamento'
+                            value={valorPagamento !== '' ? parseFloat(valorPagamento).toFixed(2) : ''}
+                            style={{
+                                width: '180px',
+                                height: '50px',
+                                fontSize: '40px',
+                                fontWeight: '900',
+                                fontFamily: 'monospace'
+                            }}
+                            onChange={handleValorPagamentoChange}
+                        />
 
-                <div className='pagament-class-pg-div'>
-                    <input
-                        type='text'
-                        id='valorPagamento'
-                        value={valorPagamento !== '' ? parseFloat(valorPagamento).toFixed(2) : ''}
-                        style={{
-                            width: '180px',
-                            height: '50px',
-                            fontSize: '40px',
-                            fontWeight: '900',
-                            fontFamily: 'monospace'
-                        }}
-                        onChange={handleValorPagamentoChange}
+                    </div>
+
+                    <TecladoNumerico
+                        handleValorPagamentoChange={handleValorPagamentoChange}
+                        handleTecladoSelecionar={handleTecladoSelecionar}
                     />
 
-                </div>
-                <TecladoNumerico handleValorPagamentoChange={handleValorPagamentoChange} />
-                <div className='pagament-class-pg-div'>
-                    {metodosPagamento.map(metodo => (
+                    <div className='pagament-class-pg-div'>
+                        {metodosPagamento.map(metodo => (
 
-                        <button
-                            key={metodo.numero}
-                            type='button'
-                            style={{ width: '115px', height: '75px', margin: '8px 8px' }}
-                            className={bandeiraCartao === metodo.nome ? 'selected' : 'selectedn'}
-                            onClick={() => handleSelectCartao(metodo)}
-                        >
-                            {metodo.nome}
-                        </button>
+                            <button
+                                key={metodo.numero}
+                                type='button'
+                                style={{ width: '115px', height: '75px', margin: '8px 8px' }}
+                                className={bandeiraCartao === metodo.nome ? 'selected' : 'selectedn'}
+                                onClick={() => handleSelectCartao(metodo)}
+                            >
+                                {metodo.nome}
+                            </button>
 
-                    ))}
-                </div>
-            </form>
+                        ))}
+                    </div>
+                </form>
+            }
+
+
 
         </ >
     );

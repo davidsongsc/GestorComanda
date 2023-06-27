@@ -35,6 +35,7 @@ import AlertaPersonalizado from './AlertaPersonalizado';
 import PagamentoForm from './Comanda/Pagamento';
 
 
+
 Modal.setAppElement("#root");
 const TX = 0;
 const limiteOptionsCardapio = 55;
@@ -51,9 +52,19 @@ const usuarioError = [{
   "btn2": "fechar",
   "fnb2": ""
 }]
-function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatus,
-  mesaId, handleSairLogin, handleEmitStatus, setNotification,
-  handleShowModalMesa, handleComandaItens, handleDeletarItem }) {
+function Comanda({
+  caixaStatus,
+  handleGorjeta,
+  handleDeletarComanda,
+  atendente,
+  setCaixaStatus,
+  mesaId,
+  handleSairLogin,
+  handleEmitStatus,
+  setNotification,
+  handleShowModalMesa,
+  handleComandaItens,
+  handleDeletarItem }) {
   const { id } = useParams();
   // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
@@ -84,8 +95,19 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
   const [selectCodeDelete, setSelectCodeDelete] = useState(null);
   const [selectCombinaG, setCombinaG] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const [mostrarFormularioConfirm, setMostrarFormularioConfirm] = useState(false);
+
   const handleMostrarFormulario = () => {
-    setMostrarFormulario(true);
+    if (
+      (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+      (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
+    ) {
+      setMostrarFormulario(true);
+    }
+    else {
+      handleNotification(`Usuário ${atendente.usuario} não pode receber pagamentos na comanda!`);
+    }
+
   };
 
   const handleSelectItem = (index) => {
@@ -98,19 +120,17 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
         setSelectCodeDelete(null);
         setSelectedItemId(comanda[index].id); // Define o ID do item selecionado
         setCombinaG(comanda[index].combinag);
-        console.log(selectedItemId);
-        console.log(selectCodeDelete);
+
 
       } else {
-
+        handleClick('remover');
         // Se estiver selecionado, remova o item do array de selecionados
         setSelectedItems(selectedItems.filter((item) => item !== index));
         setSelectedItemId(comanda[index].id); // Define o ID do item selecionado
         setSelectCodeDelete(comanda[index].combinag);
+        setMostrarFormularioConfirm(false);
         setCombinaG(comanda[index].combinag);
 
-        console.log(selectedItemId);
-        console.log(selectCodeDelete);
       }
     }
   };
@@ -132,6 +152,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     setCaixaStatus(true);
     handleEmitStatus(mesa, 4);
   }
+
   useEffect(() => {
 
     function carregarComanda() {
@@ -171,7 +192,6 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
         })
         .catch(error => console.error(error));
     }
-
     carregarComanda();
   }, [mesaId]);
 
@@ -266,21 +286,91 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
 
     selectedItems.forEach((selectedIndex) => {
       const selectedItem = comanda[selectedIndex];
-      const itemValor = selectedItem.valor * selectedItem.qtd;
-      valorTotal += itemValor;
+      if (selectedItem) {
+        console.log(selectedItem);
+        var d = selectedItem.combinac;
+        if (d === 1) {
+          //
+        } else if (d === 2) {
+          //
+        } else {
+          const itemValor = selectedItem.valor * selectedItem.qtd;
+          valorTotal += itemValor;
+        }
+      }
+
+
+
+
+
+
     });
 
     return valorTotal;
   };
 
-  const adicionarItensSelecionados = () => {
-    const itensSelecionados = selectedItems.map((selectedIndex) => {
-      const itemSelecionado = comanda[selectedIndex];
-      const novoItem = { ...itemSelecionado, background: 'red' }; // Altera a propriedade 'background' para 'red'
-      return novoItem;
+  const calcularPagamento = () => {
+    let total = 0;
+
+    comanda.forEach(item => {
+      if (item.combinag === 900) {
+        total += item.valor;
+      } else if (item.combinag === 2) {
+        setPagamento(prevPagamento => prevPagamento + item.valor);
+      }
+
     });
-    setComanda((comanda) => [...comanda, ...itensSelecionados]);
+
+    return total;
   };
+
+  const calcularGorjeta = () => {
+    return calcularTotal() * GORJETA;
+  };
+
+  const calcularTaxa = () => {
+    return calcularTotal() * TX;
+  };
+
+  const calcularDesconto = () => {
+    let total = 0;
+
+    comanda.forEach(item => {
+      if (item.combinag === 999) {
+        total += item.valor;
+      }
+    });
+
+    return total;
+  };
+
+  const calcularContaMostrar = () => {
+    return (calcularTotal() + calcularGorjeta() + calcularTaxa() + calcularDesconto()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+  const calcularConta = () => {
+    return (calcularTotal() + calcularGorjeta() + calcularTaxa() + calcularDesconto() - calcularPagamento()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+  const calcularContaPaga = () => {
+    return (calcularTotal() + calcularGorjeta() + calcularDesconto() + calcularTaxa() - calcularPagamento()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
+
+
+  const calcularValorRestante = () => {
+    // Calcule o valor restante com base nos pagamentos anteriores
+    // e retorne o valor restante.
+    console.log(calcularConta());
+    console.log(pagamento);
+    console.log(calcularContaPaga());
+    // Exemplo:
+
+    const valorPago = calcularContaPaga(); // Implemente a função para calcular o valor total pago até agora
+
+
+    return valorPago.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
+
 
   const handleClick = (id) => {
 
@@ -315,16 +405,35 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
 
 
     }
-    else if (id === 'desconto') {
-      if (calcularConta() >= 1) {
-        if (
-          (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-          (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
-        ) {
-          const valorSelecionado = calcularValorSelecionado();
-          const contaAtual = calcularConta();
+    else if (id === 'finalizarcontarecebida') {
+      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
 
-          if (valorSelecionado <= contaAtual) {
+        handleNotification('Comanda Finalizada.');
+        handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
+        window.location.reload();
+      } else {
+        handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
+      }
+
+
+    }
+    else if (id === 'desconto') {
+      const valorSelecionado = calcularValorSelecionado().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
+      const contaAtual = calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
+      const contaAguarda = calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
+      if (
+        (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
+      ) {
+
+
+        console.log(valorSelecionado);
+        console.log(contaAtual);
+        console.log(contaAguarda);
+        if (contaAguarda <= valorSelecionado) {
+          if (valorSelecionado > contaAtual) {
             handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
             adicionarItem(
               {
@@ -347,18 +456,16 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
               },
               'M'
             );
-          } else {
-            handleNotification('O desconto não pode ser maior que o valor da comanda!');
           }
         } else {
-          handleNotification(`Usuário ${atendente.usuario} não pode finalizar a comanda!`);
+          handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
         }
+      } else {
+        handleNotification(`Usuário ${atendente.usuario} não pode finalizar a comanda!`);
       }
 
-      else {
-        handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
 
-      }
+
 
     } else if (id === 'remover') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
@@ -381,18 +488,8 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
       //handleSairLogin(mesa);
 
     }
-  }
-
-  // carregar itens da API
-  const valorProdutos = (produto_id) => {
-    const xal = inventario ? inventario.filter(d => d.id === produto_id) : [];
-    console.log(xal)
-    if (xal.length > 0 && xal[0].valor) {
-      return xal[0].valor;
-    } else {
-      return produto_id;
-    }
   };
+
 
 
 
@@ -411,23 +508,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
       return produto_id
     }
 
-  }
-
-  const ValoresProdutos = (produto_id) => {
-
-
-    const xal = inventario ? inventario.filter(d => d.produto_id === produto_id) : [];
-    if (xal.length > 0 && xal[0].nomeproduto) {
-      return (<>
-        {`${xal[0].nomeproduto}`}</>)
-
-    }
-
-    else {
-      return produto_id
-    }
-
-  }
+  };
 
   const nomeProduto = (produto_id) => {
     const val = itens ? itens.filter(o => o.id === produto_id) : [];
@@ -445,7 +526,8 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
         {nomeProdutos(produto_id)}
       </td>)
     }
-  }
+  };
+
   const nomeProdutoSis = (produto_id) => {
     const val = inventario ? inventario.filter(o => o.id === produto_id) : [];
 
@@ -459,6 +541,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
       return nomeProdutos(produto_id); // Retorna o valor da função nomeProdutos
     }
   };
+
   const valorProduto = (produto_id) => {
     const val = comanda ? comanda.filter(o => o.produto_id === produto_id) : [];
 
@@ -472,7 +555,9 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
       return val[0].valor; // Retorna o valor da função nomeProdutos
     }
   };
-
+  const handleMostrarFormularioConfirm = () => {
+    return mostrarFormularioConfirm;
+  }
   const adicionarItem = (item, t) => {
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
     const numeros = [];
@@ -524,54 +609,11 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     comanda.forEach(item => {
       if (item.combinag < 100 && item.valor >= 0) {
         total += item.valor * item.qtd;
-      } 
-
-    });
-
-    return total;
-  };
-
-  const calcularPagamento = () => {
-    let total = 0;
-
-    comanda.forEach(item => {
-      if (item.combinag === 900) {
-        total += item.valor;
-      } else if (item.combinag === 2) {
-        setPagamento(prevPagamento => prevPagamento + item.valor);
       }
-      
+
     });
 
     return total;
-  };
-
-  const calcularGorjeta = () => {
-    return calcularTotal() * GORJETA;
-  };
-
-  const calcularTaxa = () => {
-    return calcularTotal() * TX;
-  };
-
-  const calcularDesconto = () => {
-    let total = 0;
-
-    comanda.forEach(item => {
-      if (item.combinac === 1) {
-        total += item.valor * item.qtd;
-      }
-    });
-
-    return total;
-  };
-
-  const calcularConta = () => {
-    return calcularTotal() + calcularGorjeta()  + calcularTaxa() - calcularPagamento() + calcularDesconto();
-  };
-
-  const calcularContaPaga = () => {
-    return (calcularTotal() + calcularGorjeta() + calcularDesconto() + calcularTaxa()) - calcularPagamento();
   };
 
 
@@ -619,24 +661,124 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     }
   };
 
+  const isCaixaValido = (atendente) =>
+    (atendente.auth.startsWith('j')) &&
+    /^\d+$/.test(atendente.auth.slice(1));
+
+  const isGerenteValido = (atendente) =>
+    (atendente.auth.startsWith('g') || atendente.auth.startsWith('j')) &&
+    /^\d+$/.test(atendente.auth.slice(1));
+
+  const isGestorValido = (atendente) =>
+    (atendente.auth.startsWith('g')) &&
+    /^\d+$/.test(atendente.auth.slice(1));
 
 
-  const calcularValorRestante = () => {
-    // Calcule o valor restante com base nos pagamentos anteriores
-    // e retorne o valor restante.
+
+  const buttons = [
+    { label: 'O.K.', handleClick: () => handleClick('O.K.'), className: 'H' },
+    { label: 'IMPRIMIR', handleClick: () => handleClick('conta'), className: 'A' },
+
+    {
+      label: 'Receber',
+      handleClick: handleMostrarFormulario,
+      className: isGerenteValido(atendente) ? 'A' : 'C',
+      disabled: isGerenteValido(atendente) ? false : true,
+      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+    },
+    {
+      label: 'Desconto',
+      handleClick: () => handleClick('desconto'),
+      className: isGestorValido(atendente) ? 'A' : 'C',
+      disabled: isGestorValido(atendente) ? false : true,
+      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+    },
+    {
+      label: 'CANCELAR',
+      handleClick: () => handleClick('cancelar'),
+      className: isGestorValido(atendente) ? 'A' : 'C',
+      disabled: isGestorValido(atendente) ? false : true,
+      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+    },
+    {
+      label: 'CAIXA',
+      handleClick: handleMostrarCaixaStatus,
+      className: isCaixaValido(atendente) ? 'A' : 'C',
+      disabled: isCaixaValido(atendente) ? false : true,
+      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+
+    },
+
+    { label: 'COZINHA', className: 'B' },
+    { label: 'FECHAR', handleClick: () => handleClick('fechar'), className: 'F' },
+    {
+      label: 'Zerar Gorjeta', handleClick: removerGorjeta,
+      className: GORJETA === 0 ? 'A' : 'B',
+      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+    },
+    {
+      label: 'GORJETA 10%', handleClick: () => adicionarGorjeta(10),
+      className: GORJETA === 0.10 ? 'A' : 'B'
+    },
+    {
+      label: 'GORJETA 11%', handleClick: () => adicionarGorjeta(11),
+      className: GORJETA === 0.11 ? 'A' : 'B'
+    },
+    {
+      label: 'GORJETA 12%', handleClick: () => adicionarGorjeta(12),
+      className: GORJETA === 0.12 ? 'A' : 'B'
+    },
+
+
+    {
+      label: 'Remover', handleClick: () => handleClick('remover'),
+      className: isCaixaValido(atendente) ? 'A' : 'C',
+      disabled: isCaixaValido(atendente) ? false : true,
+      visualizar: isCaixaValido(atendente) ? 'block' : 'none',
+    },
+    { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true },
+    { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true },
+
+
+  ];
+
+  function renderizarBotoes() {
+    return buttons.map((button, index) => {
+      if (button.className === '') return null;
+
+      return (
+        <button
+          key={index}
+          onClick={button.handleClick}
+          className={button.className}
+          disabled={button.disabled}
+          style={{ display: button.visualizar }}
+        >
+          {button.label}
+        </button>
+      );
+    });
+  }
+
+  const finalizarComanda = (pagamento, resta) => {
+    let p = pagamento.replace(',', '.')
+    let r = resta.replace(',', '.')
+    console.log(calcularContaMostrar());
     console.log(calcularConta());
-    console.log(pagamento);
-    console.log(calcularContaPaga());
-    // Exemplo:
+    console.log(p);
+    console.log(r);
+    console.log(r - p);
+    if ((r - p) <= 0) {
+      //handleEmitStatus(mesaId, 6);
+      setMostrarFormularioConfirm(true);
+      //handleClick('finalizarcontarecebida');
 
-    const valorPago = calcularContaPaga(); // Implemente a função para calcular o valor total pago até agora
+    }
 
-
-    return valorPago.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  };
+  }
 
   return (
-    <div className='container-comanda fade-in' style={{ position: 'relative', top: '10px', left: '35px' }}>
+    <div className='container-comanda fade-in' style={{ position: 'relative', top: '0px', left: '0%' }}>
       {mostrarAlerta && (
         <AlertaPersonalizado
           usuarioError={usuarioError}
@@ -646,144 +788,150 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
           hAlerta={handleClickMostrar}
         />
       )}
-      <div className="comanda">
-        <div className="comandar">
+
+      <div className="comandar">
 
 
-          <div className='cm-comanda-pn'>
+        <div className='cm-comanda-pn'>
 
-            <table className='menu-itens-catal'>
-              <thead>
-                <tr className='titulo-tb'>
-                  <td >QTD</td>
+          <table className='menu-itens-catal'>
+            <thead>
+              <tr className='titulo-tb'>
+                <td >QTD</td>
 
-                  <td>PRODUTO</td>
+                <td>PRODUTO</td>
 
-                  <td>V UND</td>
-                  <td>V TOTAL</td>
-
-
-                </tr>
-              </thead>
-              <tbody>
+                <td>V UND</td>
+                <td>V TOTAL</td>
 
 
+              </tr>
+            </thead>
+            <tbody>
 
 
 
-                {comanda.map((item, index) => (
-                  <>
-                    <tr
-                      key={index}
-                      className={`linhas-tb ${selectedItems.includes(index) ? 'selected' : ''}`}
-                      onClick={() => handleSelectItem(index)}
+
+
+              {comanda.map((item, index) => (
+                <>
+                  <tr
+                    key={index}
+                    className={`linhas-tb ${selectedItems.includes(index) ? 'selected' : ''}`}
+                    onClick={() => handleSelectItem(index)}
+                  >
+                    <td
+                      className="itemNormalB"
+                      style={
+                        item.combinac === 0
+                          ? { color: 'black', backgroundColor: 'white' }
+                          : { color: 'white', backgroundColor: 'black' }
+                      }
                     >
-                      <td
-                        className="itemNormalB"
-                        style={
-                          item.combinac === 0
-                            ? { color: 'black', backgroundColor: 'white' }
-                            : { color: 'white', backgroundColor: 'black' }
-                        }
-                      >
-                        {item.combinac === 0 ? item.qtd : '▲'}
+                      {item.combinac === 0 ? item.qtd : '▲'}
+                    </td>
+                    {item.combinac === 0 ? (
+                      <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
+                        {nomeProduto(item.produto_id)}
                       </td>
-                      {item.combinac === 0 ? (
-                        <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
-                          {nomeProduto(item.produto_id)}
-                        </td>
-                      ) : (
-                        <td className={`ndd ${item.combinac === 0 ? 'obs' : 'itemNormal'}`}>
-                          {nomeProdutos(item.produto_id)}
-                        </td>
-                      )}
-                      <td
-                        className="itemNormalB"
-                        style={{
-                          fontSize: '11px',
-                          fontWeight: '800',
-                          letterSpacing: '2px',
-                        }}
-                      >
-                        {item.valor != 0
-                          ? item.valor?.toLocaleString('pt-BR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }) ?? 'Error no valor...'
-                          : ''}
-                        <br />
+                    ) : (
+                      <td className={`ndd ${item.combinac === 0 ? 'obs' : 'itemNormal'}`}>
+                        {nomeProdutos(item.produto_id)}
                       </td>
-                      <td
-                        className="itemNormalB"
-                        style={{
-                          fontSize: '25px',
-                          fontWeight: '800',
-                          color: 'goldenrod',
-                          letterSpacing: '4px',
-                        }}
-                      >
-                        {item.valor != 0
-                          ? (item.combinac === 2 ? (item.valor)?.toLocaleString('pt-BR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          }) : (item.valor * item.qtd)?.toLocaleString('pt-BR', {
-                            minimumFractionDigits: 2,
-                            maximumFractionDigits: 2,
-                          })) ?? 'Valor não definido'
-                          : ''}
-                      </td>
-                    </tr>
+                    )}
+                    <td
+                      className="itemNormalB"
+                      style={{
+                        fontSize: '11px',
+                        fontWeight: '800',
+                        letterSpacing: '2px',
+                      }}
+                    >
+                      {item.valor != 0
+                        ? item.valor?.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }) ?? 'Error no valor...'
+                        : ''}
+                      <br />
+                    </td>
+                    <td
+                      className="itemNormalB"
+                      style={{
+                        fontSize: '25px',
+                        fontWeight: '800',
+                        color: 'goldenrod',
+                        letterSpacing: '4px',
+                      }}
+                    >
+                      {item.valor != 0
+                        ? (item.combinac === 2 ? (item.valor)?.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }) : (item.valor * item.qtd)?.toLocaleString('pt-BR', {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        })) ?? 'Valor não definido'
+                        : ''}
+                    </td>
+                  </tr>
 
-                  </>
-                ))}
-
-
-              </tbody>
-
-            </table>
-            {comanda.map((item, index) => (
-              <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
-                {/**<h1>{nomeProduto(item.produto_id)}</h1> **/}
-                <InventarioOption style={{ backgroundColor: 'black' }}
-                  id={id}
-                  grupo={grupo}
-                  toggleModal={toggleModal}
-                  mostrarInventario={mostrarInventario}
-                  setMostrarInventario={setMostrarInventario}
-                  mostrarInventario2={mostrarInventario2}
-                  setMostrarInventario2={setMostrarInventario2}
-                  mostrarInventario3={mostrarInventario3}
-                  setMostrarInventario3={setMostrarInventario3}
-                  qop={parseInt(teclado)}
-                  opt={item.grupoc}
-                  opx={item.combinac}
-                  itens={inventario}
-                  listaRef={listaRef}
-                  adicionarItem={adicionarItemOption}
-                  scrollTop={scrollTop}
-                  handleScrollUp={handleScrollUp}
-                  handleScrollDown={handleScrollDown}
-                  item={item} />
-
-              </Modal>
-            ))}
+                </>
+              ))}
 
 
-            <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
-            <div className='inventario'>
+            </tbody>
 
-              <ul ref={listaRef} className='i-inventario'>
-                {mostrarFormulario ? (
-                  <PagamentoForm setNotification={setNotification} setPagamento={setPagamento} calcularValorRestante={calcularValorRestante} calcularTotal={calcularTotal} adicionarItem={adicionarItem} />
-                ) : (<> {itensFiltrados.map((item, index) => (
-                  <li key={index}>
-                    <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
-                  </li>
-                ))}</>
-                )}
+          </table>
 
-              </ul>
-              {/*
+
+
+
+        </div>
+
+        {comanda.map((item, index) => (
+          <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
+            {/**<h1>{nomeProduto(item.produto_id)}</h1> **/}
+            <InventarioOption style={{ backgroundColor: 'black' }}
+              id={id}
+              grupo={grupo}
+              toggleModal={toggleModal}
+              mostrarInventario={mostrarInventario}
+              setMostrarInventario={setMostrarInventario}
+              mostrarInventario2={mostrarInventario2}
+              setMostrarInventario2={setMostrarInventario2}
+              mostrarInventario3={mostrarInventario3}
+              setMostrarInventario3={setMostrarInventario3}
+              qop={parseInt(teclado)}
+              opt={item.grupoc}
+              opx={item.combinac}
+              itens={inventario}
+              listaRef={listaRef}
+              adicionarItem={adicionarItemOption}
+              scrollTop={scrollTop}
+              handleScrollUp={handleScrollUp}
+              handleScrollDown={handleScrollDown}
+              item={item} />
+
+          </Modal>
+        ))}
+
+
+        <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
+        <div className='inventario'>
+
+          <ul ref={listaRef} className='i-inventario'>
+            {mostrarFormulario ? (
+              <PagamentoForm handleMostrarFormularioConfirm={handleMostrarFormularioConfirm} finalizarComanda={finalizarComanda} setNotification={setNotification} setPagamento={setPagamento} calcularValorRestante={calcularValorRestante} calcularTotal={calcularTotal} adicionarItem={adicionarItem} />
+            ) : (<> {itensFiltrados.map((item, index) => (
+              <li key={index}>
+                <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
+              </li>
+            ))}</>
+            )}
+
+          </ul>
+          {/*
             <div>
               <button onClick={handleScrollUp}>↑</button>
               <button onClick={handleScrollDown}>↓</button>
@@ -791,102 +939,75 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
             </div>
             */}
 
+        </div>
+
+        <div className='controlea'>
+          <div className='digitosComanda'>
+            <div className='g2'>
+              <button onClick={() => handleTeclado(1)}>1</button>
+              <button onClick={() => handleTeclado(2)}>2</button>
+              <button onClick={() => handleTeclado(3)}>3</button>
             </div>
-
-
-
-
-
-
-            <div className='controlea'>
-              <div className='digitosComanda'>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado(1)}>1</button>
-                  <button onClick={() => handleTeclado(2)}>2</button>
-                  <button onClick={() => handleTeclado(3)}>3</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado(4)}>4</button>
-                  <button onClick={() => handleTeclado(5)}>5</button>
-                  <button onClick={() => handleTeclado(6)}>6</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado(7)}>7</button>
-                  <button onClick={() => handleTeclado(8)}>8</button>
-                  <button onClick={() => handleTeclado(9)}>9</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado('A')}>A</button>
-                  <button onClick={() => handleTeclado(0)}>0</button>
-                  <button onClick={() => handleTeclado('B')}>B</button>
-                </div>
-                <div className='g2'>
-                  <button onClick={() => handleTeclado('C')}>C</button>
-                  <button onClick={() => handleTeclado('D')}>D</button>
-                  <button onClick={() => handleTeclado('E')}>E</button>
-                </div>
-              </div>
-
+            <div className='g2'>
+              <button onClick={() => handleTeclado(4)}>4</button>
+              <button onClick={() => handleTeclado(5)}>5</button>
+              <button onClick={() => handleTeclado(6)}>6</button>
             </div>
-
-
-          </div>
-          <div className='controleb'>
-            <div className='operadores'>
-              <button onClick={() => handleClick('O.K.')} className='H' >O.K.</button>
-
-              <button className='B'>COZINHA</button>
-              <button onClick={() => handleClick('fechar')} className='F'>FECHAR</button>
-              <button onClick={() => handleClick('desconto')} className={((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-                (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) ? 'A' : 'C'}>Desconto</button>
-              <button onClick={() => handleMostrarCaixaStatus()} className={((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-                (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) ? 'B' : 'C'} >CAIXA</button>
-              <button onClick={() => adicionarGorjeta(10)} className={GORJETA === 0.10 ? 'A' : 'B'} >GORJETA 10%</button>
-              <button onClick={() => adicionarGorjeta(11)} className={GORJETA === 0.11 ? 'A' : 'B'} >GORJETA 11%</button>
-              <button className='B' onClick={handleMostrarFormulario}>Receber</button>
+            <div className='g2'>
+              <button onClick={() => handleTeclado(7)}>7</button>
+              <button onClick={() => handleTeclado(8)}>8</button>
+              <button onClick={() => handleTeclado(9)}>9</button>
             </div>
-
-            <div className='operadores'>
-              <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
-              <button onClick={() => handleClick('cancelar')} className={((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-                (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) ? 'A' : 'C'}>CANCELAR</button>
-              <button onClick={() => handleClick('remover')} className={selectCodeDelete === null ? 'A' : 'C'}>Remover</button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled>Dividir Conta</button>
-              <button onClick={() => handleClick('fechar')} className='F' disabled>Juntar Conta</button>
-
-              <button onClick={() => removerGorjeta()} className={GORJETA === 0 ? 'A' : 'B'} >Zerar Gorjeta</button>
-              <button onClick={() => adicionarGorjeta(12)} className={GORJETA === 0.12 ? 'A' : 'B'} >GORJETA 12%</button>
+            <div className='g2'>
+              <button onClick={() => handleTeclado('A')}>A</button>
+              <button onClick={() => handleTeclado(0)}>0</button>
+              <button onClick={() => handleTeclado('B')}>B</button>
             </div>
 
           </div>
 
-          <table className='tabela-fixa'>
-            <thead>
-              <tr className='titulo-tb'>
-                <td className='titulo-table'>COMANDA </td>
-                <td className='titulo-table'>ATENDIMENTO</td>
+        </div>
+        <div className='controleb'>
+          <div className='operadores'>
+            {renderizarBotoes()}
 
-                <td className='titulo-table'>GORJETA</td>
-                <td className='titulo-table'>DESCONTOS</td>
-                <td className='titulo-table'>CONTA</td>
-                <td className='titulo-table'>TOTAL</td>
+          </div>
 
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>{mesa}</td>
-                <td className='linha-table'><em>{usuario}</em></td>
+        </div>
 
-                <td className='linha-table'>{calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>{calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>{calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-                <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>  </div>
-    </div >
+        <table className='tabela-fixa'>
+          <thead>
+            <tr className='titulo-tb'>
+              <td className='titulo-table'>COMANDA </td>
+              <td className='titulo-table'>ATENDIMENTO</td>
+
+              <td className='titulo-table'>GORJETA</td>
+              <td className='titulo-table'>DESCONTOS</td>
+              <td className='titulo-table'>CONTA</td>
+              <td className='titulo-table'>TOTAL</td>
+              <td className='titulo-table'>Pago</td>
+              <td className='titulo-table'>Falta</td>
+
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>{mesa}</td>
+              <td className='linha-table'><em>{usuario}</em></td>
+
+              <td className='linha-table'>{calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>{calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>{calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularPagamento().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
   );
 }
 

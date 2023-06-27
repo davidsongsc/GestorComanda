@@ -72,6 +72,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [areaActive, setActive] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [nivel, setNivel] = useState(1);
+    const [caixaDetect, setCaixaDetect] = useState(false);
+
     const [caixaStatus, setCaixaStatus] = useState(false);
     const navigate = useNavigate();
     // eslint-disable-next-line no-unused-vars
@@ -206,6 +208,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     function handleSairLogin() {
         handleCloseModalMesa();
         setCaixaStatus(false);
+        setCaixaDetect(false);
         clearTimeout(timeoutId);
         //handleNotification('Usuario Desconectado!');
         setAtendente({ "usuario": null });
@@ -231,10 +234,12 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const handleCaixaStatus = () => {
         if (atendente.nivel > 6 || atendente.auth === 'j5') {
             setCaixaStatus(true);
+            setCaixaDetect(true);
         }
         else {
             handleNotification('Acesso restrito, Usuario sem privilégios. Por favor, procure um gerente!');
             setCaixaStatus(false);
+            setCaixaDetect(false);
         }
 
     };
@@ -337,6 +342,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             else if (mesa.status === 5 && atendente.auth === 'j5') {
                 if (mesa.ocupada) {
                     handleEmitStatus(idMesa, 4);
+                    setCaixaDetect(true);
                     handleNotification('Operação de Caixa: ' + mesa.mesa);
                 }
             } else if (
@@ -347,7 +353,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                 )
             ) {
                 mudarTipoAlertaId(2);
-
+            
                 handleEmitStatus(idMesa, 1);
                 handleNotification(atendente.usuario + ' Inicia a mesa ' + mesa.mesa);
 
@@ -441,7 +447,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     </Modal.Header>
                     <Modal.Body>
                         {caixaStatus != false ?
-                            <ComandaMesa handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} /> : <Comanda handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />}
+                            <ComandaMesa caixaStatus={caixaStatus} handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} /> : <Comanda caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />
+                            }
 
 
                     </Modal.Body>
