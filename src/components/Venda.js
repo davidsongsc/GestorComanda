@@ -78,22 +78,23 @@ const Caixa = ({ socket, atendente, setNotification }) => {
     if (estado === 0) {
       setDadosPieChart(nomesFrequentes.map(([nome, totalValores]) => ({
         nome,
-        totalValores
+        totalValores: totalValores < 0 ? 0 : totalValores
       })));
     } else if (estado === 1) {
       setDadosPieChart(produtosFrequentes.map(([nome, totalValores]) => ({
         nome,
-        totalValores
+        totalValores: totalValores < 0 ? 0 : totalValores
       })));
     } else {
       setDadosPieChart(nomesFrequentes.map(([nome, totalValores]) => ({
         nome,
-        totalValores
+        totalValores: totalValores < 0 ? 0 : totalValores
       })));
     }
     console.log(dadosPieChart);
     // ...
-  }, [estado]);
+  }, [relatorios]);
+  
 
   const nomeProdutos = (produto_id) => {
 
@@ -141,42 +142,51 @@ const Caixa = ({ socket, atendente, setNotification }) => {
     const total = valoresNumericos.reduce((acc, relatorio) => acc + parseFloat(relatorio.valor), 0);
     setTotalValores(total.toLocaleString(undefined, { minimumFractionDigits: 2 }));
   };
-
+  
   const encontrarNomesFrequentes = () => {
     const nomes = {};
     relatorios.forEach((relatorio) => {
+      const valor = parseFloat(relatorio.valor);
+      const valorAtribuido = valor < 0 ? 0 : valor;
+  
       if (nomes[relatorio.operador]) {
-        nomes[relatorio.operador].totalValores += parseFloat(relatorio.valor);
+        nomes[relatorio.operador].totalValores += valorAtribuido;
         nomes[relatorio.operador].frequencia++;
       } else {
         nomes[relatorio.operador] = {
-          totalValores: parseFloat(relatorio.valor),
+          totalValores: valorAtribuido,
           frequencia: 1,
         };
       }
     });
-
+  
     const nomesOrdenados = Object.entries(nomes).sort((a, b) => b[1].frequencia - a[1].frequencia);
     setNomesFrequentes(nomesOrdenados);
   };
+  
 
   const encontrarProdutosFrequentes = () => {
     const nomes = {};
     relatorios.forEach((relatorio) => {
-      if (nomes[nomeProduto(relatorio.produto)]) {
-        nomes[nomeProduto(relatorio.produto)].totalValores += parseFloat(relatorio.valor);
-        nomes[nomeProduto(relatorio.produto)].frequencia++;
+      const valor = parseFloat(relatorio.valor);
+      const valorAtribuido = valor < 0 ? 0 : valor;
+  
+      const nomeProdutoRelatorio = nomeProduto(relatorio.produto);
+      if (nomes[nomeProdutoRelatorio]) {
+        nomes[nomeProdutoRelatorio].totalValores += valorAtribuido;
+        nomes[nomeProdutoRelatorio].frequencia++;
       } else {
-        nomes[nomeProduto(relatorio.produto)] = {
-          totalValores: parseFloat(relatorio.valor),
+        nomes[nomeProdutoRelatorio] = {
+          totalValores: valorAtribuido,
           frequencia: 1,
         };
       }
     });
-
+  
     const nomesOrdenados = Object.entries(nomes).sort((a, b) => b[1].frequencia - a[1].frequencia);
     setProdutosFrequentes(nomesOrdenados);
   };
+  
 
   const classificarRelatorios = () => {
     const relatoriosOrdenados = [...relatorios].sort((a, b) => {
@@ -211,8 +221,8 @@ const Caixa = ({ socket, atendente, setNotification }) => {
             maxHeight: '47vh',
             overflowY: 'auto',
           }}>
-            <table>
-              <thead>
+            <table >
+              <thead >
                 <tr>
                   <th className='pnconfg-table-th'>Funcionario</th>
                   <th className='pnconfg-table-th'>Vendas</th>

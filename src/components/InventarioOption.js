@@ -523,7 +523,32 @@ function Inventario({ item,
 
     }
     else if (item.grupoc === 3) {
-        const optionManualPrimario = itens.filter((item) => item.grupoc === 22);
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 26);
+        
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index} >
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+
+                            </li>
+
+                        ))}
+
+                    </ul>
+
+
+                </div>
+            </div>);
+        }
+        
+
+    }
+    else if (item.grupoc === 7) {
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 7);
 
         const optionManualSecundario = itens.filter((item) => item.grupoc === 4);
 
@@ -627,6 +652,140 @@ function Inventario({ item,
         }
 
     }
+    else if (item.grupoc === 8) {
+
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 23);
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index} >
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+
+                            </li>
+
+                        ))}
+
+                    </ul>
+
+
+                </div>
+            </div>);
+        }
+
+    } else if (item.grupoc === 9) {
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 24);
+
+
+
+
+
+        if (!mostrarInventario) {
+            return (<div>
+                <div className='inventarioOption'>
+
+                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                        {optionManualPrimario.map((item, index) => (
+                            <li key={index}>
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                            </li>
+                        ))}
+                        {/* Extras Opção Ponto */}
+                        <li key={'d01'} onClick={() => ocultarObservacao()}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2003,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2003,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >So no Sal</button>
+                        </li>
+                        <li key={'d02'}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2004,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2004,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Pouco Tempero</button>
+                        </li>
+                        <li key={'d03'}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2005,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2005,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Mais Tempero</button>
+                        </li>
+                        <li key={'d04'}>
+                            <button onClick={() => adicionarItem({
+                                avaliacao: 0,
+                                combinac: 0,
+                                combinag: 0,
+                                descricao: 0,
+                                disponibilidade: 0,
+                                grupo: 0,
+                                grupoc: 1,
+                                id: 2006,
+                                listaid: 4,
+                                nomefantasia: null,
+                                nomeproduto: null,
+                                produto_id: 2006,
+                                push: 0,
+                                qtd: 1,
+                                status: 1,
+                                valor: 0,
+                            }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Sem Sal</button>
+                        </li>
+                    </ul>
+
+
+
+                </div>
+            </div>);
+        }
+
+
+
+
+
+    }
     else if (item.grupoc === 11) {
         const optionManualPrimario = itens.filter((item) => item.grupoc === 11);
         const optionManualSecundario = itens.filter((item) => item.grupoc === 14);
@@ -667,9 +826,8 @@ function Inventario({ item,
         }
 
     }
-    else if (item.grupoc === 8) {
-
-        const optionManualPrimario = itens.filter((item) => item.grupoc === 23);
+    else if (item.grupoc === 12) {
+        const optionManualPrimario = itens.filter((item) => item.grupoc === 5);
         if (!mostrarInventario) {
             return (<div>
                 <div className='inventarioOption'>
@@ -677,7 +835,7 @@ function Inventario({ item,
                     <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
                         {optionManualPrimario.map((item, index) => (
                             <li key={index} >
-                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 4)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
 
                             </li>
 
@@ -689,33 +847,13 @@ function Inventario({ item,
                 </div>
             </div>);
         }
+        
 
     }
-    else if (item.grupoc === 9) {
-        const optionManualPrimario = itens.filter((item) => item.grupoc === 24);
 
-        if (!mostrarInventario) {
-            return (<div>
-                <div className='inventarioOption'>
-
-                    <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
-                        {optionManualPrimario.map((item, index) => (
-                            <li key={index} >
-                                <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 1)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
-
-                            </li>
-
-                        ))}
-
-                    </ul>
+   
 
 
-                </div>
-            </div>);
-        }
-
-
-    }
     else {
         var itensFiltrados;
         console.log(itemSelecionado);
@@ -728,6 +866,10 @@ function Inventario({ item,
             itensFiltrados = itens.filter((item) => item.grupoc === 25);
 
         }
+        else if (itemSelecionado === 26) {
+            itensFiltrados = itens.filter((item) => item.grupoc === 19);
+
+        }
         else if (itemSelecionado === 4) {
             itensFiltrados = itens.filter((item) => item.grupoc === 4);
         }
@@ -735,7 +877,7 @@ function Inventario({ item,
             itensFiltrados = itens.filter((item) => item.grupoc === 5);
         }
         else if (itemSelecionado === 6) {
-            itensFiltrados = itens.filter((item) => item.grupoc === 4);
+            itensFiltrados = itens.filter((item) => item.grupoc === 19);
         }
 
 
@@ -754,66 +896,8 @@ function Inventario({ item,
                     ))}
 
                     {/* Extras Opção Ponto */}
-                    <li key={'d01'} onClick={() => ocultarObservacao('xx')}>
-                        <button onClick={() => adicionarItem({
-                            avaliacao: 0,
-                            combinac: 0,
-                            combinag: 0,
-                            descricao: 0,
-                            disponibilidade: 0,
-                            grupo: 0,
-                            grupoc: 5,
-                            id: 52069,
-                            listaid: 6,
-                            nomefantasia: null,
-                            nomeproduto: null,
-                            produto_id: 52069,
-                            push: 0,
-                            qtd: 1,
-                            status: 1,
-                            valor: 0,
-                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Principal</button>
-                    </li>
-                    <li key={'d02'} onClick={() => ocultarObservacao('xx')}>
-                        <button onClick={() => adicionarItem({
-                            avaliacao: 0,
-                            combinac: 0,
-                            combinag: 0,
-                            descricao: 0,
-                            disponibilidade: 0,
-                            grupo: 0,
-                            grupoc: 6,
-                            id: 52070,
-                            listaid: 6,
-                            nomefantasia: null,
-                            nomeproduto: null,
-                            produto_id: 52070,
-                            push: 0,
-                            qtd: 1,
-                            status: 1,
-                            valor: 0,
-                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Junto</button>
-                    </li>
-                    <li key={'d03'} onClick={() => ocultarObservacao('xx')}>
-                        <button onClick={() => adicionarItem({
-                            avaliacao: 0,
-                            combinac: 0,
-                            combinag: 0,
-                            descricao: 0,
-                            disponibilidade: 0,
-                            grupo: 0,
-                            grupoc: 5,
-                            id: 52071,
-                            listaid: 6,
-                            nomefantasia: null,
-                            nomeproduto: null,
-                            produto_id: 52071,
-                            push: 0,
-                            qtd: 1,
-                            status: 1,
-                            valor: 0,
-                        }, 'M')} className={observacao} style={{ height: alturaBotao, width: larguraBotao, backgroundColor: 'brown' }} >Antes</button>
-                    </li>
+                    
+                   
 
                 </ul>
             </div>

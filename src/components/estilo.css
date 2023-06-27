@@ -609,6 +609,7 @@
   width: 100%;
   border-collapse: collapse;
   color: white;
+  background-color: #932626;
 }
 
 
@@ -773,6 +774,7 @@
 .cadastro-produtos-vc div {
   width: 35%;
 }
+
 .checkbox-container {
   display: flex;
   align-items: center;
@@ -807,6 +809,22 @@
 .radio-input {
   margin-right: 5px;
   cursor: pointer;
+}
+
+.selected {
+  background-color: rgba(255, 255, 255, 0.374);
+  transition: .9s ease-in-out;
+}
+
+.selectedn {
+  background-color: rgb(0, 0, 0);
+  transition: .9s ease-in-out;
+}
+
+.pagament-class-pg-div {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
 }
 
 @media only screen and (min-width: 1370px) {

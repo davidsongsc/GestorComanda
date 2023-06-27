@@ -32,11 +32,12 @@ import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from './AlertaPersonalizado';
+import PagamentoForm from './Comanda/Pagamento';
 
 
 Modal.setAppElement("#root");
 const TX = 0;
-const DESCONTO = 0;
+const limiteOptionsCardapio = 55;
 const nome = 'maquina';
 const token = 'abc123';
 //const ipNucleo = 'https://dagesico.pythonanywhere.com;'
@@ -52,7 +53,7 @@ const usuarioError = [{
 }]
 function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatus,
   mesaId, handleSairLogin, handleEmitStatus, setNotification,
-  handleShowModalMesa, handleComandaItens }) {
+  handleShowModalMesa, handleComandaItens, handleDeletarItem }) {
   const { id } = useParams();
   // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
@@ -74,13 +75,55 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
   const [mostrarInventario2, setMostrarInventario2] = useState(false);
   const [mostrarInventario3, setMostrarInventario3] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
+  const [pagamento, setPagamento] = useState(0);
+  const [vconta, setValorConta] = useState(0);
+  const [vgorjeta, setValorGorjeta] = useState(0);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
+  const [selectedItems, setSelectedItems] = useState([]);
+  const [selectedItemId, setSelectedItemId] = useState(null);
+  const [selectCodeDelete, setSelectCodeDelete] = useState(null);
+  const [selectCombinaG, setCombinaG] = useState(null);
+  const [mostrarFormulario, setMostrarFormulario] = useState(false);
+  const handleMostrarFormulario = () => {
+    setMostrarFormulario(true);
+  };
+
+  const handleSelectItem = (index) => {
+    const isSelected = selectedItems.includes(index);
+    if ((atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
+      (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) {
+      if (!isSelected) {
+        // Caso contrário, adicione o item ao array de selecionadoss
+        setSelectedItems([...selectedItems, index]);
+        setSelectCodeDelete(null);
+        setSelectedItemId(comanda[index].id); // Define o ID do item selecionado
+        setCombinaG(comanda[index].combinag);
+        console.log(selectedItemId);
+        console.log(selectCodeDelete);
+
+      } else {
+
+        // Se estiver selecionado, remova o item do array de selecionados
+        setSelectedItems(selectedItems.filter((item) => item !== index));
+        setSelectedItemId(comanda[index].id); // Define o ID do item selecionado
+        setSelectCodeDelete(comanda[index].combinag);
+        setCombinaG(comanda[index].combinag);
+
+        console.log(selectedItemId);
+        console.log(selectCodeDelete);
+      }
+    }
+  };
+
   const handleNotification = (text) => {
     setNotification(text);
   };
 
   const handleDelComanda = (comanda, valor) => {
     handleDeletarComanda(comanda, valor);
+  }
+  const handleDelItem = (item) => {
+    handleDeletarItem(item);
   }
   const handleUpInsert = () => {
     handleComandaItens(comanda, mesaId);
@@ -198,6 +241,14 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
       behavior: 'smooth'
     });
   };
+  const handleComandaFilter = (id, lista) => {
+    return parseInt(
+      lista
+        .filter(item => item.id === id)
+        .map(item => item.produto_id)
+        .join(", ")
+    );
+  };
 
   const handleTeclado = (tecla) => {
     console.log(typeof tecla)
@@ -210,9 +261,29 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     }
     console.log(teclado)
   }
+  const calcularValorSelecionado = () => {
+    let valorTotal = 0;
 
-  // Click Botão Menu
+    selectedItems.forEach((selectedIndex) => {
+      const selectedItem = comanda[selectedIndex];
+      const itemValor = selectedItem.valor * selectedItem.qtd;
+      valorTotal += itemValor;
+    });
+
+    return valorTotal;
+  };
+
+  const adicionarItensSelecionados = () => {
+    const itensSelecionados = selectedItems.map((selectedIndex) => {
+      const itemSelecionado = comanda[selectedIndex];
+      const novoItem = { ...itemSelecionado, background: 'red' }; // Altera a propriedade 'background' para 'red'
+      return novoItem;
+    });
+    setComanda((comanda) => [...comanda, ...itensSelecionados]);
+  };
+
   const handleClick = (id) => {
+
     if (id === 'O.K.') {
       handleFecharComanda();
       handleEmitStatus(mesa, 3);
@@ -233,24 +304,116 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     } else if (id === 'cancelar') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
-        handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
         handleNotification('Comanda encerrada');
-        handleSairLogin();
+        handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
+
         window.location.reload();
       } else {
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
       }
 
 
+    }
+    else if (id === 'desconto') {
+      if (calcularConta() >= 1) {
+        if (
+          (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+          (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
+        ) {
+          const valorSelecionado = calcularValorSelecionado();
+          const contaAtual = calcularConta();
+
+          if (valorSelecionado <= contaAtual) {
+            handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
+            adicionarItem(
+              {
+                avaliacao: 0,
+                combinac: 1,
+                combinag: 999,
+                descricao: 0,
+                disponibilidade: 0,
+                grupo: 0,
+                grupoc: 0,
+                id: 999,
+                listaid: 4,
+                nomefantasia: null,
+                nomeproduto: null,
+                produto_id: 999,
+                push: 0,
+                qtd: 0,
+                status: 1,
+                valor: -valorSelecionado,
+              },
+              'M'
+            );
+          } else {
+            handleNotification('O desconto não pode ser maior que o valor da comanda!');
+          }
+        } else {
+          handleNotification(`Usuário ${atendente.usuario} não pode finalizar a comanda!`);
+        }
+      }
+
+      else {
+        handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
+
+      }
+
+    } else if (id === 'remover') {
+      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+        console.log(selectedItems);
+        if (selectedItems.length === 1) {
+          setSelectCodeDelete(null);
+          setSelectedItemId(null);
+          removerItem();
+
+        }
+
+
+      } else {
+        handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
+      }
+
+
     } else {
-      handleSairLogin(mesa);
+      //handleSairLogin(mesa);
 
     }
   }
 
   // carregar itens da API
+  const valorProdutos = (produto_id) => {
+    const xal = inventario ? inventario.filter(d => d.id === produto_id) : [];
+    console.log(xal)
+    if (xal.length > 0 && xal[0].valor) {
+      return xal[0].valor;
+    } else {
+      return produto_id;
+    }
+  };
+
+
+
   // demais códigos de renderização e manipulação de estado
   const nomeProdutos = (produto_id) => {
+
+
+    const xal = inventario ? inventario.filter(d => d.id === produto_id) : [];
+    if (xal.length > 0 && xal[0].nomeproduto) {
+      return (<>
+        {`${xal[0].nomeproduto}`}</>)
+
+    }
+
+    else {
+      return produto_id
+    }
+
+  }
+
+  const ValoresProdutos = (produto_id) => {
 
 
     const xal = inventario ? inventario.filter(d => d.produto_id === produto_id) : [];
@@ -283,65 +446,59 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
       </td>)
     }
   }
+  const nomeProdutoSis = (produto_id) => {
+    const val = inventario ? inventario.filter(o => o.id === produto_id) : [];
 
-  const adicionarItem = (item, t) => {
-
-    const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
-    console.log(typeof comanda);
-    console.log(comanda);
-    if (itemExistente) {
-
-      setComanda(
-        comanda.map((i) =>
-          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
-
-        )
-      );
-
+    if (produto_id === 30 || produto_id === 31 || produto_id === 33) {
+      if (val.length > 0 && val[0].nomeproduto) {
+        return ''; // Retorna uma string vazia
+      }
+    } else if (val.length > 0 && val[0].nomeproduto) {
+      return val[0].nomeproduto; // Retorna o valor de val[0].nomeproduto
     } else {
-      setComanda([...comanda, { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 }]);
-      setTeclado(1);
-      if (item.grupoc === 1) {
-
-        toggleModal()
-
-      }
-      else if (item.grupoc === 2) {
-        toggleModal()
-      }
-      else if (item.grupoc === 3) {
-        toggleModal()
-      }
-      else if (item.grupoc === 4) {
-        toggleModal()
-      }
-      else if (item.grupoc === 5) {
-        toggleModal()
-      }
-      else if (item.grupoc === 6) {
-        toggleModal()
-      }
-      else if (item.grupoc === 7) {
-        toggleModal()
-      }
-      else if (item.grupoc === 8) {
-        toggleModal()
-      }
-      else if (item.grupoc === 9) {
-        toggleModal()
-      } else if (item.grupoc === 11) {
-        toggleModal()
-      }
-      else if (item.grupoc === 11) {
-        toggleModal()
-      }
-      else if (item.grupoc === 15) {
-        toggleModal()
-      }
-
-
+      return nomeProdutos(produto_id); // Retorna o valor da função nomeProdutos
     }
   };
+  const valorProduto = (produto_id) => {
+    const val = comanda ? comanda.filter(o => o.produto_id === produto_id) : [];
+
+    if (produto_id === 30 || produto_id === 31 || produto_id === 33) {
+      if (val.length > 0 && val[0].valor) {
+        return ''; // Retorna uma string vazia
+      }
+    } else if (val.length > 0 && val[0].valor) {
+      return val[0].valor; // Retorna o valor de val[0].nomeproduto
+    } else {
+      return val[0].valor; // Retorna o valor da função nomeProdutos
+    }
+  };
+
+  const adicionarItem = (item, t) => {
+    const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
+    const numeros = [];
+
+    for (let i = 1; i <= limiteOptionsCardapio; i++) {
+      numeros.push(i);
+    }
+    if (itemExistente) {
+      setComanda((comanda) =>
+        comanda.map((i) =>
+          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
+        )
+      );
+    } else {
+      setComanda((comanda) => [
+        ...comanda,
+        { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 },
+      ]);
+
+      if (numeros.includes(item.grupoc)) {
+        toggleModal();
+      }
+    }
+  };
+
+
 
   const adicionarItemOption = (item, t) => {
     console.log(item)
@@ -362,20 +519,60 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
   };
 
   const calcularTotal = () => {
-    return comanda.reduce((total, item) => total + item.valor * item.qtd, 0);
+    let total = 0;
+
+    comanda.forEach(item => {
+      if (item.combinag < 100 && item.valor >= 0) {
+        total += item.valor * item.qtd;
+      } 
+
+    });
+
+    return total;
   };
+
+  const calcularPagamento = () => {
+    let total = 0;
+
+    comanda.forEach(item => {
+      if (item.combinag === 900) {
+        total += item.valor;
+      } else if (item.combinag === 2) {
+        setPagamento(prevPagamento => prevPagamento + item.valor);
+      }
+      
+    });
+
+    return total;
+  };
+
   const calcularGorjeta = () => {
-    return calcularTotal() * GORJETA
-  }
+    return calcularTotal() * GORJETA;
+  };
+
   const calcularTaxa = () => {
-    return calcularTotal() * TX
-  }
+    return calcularTotal() * TX;
+  };
+
   const calcularDesconto = () => {
-    return DESCONTO
-  }
+    let total = 0;
+
+    comanda.forEach(item => {
+      if (item.combinac === 1) {
+        total += item.valor * item.qtd;
+      }
+    });
+
+    return total;
+  };
+
   const calcularConta = () => {
-    return calcularTotal() + calcularGorjeta() - calcularDesconto() + calcularTaxa()
-  }
+    return calcularTotal() + calcularGorjeta()  + calcularTaxa() - calcularPagamento() + calcularDesconto();
+  };
+
+  const calcularContaPaga = () => {
+    return (calcularTotal() + calcularGorjeta() + calcularDesconto() + calcularTaxa()) - calcularPagamento();
+  };
 
 
   function filtrarPorGrupo(grupo) {
@@ -391,11 +588,52 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
     itensFiltrados = itens.filter((item) => item.grupo === grupoSelecionado);
   }
   // eslint-disable-next-line no-unused-vars
-  const removerItem = (index) => {
+  const removerItem = () => {
 
-    setComanda(comanda.filter((_, i) => i != index));
+    if (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) {
+      // Filtra as linhas que não estão selecionadas
+      const novaComanda = comanda.filter((_, i) => !selectedItems.includes(i));
+      // Atualiza o estado da comanda com as linhas restantes
+
+      console.log(novaComanda);
+      if (selectCombinaG > 899) {
+        //aqui
+        setComanda(novaComanda);
+        console.log(comanda);
+        handleDelItem({
+          "comanda": mesaId,
+          "produto": handleComandaFilter(selectedItemId, comanda),
+          "nomesis": nomeProdutoSis(handleComandaFilter(selectedItemId, comanda)),
+          "atendente": atendente.usuario,
+          "valor": valorProduto(handleComandaFilter(selectedItemId, comanda)),
+          "anotacoes": handleComandaFilter(selectedItemId, comanda),
+        });
+        setCombinaG(null);
+      }
+      else {
+        handleNotification('Este produto não pode ser removido!')
+      }
+
+      // Limpa as seleções
+      setSelectedItems([]);
+    }
   };
 
+
+
+  const calcularValorRestante = () => {
+    // Calcule o valor restante com base nos pagamentos anteriores
+    // e retorne o valor restante.
+    console.log(calcularConta());
+    console.log(pagamento);
+    console.log(calcularContaPaga());
+    // Exemplo:
+
+    const valorPago = calcularContaPaga(); // Implemente a função para calcular o valor total pago até agora
+
+
+    return valorPago.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  };
 
   return (
     <div className='container-comanda fade-in' style={{ position: 'relative', top: '10px', left: '35px' }}>
@@ -435,30 +673,65 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
 
                 {comanda.map((item, index) => (
                   <>
-                    <tr key={index} className='linhas-tb'>
-                      <td className='itemNormalB' style={item.combinac === 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}>
+                    <tr
+                      key={index}
+                      className={`linhas-tb ${selectedItems.includes(index) ? 'selected' : ''}`}
+                      onClick={() => handleSelectItem(index)}
+                    >
+                      <td
+                        className="itemNormalB"
+                        style={
+                          item.combinac === 0
+                            ? { color: 'black', backgroundColor: 'white' }
+                            : { color: 'white', backgroundColor: 'black' }
+                        }
+                      >
                         {item.combinac === 0 ? item.qtd : '▲'}
                       </td>
-
-
-
                       {item.combinac === 0 ? (
-                        <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}> {nomeProduto(item.produto_id)}
-                        </td>) : <td className={`ndd ${item.combinac === 0 ? 'obs' : 'itemNormal'}`}>
-                        {nomeProdutos(item.produto_id)}
-                      </td>}
-
-
-                      <td className='itemNormalB' style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '2px' }}>
-                        {item.valor != 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}<br />
-
+                        <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
+                          {nomeProduto(item.produto_id)}
+                        </td>
+                      ) : (
+                        <td className={`ndd ${item.combinac === 0 ? 'obs' : 'itemNormal'}`}>
+                          {nomeProdutos(item.produto_id)}
+                        </td>
+                      )}
+                      <td
+                        className="itemNormalB"
+                        style={{
+                          fontSize: '11px',
+                          fontWeight: '800',
+                          letterSpacing: '2px',
+                        }}
+                      >
+                        {item.valor != 0
+                          ? item.valor?.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }) ?? 'Error no valor...'
+                          : ''}
+                        <br />
                       </td>
-                      <td className='itemNormalB' style={{ fontSize: '25px', fontWeight: '800', color: 'goldenrod', letterSpacing: '4px' }}>
-                        {item.valor != 0 ? (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Valor não definido' : ''}
-
+                      <td
+                        className="itemNormalB"
+                        style={{
+                          fontSize: '25px',
+                          fontWeight: '800',
+                          color: 'goldenrod',
+                          letterSpacing: '4px',
+                        }}
+                      >
+                        {item.valor != 0
+                          ? (item.combinac === 2 ? (item.valor)?.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          }) : (item.valor * item.qtd)?.toLocaleString('pt-BR', {
+                            minimumFractionDigits: 2,
+                            maximumFractionDigits: 2,
+                          })) ?? 'Valor não definido'
+                          : ''}
                       </td>
-
-
                     </tr>
 
                   </>
@@ -498,12 +771,17 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
 
             <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
             <div className='inventario'>
+
               <ul ref={listaRef} className='i-inventario'>
-                {itensFiltrados.map((item, index) => (
+                {mostrarFormulario ? (
+                  <PagamentoForm setNotification={setNotification} setPagamento={setPagamento} calcularValorRestante={calcularValorRestante} calcularTotal={calcularTotal} adicionarItem={adicionarItem} />
+                ) : (<> {itensFiltrados.map((item, index) => (
                   <li key={index}>
                     <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
                   </li>
-                ))}
+                ))}</>
+                )}
+
               </ul>
               {/*
             <div>
@@ -559,17 +837,20 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
 
               <button className='B'>COZINHA</button>
               <button onClick={() => handleClick('fechar')} className='F'>FECHAR</button>
-              <button onClick={() => handleClick()} className='C' >DESCONTO</button>
-              <button onClick={() => handleMostrarCaixaStatus()} className={atendente.auth === 'j5' ? 'B' : 'C'} >CAIXA</button>
+              <button onClick={() => handleClick('desconto')} className={((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+                (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) ? 'A' : 'C'}>Desconto</button>
+              <button onClick={() => handleMostrarCaixaStatus()} className={((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+                (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) ? 'B' : 'C'} >CAIXA</button>
               <button onClick={() => adicionarGorjeta(10)} className={GORJETA === 0.10 ? 'A' : 'B'} >GORJETA 10%</button>
               <button onClick={() => adicionarGorjeta(11)} className={GORJETA === 0.11 ? 'A' : 'B'} >GORJETA 11%</button>
-
+              <button className='B' onClick={handleMostrarFormulario}>Receber</button>
             </div>
 
             <div className='operadores'>
               <button onClick={() => handleClick('conta')} className='A'>IMPRIMIR</button>
-              <button onClick={() => handleClick('cancelar')} className={atendente.auth === 'j5' ? 'A' : 'C'}>CANCELAR</button>
-              <button className='D' disabled>Delivery</button>
+              <button onClick={() => handleClick('cancelar')} className={((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+                (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) ? 'A' : 'C'}>CANCELAR</button>
+              <button onClick={() => handleClick('remover')} className={selectCodeDelete === null ? 'A' : 'C'}>Remover</button>
               <button onClick={() => handleClick('fechar')} className='F' disabled>Dividir Conta</button>
               <button onClick={() => handleClick('fechar')} className='F' disabled>Juntar Conta</button>
 
@@ -605,7 +886,7 @@ function Comanda({ handleGorjeta, handleDeletarComanda, atendente, setCaixaStatu
             </tbody>
           </table>
         </div>  </div>
-    </div>
+    </div >
   );
 }
 

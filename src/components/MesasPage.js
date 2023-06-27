@@ -64,7 +64,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [showModalMesa, setShowModalMesa] = useState(false);
     const [senha, setSenha] = useState('');
     const [comandas, setComandas] = useState([]);
-    const [mesas, setMesas] = useState([...Array(229)].map((_, index) => ({ mesa: index + 1, ocupada: false, status: 0, aberta: false, conta: null, atendente: null, nivel: 0 })));
+    const [mesas, setMesas] = useState([...Array(180)].map((_, index) => ({ mesa: index + 1, ocupada: false, status: 0, aberta: false, conta: null, atendente: null, nivel: 0 })));
     const [atendente, setAtendente] = useState({ "usuario": null, "nivel": null, "auth": '0' });
     const [mesaAberta, setMesaAberta] = useState(null);
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
@@ -111,7 +111,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             } else {
                 handleNotification('Falha na autenticação do usuário');
                 handleSairLogin();
-                window.location.reload();
+                
             }
         });
     };
@@ -293,6 +293,11 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         socket.emit('anotar_item_comanda', comanda, id, atendente.usuario);
 
     };
+    const handleDeletarItem = (itemId) => {
+
+        socket.emit('deletar_item_comanda', itemId);
+
+    };
 
     const handleNovaComanda = (idMesa, op) => {
 
@@ -435,8 +440,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                         <Modal.Title></Modal.Title>
                     </Modal.Header>
                     <Modal.Body>
-                        {caixaStatus != false ? 
-                        <ComandaMesa handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} /> : <Comanda handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} />}
+                        {caixaStatus != false ?
+                            <ComandaMesa handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} /> : <Comanda handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />}
 
 
                     </Modal.Body>
