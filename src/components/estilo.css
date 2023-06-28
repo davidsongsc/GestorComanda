@@ -472,18 +472,35 @@
 
 .notification-container {
   position: fixed;
-  top: 20px;
-  right: 18px;
-  background-color: #ffffff;
+  bottom: -47px;
+  right: 0px;
+  background-color: #ffffff5c;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+  max-height: 0vh;
+  overflow-y: auto;
   z-index: 9999;
+  width: 305px;
   transition: .9s ease-in-out;
 
 }
-
-
+.ntconter-activate{
+  bottom: 0px;
+  max-height: 9vh;
+}
+.ntconter-dritive{
+  bottom: 0px;
+  max-height: 35vh;
+}
+.notification-item{
+  margin: 8px;
+}
+.notification-group{
+  background-color: #008080;
+  margin: 3px auto;
+  padding: 10px 10px;
+}
 
 .notification-text {
   transition: .9s ease-in-out;
@@ -503,10 +520,11 @@
 
 .notification-icon {
   position: fixed;
-  bottom: 20px;
-  right: 40px;
-  width: 40px;
-  height: 40px;
+  top: 1.2vh;
+  right: 0.5vw;
+  width: 45px;
+  height: 45px;
+  z-index: 9999;
   background-color: #ffffff;
   border-radius: 50%;
   display: flex;
@@ -518,6 +536,48 @@
   transition-property: background-color;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
+  opacity: 0.2;
+  transition-property: opacity;
+  transition-duration: 0.3s;
+  transition-timing-function: ease-in-out;
+  transition: right 0.3s ease-in-out, width 0.3s ease-in-out, height 0.3s ease-in-out;
+
+
+}
+
+.notification-icon:hover,
+.notification-icon:active {
+  /* Adiciona a animação de rotação */
+  animation: rotateAnimation 2s infinite;
+  width: 80px;
+  height: 80px;
+  opacity: 0.8;
+  
+}
+
+.notification-icon.inactive {
+  animation: rotateAnimation 2s infinite;
+  width: 75px;
+  height: 75px;
+  opacity: 0.8;
+}
+
+@keyframes rotateAnimation {
+  0% {
+    transform: rotate(35deg);
+  }
+
+  25% {
+    transform: rotate(45deg);
+  }
+
+  75% {
+    transform: rotate(-45deg);
+  }
+
+  100% {
+    transform: rotate(35deg);
+  }
 }
 
 .notification-icon i {
@@ -654,7 +714,8 @@
   border-radius: 70%;
   box-shadow: 0px 1px 6px 3px;
 }
-.janela-alerta-comanda-pn{
+
+.janela-alerta-comanda-pn {
   width: 95%;
   height: 90%;
   background-color: #000;

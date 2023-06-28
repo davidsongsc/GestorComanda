@@ -1,6 +1,6 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import MesasPage from './components/MesasPage';
-import Notification from './components/Notification';
+import Notification from './components/Sistema/Notification';
 import React, { useState, useEffect } from 'react';
 import Gestor from './components/Gestor';
 import Venda from './components/Venda';

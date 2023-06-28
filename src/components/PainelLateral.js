@@ -70,7 +70,7 @@ const PainelLateral = ({ atendente, setNotification }) => {
     }
     return (
         <>
-            <header style={{ display: 'flex', position: 'fixed', top: 0, width: '100%', background: 'white', zIndex: 999, height: '45px' }}>
+            <header style={{ display: 'flex', position: 'fixed', top: 0, width: '100%', background: 'white', zIndex: 965, height: '45px' }}>
                 <nav style={{ width: '100%', padding: '5px 0px', display: 'flex', justifyContent: 'space-evenly' }}>
                     <h1 style={{ margin: 0, textAlign: 'center' }}>Painel</h1>
                     <ul style={{ margin: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', listStyle: 'none', height: '46px' }}>

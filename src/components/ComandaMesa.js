@@ -31,10 +31,8 @@ import { useParams } from 'react-router-dom';
 import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
-import AlertaPersonalizado from './AlertaPersonalizado';
+import AlertaPersonalizado from './Sistema/AlertaPersonalizado';
 import PagamentoForm from './Comanda/Pagamento';
-
-
 
 Modal.setAppElement("#root");
 const TX = 0;
@@ -52,6 +50,7 @@ const usuarioError = [{
   "btn2": "fechar",
   "fnb2": ""
 }]
+
 function Comanda({
   caixaStatus,
   handleGorjeta,
@@ -107,9 +106,7 @@ function Comanda({
     else {
       handleNotification(`Usuário ${atendente.usuario} não pode receber pagamentos na comanda!`);
     }
-
   };
-
   const handleSelectItem = (index) => {
     const isSelected = selectedItems.includes(index);
     if ((atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
@@ -120,7 +117,6 @@ function Comanda({
         setSelectCodeDelete(null);
         setSelectedItemId(comanda[index].id); // Define o ID do item selecionado
         setCombinaG(comanda[index].combinag);
-
 
       } else {
         handleClick('remover');
@@ -217,7 +213,6 @@ function Comanda({
     if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) {
       if (valor === 10) {
         setGorjeta(0.10);
-        console.log(mesa)
         handleGorjeta(mesaId, 0.10)
         handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para ' + valor + '%.');
       } else if (valor === 11) {
@@ -235,7 +230,6 @@ function Comanda({
     else {
       handleNotification('Usuario: ' + atendente.usuario + ' sem privilégios para modificar a gorjeta da mesa ' + mesaId + '.')
     }
-
 
   };
   const handleClickMostrar = () => {
@@ -271,15 +265,13 @@ function Comanda({
   };
 
   const handleTeclado = (tecla) => {
-    console.log(typeof tecla)
-    console.log(tecla)
+    
     if (tecla === 0) {
       setTeclado(1)
     }
     else {
       setTeclado(tecla)
     }
-    console.log(teclado)
   }
   const calcularValorSelecionado = () => {
     let valorTotal = 0;
@@ -287,7 +279,7 @@ function Comanda({
     selectedItems.forEach((selectedIndex) => {
       const selectedItem = comanda[selectedIndex];
       if (selectedItem) {
-        console.log(selectedItem);
+        
         var d = selectedItem.combinac;
         if (d === 1) {
           //
@@ -297,13 +289,7 @@ function Comanda({
           const itemValor = selectedItem.valor * selectedItem.qtd;
           valorTotal += itemValor;
         }
-      }
-
-
-
-
-
-
+      };
     });
 
     return valorTotal;
@@ -317,7 +303,7 @@ function Comanda({
         total += item.valor;
       } else if (item.combinag === 2) {
         setPagamento(prevPagamento => prevPagamento + item.valor);
-      }
+      };
 
     });
 
@@ -355,19 +341,8 @@ function Comanda({
     return (calcularTotal() + calcularGorjeta() + calcularDesconto() + calcularTaxa() - calcularPagamento()).toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
-
-
   const calcularValorRestante = () => {
-    // Calcule o valor restante com base nos pagamentos anteriores
-    // e retorne o valor restante.
-    console.log(calcularConta());
-    console.log(pagamento);
-    console.log(calcularContaPaga());
-    // Exemplo:
-
     const valorPago = calcularContaPaga(); // Implemente a função para calcular o valor total pago até agora
-
-
     return valorPago.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   };
 
@@ -417,7 +392,6 @@ function Comanda({
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
       }
 
-
     }
     else if (id === 'desconto') {
       const valorSelecionado = calcularValorSelecionado().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
@@ -428,10 +402,6 @@ function Comanda({
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
       ) {
 
-
-        console.log(valorSelecionado);
-        console.log(contaAtual);
-        console.log(contaAguarda);
         if (contaAguarda <= valorSelecionado) {
           if (valorSelecionado > contaAtual) {
             handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
@@ -464,34 +434,23 @@ function Comanda({
         handleNotification(`Usuário ${atendente.usuario} não pode finalizar a comanda!`);
       }
 
-
-
-
     } else if (id === 'remover') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
-        console.log(selectedItems);
+        
         if (selectedItems.length === 1) {
           setSelectCodeDelete(null);
           setSelectedItemId(null);
           removerItem();
-
+          handleNotification('Item removido da comanda!');
         }
-
 
       } else {
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
       }
 
-
-    } else {
-      //handleSairLogin(mesa);
-
-    }
+    } 
   };
-
-
-
 
   // demais códigos de renderização e manipulação de estado
   const nomeProdutos = (produto_id) => {
@@ -555,9 +514,11 @@ function Comanda({
       return val[0].valor; // Retorna o valor da função nomeProdutos
     }
   };
+
   const handleMostrarFormularioConfirm = () => {
     return mostrarFormularioConfirm;
-  }
+  };
+
   const adicionarItem = (item, t) => {
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
     const numeros = [];
@@ -583,10 +544,7 @@ function Comanda({
     }
   };
 
-
-
   const adicionarItemOption = (item, t) => {
-    console.log(item)
     setMostrarInventario(false);
     setMostrarInventario2(false);
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
@@ -619,16 +577,17 @@ function Comanda({
 
   function filtrarPorGrupo(grupo) {
     setGrupoSelecionado(grupo);
-  }
+  };
 
   function mostrarTodos() {
     setGrupoSelecionado(null);
-  }
+  };
 
   let itensFiltrados = itens;
   if (grupoSelecionado != null) {
     itensFiltrados = itens.filter((item) => item.grupo === grupoSelecionado);
-  }
+  };
+
   // eslint-disable-next-line no-unused-vars
   const removerItem = () => {
 
@@ -637,11 +596,10 @@ function Comanda({
       const novaComanda = comanda.filter((_, i) => !selectedItems.includes(i));
       // Atualiza o estado da comanda com as linhas restantes
 
-      console.log(novaComanda);
       if (selectCombinaG > 899) {
         //aqui
         setComanda(novaComanda);
-        console.log(comanda);
+  
         handleDelItem({
           "comanda": mesaId,
           "produto": handleComandaFilter(selectedItemId, comanda),
@@ -672,8 +630,6 @@ function Comanda({
   const isGestorValido = (atendente) =>
     (atendente.auth.startsWith('g')) &&
     /^\d+$/.test(atendente.auth.slice(1));
-
-
 
   const buttons = [
     { label: 'O.K.', handleClick: () => handleClick('O.K.'), className: 'H' },
@@ -708,7 +664,6 @@ function Comanda({
       visualizar: isGerenteValido(atendente) ? 'block' : 'none',
 
     },
-
     { label: 'COZINHA', className: 'B' },
     { label: 'FECHAR', handleClick: () => handleClick('fechar'), className: 'F' },
     {
@@ -728,8 +683,6 @@ function Comanda({
       label: 'GORJETA 12%', handleClick: () => adicionarGorjeta(12),
       className: GORJETA === 0.12 ? 'A' : 'B'
     },
-
-
     {
       label: 'Remover', handleClick: () => handleClick('remover'),
       className: isCaixaValido(atendente) ? 'A' : 'C',
@@ -738,8 +691,6 @@ function Comanda({
     },
     { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true },
     { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true },
-
-
   ];
 
   function renderizarBotoes() {
@@ -763,11 +714,7 @@ function Comanda({
   const finalizarComanda = (pagamento, resta) => {
     let p = pagamento.replace(',', '.')
     let r = resta.replace(',', '.')
-    console.log(calcularContaMostrar());
-    console.log(calcularConta());
-    console.log(p);
-    console.log(r);
-    console.log(r - p);
+    
     if ((r - p) <= 0) {
       //handleEmitStatus(mesaId, 6);
       setMostrarFormularioConfirm(true);
@@ -790,29 +737,17 @@ function Comanda({
       )}
 
       <div className="comandar">
-
-
         <div className='cm-comanda-pn'>
-
           <table className='menu-itens-catal'>
             <thead>
               <tr className='titulo-tb'>
                 <td >QTD</td>
-
                 <td>PRODUTO</td>
-
                 <td>V UND</td>
                 <td>V TOTAL</td>
-
-
               </tr>
             </thead>
             <tbody>
-
-
-
-
-
               {comanda.map((item, index) => (
                 <>
                   <tr
@@ -878,15 +813,8 @@ function Comanda({
 
                 </>
               ))}
-
-
             </tbody>
-
           </table>
-
-
-
-
         </div>
 
         {comanda.map((item, index) => (
@@ -916,7 +844,6 @@ function Comanda({
           </Modal>
         ))}
 
-
         <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
         <div className='inventario'>
 
@@ -931,16 +858,7 @@ function Comanda({
             )}
 
           </ul>
-          {/*
-            <div>
-              <button onClick={handleScrollUp}>↑</button>
-              <button onClick={handleScrollDown}>↓</button>
-
-            </div>
-            */}
-
         </div>
-
         <div className='controlea'>
           <div className='digitosComanda'>
             <div className='g2'>
@@ -963,45 +881,36 @@ function Comanda({
               <button onClick={() => handleTeclado(0)}>0</button>
               <button onClick={() => handleTeclado('B')}>B</button>
             </div>
-
           </div>
-
         </div>
         <div className='controleb'>
           <div className='operadores'>
             {renderizarBotoes()}
-
           </div>
-
         </div>
-
         <table className='tabela-fixa'>
           <thead>
             <tr className='titulo-tb'>
               <td className='titulo-table'>COMANDA </td>
               <td className='titulo-table'>ATENDIMENTO</td>
-
               <td className='titulo-table'>GORJETA</td>
               <td className='titulo-table'>DESCONTOS</td>
               <td className='titulo-table'>CONTA</td>
               <td className='titulo-table'>TOTAL</td>
               <td className='titulo-table'>Pago</td>
               <td className='titulo-table'>Falta</td>
-
             </tr>
           </thead>
           <tbody>
             <tr>
               <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>{mesa}</td>
               <td className='linha-table'><em>{usuario}</em></td>
-
               <td className='linha-table'>{calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>{calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>{calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularPagamento().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
               <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-
             </tr>
           </tbody>
         </table>

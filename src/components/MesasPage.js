@@ -5,7 +5,7 @@ import Mesa from './Mesa';
 import Comanda from './ComandaMesa';
 import ComandaMesa from './CaixaComanda';
 import './estilo.css';
-import AlertaPersonalizado from './AlertaPersonalizado';
+import AlertaPersonalizado from './Sistema/AlertaPersonalizado';
 import { AiOutlineUser } from 'react-icons/ai';
 import { FaUtensils } from 'react-icons/fa';
 import { BiUserPin } from 'react-icons/bi';
@@ -210,6 +210,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         setCaixaStatus(false);
         setCaixaDetect(false);
         clearTimeout(timeoutId);
+        handleNotification(`${atendente.usuario} Desconectado...`)
         //handleNotification('Usuario Desconectado!');
         setAtendente({ "usuario": null });
         handleLoginSistema({ "usuario": null });
@@ -326,8 +327,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
-        console.log(idMesa);
-        console.log(mesa);
+      
         if (mesa.conta) {
             if (atendente.usuario === null) {
                 mudarTipoAlertaId(1);
@@ -392,9 +392,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             /*navigation(`/mesa/${mesaId}/comanda`);*/
             handleShowModalMesa();
 
-        } else {
-            console.log('MesaId é null, não faz nada.');
-        }
+        } 
     }
 
     function mudarTipoAlertaId(novoId) {
@@ -406,8 +404,6 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         if (atendente.usuario === null) {
             mudarTipoAlertaId(0);
             setNivel(1);
-            console.log(atendente.usuario);
-
 
         } else {
             mudarTipoAlertaId(1);
