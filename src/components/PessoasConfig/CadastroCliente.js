@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import PainelLateral from './PainelLateral';
+import PainelLateral from '../Administrativo/PainelLateral';
 
 
-const CadastroPromocao = ({ socket, atendente, setNotification }) => {
+const CadastroCliente = ({ socket, atendente, setNotification }) => {
     const [usuario, setUsuario] = useState('');
     const [nome, setNome] = useState('');
     const [snome, setSNome] = useState('');
@@ -57,7 +57,7 @@ const CadastroPromocao = ({ socket, atendente, setNotification }) => {
     }
     return (
         <>
-           <PainelLateral atendente={atendente} setNotification={setNotification} />
+            <PainelLateral atendente={atendente} setNotification={setNotification} />
             <div className="relatorios-container">
                 <div style={{
                     maxHeight: '80vh',
@@ -205,10 +205,10 @@ const CadastroPromocao = ({ socket, atendente, setNotification }) => {
 
 };
 
-CadastroPromocao.propTypes = {
+CadastroCliente.propTypes = {
     socket: PropTypes.object.isRequired,
     atendente: PropTypes.object.isRequired,
     setNotification: PropTypes.func.isRequired,
 };
 
-export default CadastroPromocao;
+export default CadastroCliente;

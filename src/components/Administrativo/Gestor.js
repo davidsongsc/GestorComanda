@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import PieChart from './PieChart';
+import PieChart from '../Comanda/PieChart';
 import PainelLateral from './PainelLateral';
-import ServerStatus from './ServerStatus';
+import ServerStatus from '../Sistema/ServerStatus';
 
 const Relatorios = ({ socket, atendente, setNotification }) => {
   const [relatorios, setRelatorios] = useState([]);

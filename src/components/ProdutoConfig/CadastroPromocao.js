@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import PainelLateral from './PainelLateral';
+import PainelLateral from '../Administrativo/PainelLateral';
 
 
-const CadastroColaborador = ({ socket, atendente, setNotification }) => {
+const CadastroPromocao = ({ socket, atendente, setNotification }) => {
     const [usuario, setUsuario] = useState('');
     const [nome, setNome] = useState('');
     const [snome, setSNome] = useState('');
@@ -25,6 +26,7 @@ const CadastroColaborador = ({ socket, atendente, setNotification }) => {
         setCargo('');
     };
 
+    const navigate = useNavigate();
     const handleNotification = (text) => {
         setNotification(text);
     };
@@ -39,6 +41,20 @@ const CadastroColaborador = ({ socket, atendente, setNotification }) => {
     }, []);
 
 
+    const handleSistema = () => {
+        navigate('/');
+    }
+
+    const handleGestor = () => {
+        navigate('/gestor');
+    }
+    const handleVendas = () => {
+        navigate('/venda');
+    }
+    const handleCadastroFuncionario = () => {
+        navigate('/cadastrocolaborador');
+
+    }
     return (
         <>
            <PainelLateral atendente={atendente} setNotification={setNotification} />
@@ -51,7 +67,7 @@ const CadastroColaborador = ({ socket, atendente, setNotification }) => {
                 <div style={{
                     width: '480px'
                 }} className="painel-container">
-                    <h1>Cadastro Funcionario</h1>
+                    <h1>Cadastro Produtos</h1>
                     <div style={{
                         maxHeight: '47vh',
                         overflowY: 'auto',
@@ -123,7 +139,7 @@ const CadastroColaborador = ({ socket, atendente, setNotification }) => {
                     </div>
                 </div>
                 <div className="painel-container">
-                    <h1>Funcionarios Cadastrados</h1>
+                    <h1>Produtos Cadastrados</h1>
                     <div style={{
                         maxHeight: '47vh',
                         overflowY: 'auto'
@@ -189,10 +205,10 @@ const CadastroColaborador = ({ socket, atendente, setNotification }) => {
 
 };
 
-CadastroColaborador.propTypes = {
+CadastroPromocao.propTypes = {
     socket: PropTypes.object.isRequired,
     atendente: PropTypes.object.isRequired,
     setNotification: PropTypes.func.isRequired,
 };
 
-export default CadastroColaborador;
+export default CadastroPromocao;

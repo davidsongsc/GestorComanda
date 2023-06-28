@@ -2,14 +2,14 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import MesasPage from './components/MesasPage';
 import Notification from './components/Sistema/Notification';
 import React, { useState, useEffect } from 'react';
-import Gestor from './components/Gestor';
-import Venda from './components/Venda';
+import Gestor from './components/Administrativo/Gestor';
+import Venda from './components/Administrativo/Venda';
 import io from 'socket.io-client';
-import CadastroColaborador from './components/CadastroColaborador';
-import CadastroProduto from './components/CadastroProduto';
-import CadastroCliente from './components/CadastroCliente';
-import CadastroFichaTecnica from './components/CadastroFichaTecnica';
-import CadastroPromocao from './components/CadastroPromocao';
+import CadastroColaborador from './components/PessoasConfig/CadastroColaborador';
+import CadastroProduto from './components/ProdutoConfig/CadastroProduto';
+import CadastroCliente from './components/PessoasConfig/CadastroCliente';
+import CadastroFichaTecnica from './components/ProdutoConfig/CadastroFichaTecnica';
+import CadastroPromocao from './components/ProdutoConfig/CadastroPromocao';
 
 const socket = io('http://192.168.0.50:8000');
 

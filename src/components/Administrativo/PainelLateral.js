@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useTransition, animated } from "react-spring";
 import { useNavigate } from "react-router-dom";
-import FuncaoComponent from "./FuncaoComponent";
+import FuncaoComponent from "../Outros/FuncaoComponent";
 
 const PainelLateral = ({ atendente, setNotification }) => {
     const [sistemaVisible, setSistemaVisible] = useState(false);

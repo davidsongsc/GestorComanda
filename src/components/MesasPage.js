@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { Modal/*, Button*/ } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
-import Mesa from './Mesa';
-import Comanda from './ComandaMesa';
-import ComandaMesa from './CaixaComanda';
+import Mesa from './Comanda/Mesa';
+import Comanda from './Comanda/ComandaMesa';
+import ComandaMesa from './Comanda/CaixaComanda';
 import './estilo.css';
 import AlertaPersonalizado from './Sistema/AlertaPersonalizado';
 import { AiOutlineUser } from 'react-icons/ai';
 import { FaUtensils } from 'react-icons/fa';
 import { BiUserPin } from 'react-icons/bi';
-import FuncaoComponent from './FuncaoComponent';
-
-
+import FuncaoComponent from './Outros/FuncaoComponent';
 
 // ALERTA DE ERRO USUARIO NÃO AUTENTICADO
 const usuarioError = [{

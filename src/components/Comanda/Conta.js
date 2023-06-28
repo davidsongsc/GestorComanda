@@ -2,7 +2,7 @@ import './comanda.css';
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import Modal from "react-modal";
-import Opt from './Opt';
+import Opt from '../Api/Opt';
 
 Modal.setAppElement("#root");
 const GORJETA = 0.10;

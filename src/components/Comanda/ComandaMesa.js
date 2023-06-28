@@ -31,8 +31,8 @@ import { useParams } from 'react-router-dom';
 import Modal from "react-modal";
 import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
-import AlertaPersonalizado from './Sistema/AlertaPersonalizado';
-import PagamentoForm from './Comanda/Pagamento';
+import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
+import PagamentoForm from './Pagamento';
 
 Modal.setAppElement("#root");
 const TX = 0;

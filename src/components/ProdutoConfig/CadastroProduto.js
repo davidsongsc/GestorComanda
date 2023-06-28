@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import PainelLateral from './PainelLateral';
-import ProdutoImagem from './ProdutoConfig/ProdutoImagem';
+import PainelLateral from '../Administrativo/PainelLateral';
+import ProdutoImagem from './ProdutoImagem';
 
 const nomeSistema = 'maquina';
 const token = 'abc123';

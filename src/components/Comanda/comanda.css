@@ -171,7 +171,7 @@ table tbody {
     border-radius: 5px;
     color: rgb(0, 0, 0);
     cursor: pointer;
-    line-height: 10px;
+    line-height: 5px;
 }
 
 .titulo-tb td {
@@ -189,7 +189,7 @@ table tbody {
 
 .ndd {
     text-transform: uppercase;
-    letter-spacing: -1px;
+    letter-spacing: 2px;
 }
 
 .linhas-tb .idd {
@@ -200,16 +200,16 @@ table tbody {
 }
 
 .menu-itens-catal tr{
-    height: 24px;
+    height: 15px;
 }
 
 .linhas-tb .ndd {
     /* width: 419px; */
     font-weight: bold;
-    font-size: 21px;
+    font-size: 23px;
     /* background-color: #2e1e1e; */
     text-align: left;
-    text-indent: 40px;
+    text-indent: 8px;
 
 }
 
@@ -411,7 +411,7 @@ option {
     justify-content: left;
     color: white;
     text-transform: uppercaseobs;
-    margin: 5px 0;
+
 }
 
 .obs {
