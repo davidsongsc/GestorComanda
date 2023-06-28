@@ -1,40 +1,11 @@
-
-//  O import de react inclui funções que são usadas no componente, como useState, useRef e useEffect.
-
-// useParams é um hook do react-router-dom usado para obter parâmetros de rota, como o ID da mesa na qual a comanda é exibida.
-
-//  Modal é um componente de terceiros usado para exibir um menu de opções.
-
-// GORJETA, TX e DESCONTO são constantes que definem os valores de gorjeta, taxa e desconto que serão aplicados à conta.
-
-// Comanda é o componente principal que representa a comanda. Ele usa vários hooks para gerenciar o estado do componente, como useState para gerenciar os itens da comanda, useRef para obter uma referência à lista de itens e useEffect para carregar os dados da API.
-
-// A função carregarComanda é uma função auxiliar que é usada pelo useEffect para carregar os dados da API. Ele usa o fetch para carregar dados de três endpoints diferentes.
-
-// toggleModal é uma função que é chamada quando o usuário clica no botão de opções. Ele alterna o valor de showModal, que é usado para exibir ou ocultar o modal.
-
-// handleScrollUp e handleScrollDown são funções que são chamadas quando o usuário clica nas setas para cima ou para baixo na lista de itens. Eles usam a referência à lista obtida com useRef para rolar a lista para cima ou para baixo.
-
-//  handleClick é uma função que é chamada quando o usuário clica em um botão no menu. Ele redireciona o usuário para a página inicial ou exibe um alerta se o botão de conta ou caixa for clicado.
-
-//  nomeProdutos é uma função auxiliar que é usada para obter o nome de um produto a partir do ID do produto. Ele procura o produto no inventário e retorna o nome do produto se encontrado, ou o ID do produto se não encontrado.
-
-//  nomeProduto é uma função auxiliar que é usada para obter o nome de um produto a partir do ID do produto. Ele procura o produto na lista de itens e retorna o nome do produto se encontrado, ou chama nomeProdutos se não encontrado.
-
-// adicionarItem é uma função que é chamada quando o usuário clica em um item na lista de itens. Ele adiciona o item à lista de itens da comanda ou aumenta a quantidade do item se já estiver presente na lista.
-
-
-
 import './comanda.css';
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import Modal from "react-modal";
-import InventarioOption from './InventarioOption';
 import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
 import PagamentoForm from './Pagamento';
+import TelaOption from './TelaOption';
 
-Modal.setAppElement("#root");
 const TX = 0;
 const limiteOptionsCardapio = 55;
 const nome = 'maquina';
@@ -86,8 +57,7 @@ function Comanda({
   const [mostrarInventario3, setMostrarInventario3] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
   const [pagamento, setPagamento] = useState(0);
-  const [vconta, setValorConta] = useState(0);
-  const [vgorjeta, setValorGorjeta] = useState(0);
+
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -265,7 +235,7 @@ function Comanda({
   };
 
   const handleTeclado = (tecla) => {
-    
+
     if (tecla === 0) {
       setTeclado(1)
     }
@@ -279,7 +249,7 @@ function Comanda({
     selectedItems.forEach((selectedIndex) => {
       const selectedItem = comanda[selectedIndex];
       if (selectedItem) {
-        
+
         var d = selectedItem.combinac;
         if (d === 1) {
           //
@@ -437,7 +407,7 @@ function Comanda({
     } else if (id === 'remover') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
-        
+
         if (selectedItems.length === 1) {
           setSelectCodeDelete(null);
           setSelectedItemId(null);
@@ -449,7 +419,7 @@ function Comanda({
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
       }
 
-    } 
+    }
   };
 
   // demais códigos de renderização e manipulação de estado
@@ -547,6 +517,7 @@ function Comanda({
   const adicionarItemOption = (item, t) => {
     setMostrarInventario(false);
     setMostrarInventario2(false);
+    setMostrarInventario2(false);
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
     if (itemExistente) {
       setComanda(
@@ -599,7 +570,7 @@ function Comanda({
       if (selectCombinaG > 899) {
         //aqui
         setComanda(novaComanda);
-  
+
         handleDelItem({
           "comanda": mesaId,
           "produto": handleComandaFilter(selectedItemId, comanda),
@@ -714,7 +685,7 @@ function Comanda({
   const finalizarComanda = (pagamento, resta) => {
     let p = pagamento.replace(',', '.')
     let r = resta.replace(',', '.')
-    
+
     if ((r - p) <= 0) {
       //handleEmitStatus(mesaId, 6);
       setMostrarFormularioConfirm(true);
@@ -723,6 +694,23 @@ function Comanda({
     }
 
   }
+  const handleIniciarOpcoes = () => {
+    // Lógica para lidar com o clique do botão ou qualquer outro evento
+    // onde você queira executar o componente TelaOption
+
+    // Exemplo de chamada do componente TelaOption
+    return (
+      <TelaOption
+        cmdComanda={comanda}
+        setMostrarInventario={setMostrarInventario}
+        setMostrarInventario2={setMostrarInventario2}
+        setMostrarInventario3={setMostrarInventario3}
+        itens={inventario}
+        listaRef={listaRef}
+        adicionarItem={adicionarItemOption}
+      />
+    );
+  };
 
   return (
     <div className='container-comanda fade-in' style={{ position: 'relative', top: '0px', left: '0%' }}>
@@ -741,7 +729,7 @@ function Comanda({
           <table className='menu-itens-catal'>
             <thead>
               <tr className='titulo-tb'>
-                <td >QTD</td>
+                <td>QTD</td>
                 <td>PRODUTO</td>
                 <td>V UND</td>
                 <td>V TOTAL</td>
@@ -749,114 +737,69 @@ function Comanda({
             </thead>
             <tbody>
               {comanda.map((item, index) => (
-                <>
-                  <tr
-                    key={index}
-                    className={`linhas-tb ${selectedItems.includes(index) ? 'selected' : ''}`}
-                    onClick={() => handleSelectItem(index)}
+                <tr
+                  key={index}
+                  className={`linhas-tb ${selectedItems.includes(index) ? 'selected' : ''}`}
+                  onClick={() => handleSelectItem(index)}
+                >
+                  <td
+                    className="itemNormalB"
+                    style={item.combinac === 0 ? { color: 'black', backgroundColor: 'white' } : { color: 'white', backgroundColor: 'black' }}
                   >
-                    <td
-                      className="itemNormalB"
-                      style={
-                        item.combinac === 0
-                          ? { color: 'black', backgroundColor: 'white' }
-                          : { color: 'white', backgroundColor: 'black' }
-                      }
-                    >
-                      {item.combinac === 0 ? item.qtd : '▲'}
-                    </td>
-                    {item.combinac === 0 ? (
-                      <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
-                        {nomeProduto(item.produto_id)}
-                      </td>
-                    ) : (
-                      <td className={`ndd ${item.combinac === 0 ? 'obs' : 'itemNormal'}`}>
-                        {nomeProdutos(item.produto_id)}
-                      </td>
-                    )}
-                    <td
-                      className="itemNormalB"
-                      style={{
-                        fontSize: '11px',
-                        fontWeight: '800',
-                        letterSpacing: '2px',
-                      }}
-                    >
-                      {item.valor != 0
-                        ? item.valor?.toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }) ?? 'Error no valor...'
-                        : ''}
-                      <br />
-                    </td>
-                    <td
-                      className="itemNormalB"
-                      style={{
-                        fontSize: '25px',
-                        fontWeight: '800',
-                        color: 'goldenrod',
-                        letterSpacing: '4px',
-                      }}
-                    >
-                      {item.valor != 0
-                        ? (item.combinac === 2 ? (item.valor)?.toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        }) : (item.valor * item.qtd)?.toLocaleString('pt-BR', {
-                          minimumFractionDigits: 2,
-                          maximumFractionDigits: 2,
-                        })) ?? 'Valor não definido'
-                        : ''}
-                    </td>
-                  </tr>
-
-                </>
+                    {item.combinac === 0 ? item.qtd : '▲'}
+                  </td>
+                  <td className={`ndd ${item.combinac === 1 ? 'obs' : 'itemNormal'}`}>
+                    {item.combinac === 0 ? nomeProduto(item.produto_id) : nomeProdutos(item.produto_id)}
+                  </td>
+                  <td className="itemNormalB" style={{ fontSize: '11px', fontWeight: '800', letterSpacing: '2px' }}>
+                    {item.valor !== 0 ? item.valor?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) ?? 'Error no valor...' : ''}
+                    <br />
+                  </td>
+                  <td className="itemNormalB" style={{ fontSize: '25px', fontWeight: '800', color: 'goldenrod', letterSpacing: '4px' }}>
+                    {item.valor !== 0 ? (item.combinac === 2 ? (item.valor)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : (item.valor * item.qtd)?.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })) ?? 'Valor não definido' : ''}
+                  </td>
+                </tr>
               ))}
             </tbody>
           </table>
         </div>
+        <TelaOption
+          cmdComanda={comanda}
+          showModal={showModal}
+          toggleModal={setShowModal}
+          setMostrarInventario={setMostrarInventario}
+          setMostrarInventario2={setMostrarInventario2}
+          setMostrarInventario3={setMostrarInventario3}
+          itens={inventario}
+          listaRef={listaRef}
+          adicionarItem={adicionarItemOption}
+        />
 
-        {comanda.map((item, index) => (
-          <Modal key={index} isOpen={showModal} style={{ backgroundColor: "black" }}>
-            {/**<h1>{nomeProduto(item.produto_id)}</h1> **/}
-            <InventarioOption style={{ backgroundColor: 'black' }}
-              id={id}
-              grupo={grupo}
-              toggleModal={toggleModal}
-              mostrarInventario={mostrarInventario}
-              setMostrarInventario={setMostrarInventario}
-              mostrarInventario2={mostrarInventario2}
-              setMostrarInventario2={setMostrarInventario2}
-              mostrarInventario3={mostrarInventario3}
-              setMostrarInventario3={setMostrarInventario3}
-              qop={parseInt(teclado)}
-              opt={item.grupoc}
-              opx={item.combinac}
-              itens={inventario}
-              listaRef={listaRef}
-              adicionarItem={adicionarItemOption}
-              scrollTop={scrollTop}
-              handleScrollUp={handleScrollUp}
-              handleScrollDown={handleScrollDown}
-              item={item} />
-
-          </Modal>
-        ))}
 
         <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
         <div className='inventario'>
-
           <ul ref={listaRef} className='i-inventario'>
             {mostrarFormulario ? (
-              <PagamentoForm handleMostrarFormularioConfirm={handleMostrarFormularioConfirm} finalizarComanda={finalizarComanda} setNotification={setNotification} setPagamento={setPagamento} calcularValorRestante={calcularValorRestante} calcularTotal={calcularTotal} adicionarItem={adicionarItem} />
-            ) : (<> {itensFiltrados.map((item, index) => (
-              <li key={index}>
-                <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>{item.nomeproduto}</button>
-              </li>
-            ))}</>
+              <PagamentoForm
+                handleMostrarFormularioConfirm={handleMostrarFormularioConfirm}
+                finalizarComanda={finalizarComanda}
+                setNotification={setNotification}
+                setPagamento={setPagamento}
+                calcularValorRestante={calcularValorRestante}
+                calcularTotal={calcularTotal}
+                adicionarItem={adicionarItem}
+              />
+            ) : (
+              <>
+                {itensFiltrados.map((item, index) => (
+                  <li key={index}>
+                    <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>
+                      {item.nomeproduto}
+                    </button>
+                  </li>
+                ))}
+              </>
             )}
-
           </ul>
         </div>
         <div className='controlea'>
@@ -884,14 +827,12 @@ function Comanda({
           </div>
         </div>
         <div className='controleb'>
-          <div className='operadores'>
-            {renderizarBotoes()}
-          </div>
+          <div className='operadores'>{renderizarBotoes()}</div>
         </div>
         <table className='tabela-fixa'>
           <thead>
             <tr className='titulo-tb'>
-              <td className='titulo-table'>COMANDA </td>
+              <td className='titulo-table'>COMANDA</td>
               <td className='titulo-table'>ATENDIMENTO</td>
               <td className='titulo-table'>GORJETA</td>
               <td className='titulo-table'>DESCONTOS</td>
@@ -903,21 +844,36 @@ function Comanda({
           </thead>
           <tbody>
             <tr>
-              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>{mesa}</td>
-              <td className='linha-table'><em>{usuario}</em></td>
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>
+                {mesa}
+              </td>
+              <td className='linha-table'>
+                <em>{usuario}</em>
+              </td>
               <td className='linha-table'>{calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>{calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>{calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>R$ {calcularPagamento().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>
+                {calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>
+                {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>
+                R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>
+                R$ {calcularPagamento().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>
+                R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
     </div>
-
-  );
+  )
 }
+
+
 
 export default Comanda;

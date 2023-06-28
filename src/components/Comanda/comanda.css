@@ -29,10 +29,14 @@
 }
 
 .inventarioOp {
+    display: flex;
+    border-width: 10px;
+    border-style: outset;
+    left: 17vw;
     position: relative;
-    right: 6px;
-    top: 0;
-    background: darkgray;
+    width: 58vw;
+    background: brown;
+ 
 
 }
 
@@ -40,11 +44,29 @@
     display: flex;
     border-width: 10px;
     border-style: outset;
-    width: 1304px;
-    background: darkgray;
-    flex-direction: row-reverse;
+    left: 17vw;
+    position: relative;
+    width: 58vw;
+    background: rgb(10, 98, 138);
+
 }
 
+.inventarioOption ul {
+    display: flex;
+    flex-wrap: wrap;
+    height: 86vh;
+    width: 900px;
+    overflow-y: auto; 
+    position: relative;
+}
+.inventarioOp ul {
+    display: flex;
+    flex-wrap: wrap;
+    height: 86vh;
+    width: 900px;
+    overflow-y: auto; 
+    position: relative;
+}
 .inventario div button,
 .inventarioOption div button {
     margin: 5px;
@@ -171,7 +193,7 @@ table tbody {
     border-radius: 5px;
     color: rgb(0, 0, 0);
     cursor: pointer;
-    line-height: 5px;
+    line-height: 9px;
 }
 
 .titulo-tb td {
@@ -199,7 +221,7 @@ table tbody {
     /* background-color: #221f1d;*/
 }
 
-.menu-itens-catal tr{
+.menu-itens-catal tr {
     height: 15px;
 }
 
@@ -407,19 +429,19 @@ option {
 }
 
 .itemNormal {
-    display: flex;
-    justify-content: left;
     color: white;
+    letter-spacing: 5px;
+    height: 30px;
     text-transform: uppercaseobs;
 
 }
 
 .obs {
-    display: flex;
-    justify-content: center;
-    color: #0992d1;
-    margin: 0 0 15px 0;
+    color: #dd6700;
     text-transform: capitalize;
+    letter-spacing: 0px;
+    height: 10px;
+
 }
 
 .itemNormalB {

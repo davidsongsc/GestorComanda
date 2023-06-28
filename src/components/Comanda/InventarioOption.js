@@ -3,21 +3,20 @@ import React, { useState, useEffect } from "react";
 function Inventario({
     item,
     toggleModal,
-    mostrarInventario,
     setMostrarInventario,
-    mostrarInventario2,
     setMostrarInventario2,
-    mostrarInventario3,
     setMostrarInventario3,
     itens,
     listaRef,
-    adicionarItem,
-    scrollTop
+    adicionarItem
 }) {
     const alturaBotao = '15vh';
     const larguraBotao = '15vh';
     const [itemSelecionado, setItemSelecionado] = useState(null);
     const [observacao, setObservacao] = useState('true');
+    const [elementoExibidor, setElemento] = useState('block');
+    const [displayOption, setDisplayOption] = useState(['block', 'none']);
+
 
     useEffect(() => {
         setItemSelecionado(item.grupoc);
@@ -36,12 +35,13 @@ function Inventario({
         }
     };
 
-    const ivAdd = (item, i) => {
+    const ivAdd = (item, i, ii) => {
+        console.log(ii);
         adicionarItem({
             avaliacao: item.avaliacao,
-            combinac: 0,
-            combinag: 0,
-            descricao: 0,
+            combinac: item.combinac,
+            combinag: item.combinag,
+            descricao: item.descricao,
             disponibilidade: item.disponibilidade,
             grupo: item.grupo,
             grupoc: item.grupoc,
@@ -55,11 +55,12 @@ function Inventario({
             status: item.status,
             valor: item.valor,
         });
-
-        if (i === 1) {
+        if (i === 0) {
             handleAbrirInventario(true, setMostrarInventario);
-        } else if (i === 2) {
+        } else if (i === 1) {
             handleAbrirInventario(true, setMostrarInventario2);
+        } else if (i === 2) {
+            handleAbrirInventario(true, setMostrarInventario3);
         } else if (i === 3) {
             handleAbrirInventario(true, setMostrarInventario3);
         } else if (i === 4) {
@@ -67,90 +68,115 @@ function Inventario({
         }
     };
 
-    const renderOption = (options, index) => (
-        <div>
+    const handleOptionClick = (index) => {
+        const updatedDisplayOption = [...displayOption];
+        updatedDisplayOption[index] = 'none';
+        updatedDisplayOption[1 - index] = 'block';
+        setDisplayOption(updatedDisplayOption);
+      };
+      
+      const renderOption = (options, index) => {
+        const shouldHide = options.length === 2;
+        const displayStyle = shouldHide ? displayOption[index] : 'block';
+      
+        return (
+          <div key={index} style={{ display: displayStyle }} onClick={() => handleOptionClick(index)}>
             <div className='inventarioOption'>
-                <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
-                    {options.map((item, index) => (
-                        <li key={index}>
-                            <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, (index + 1))} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
-                        </li>
-                    ))}
-                </ul>
+              <ul ref={listaRef}>
+                {options.map((item, i) => (
+                  <li key={i}>
+                    <button
+                      className={`GPX${item.grupo}`}
+                      onClick={() => ivAdd(item, i, index)}
+                      style={{ height: alturaBotao, width: larguraBotao }}
+                    >
+                      {item.nomeproduto}
+                    </button>
+                  </li>
+                ))}
+              </ul>
             </div>
-        </div>
-    );
-
+          </div>
+        );
+      };
     const inventarioOptions = {
         1: {
-            primaryFilter: (item) => item.grupoc === 1,
-            secondaryFilter: (item) => item.grupoc === 2,
+            options: [
+                { filter: (item) => item.grupoc === 1 },
+                { filter: (item) => item.grupoc === 2 },
+            ],
         },
         2: {
-            primaryFilter: (item) => item.grupoc === 2,
-            secondaryFilter: (item) => item.grupoc === 4,
+            options: [
+                { filter: (item) => item.grupoc === 2 },
+                { filter: (item) => item.grupoc === 4 },
+                { filter: (item) => item.grupoc === 2 },
+            ],
         },
         3: {
-            primaryFilter: (item) => item.grupoc === 3,
-            secondaryFilter: (item) => item.grupoc === 4,
+            options: [
+                { filter: (item) => item.grupoc === 3 },
+                { filter: (item) => item.grupoc === 4 },
+                { filter: (item) => item.grupoc === 2 },
+            ],
         },
         5: {
-            primaryFilter: (item) => item.grupoc === 5,
-            secondaryFilter: (item) => item.grupoc === 6,
+            options: [
+                { filter: (item) => item.grupoc === 5 },
+                { filter: (item) => item.grupoc === 11 },
+                { filter: (item) => item.grupoc === 12 },
+            ],
         },
         6: {
-            primaryFilter: (item) => item.grupoc === 6,
-            secondaryFilter: (item) => item.grupoc === 7,
+            options: [
+                { filter: (item) => item.grupoc === 6 },
+                { filter: (item) => item.grupoc === 7 },
+                { filter: (item) => item.grupoc === 2 },
+            ],
         },
         10: {
-            primaryFilter: (item) => item.grupoc === 11,
-            secondaryFilter: (item) => item.grupoc === 12,
+            options: [
+                { filter: (item) => item.grupoc === 11 },
+                { filter: (item) => item.grupoc === 12 },
+                { filter: (item) => item.grupoc === 2 },
+            ],
         },
     };
 
-    const { primaryFilter, secondaryFilter } = inventarioOptions[item.grupoc] || {};
+    const options = inventarioOptions[item.grupoc]?.options;
 
-    if (primaryFilter && secondaryFilter) {
-        const optionManualPrimario = itens.filter(primaryFilter);
-        const optionManualSecundario = itens.filter(secondaryFilter);
-
-        if (!mostrarInventario) {
-            return renderOption(optionManualPrimario, 1);
-        }
-
-        if (!mostrarInventario2) {
-            return renderOption(optionManualSecundario, 2);
-        }
-
-        if (!mostrarInventario3) {
-            return renderOption(optionManualPrimario, 3);
-        }
+    if (options) {
+        return options.map((option, index) => {
+            const filteredItems = itens.filter(option.filter);
+            return renderOption(filteredItems, index);
+        });
     } else {
         let itensFiltrados;
-
-        console.log(itemSelecionado);
-        console.log('aquii');
 
         if (itemSelecionado === 11) {
             itensFiltrados = itens.filter((item) => item.grupoc === 11);
         } else if (itemSelecionado === 26) {
             itensFiltrados = itens.filter((item) => item.grupoc === 19);
-        } else if (itemSelecionado === 4) {
+        } else if (itemSelecionado === 5) {
             itensFiltrados = itens.filter((item) => item.grupoc === 4);
         } else if (itemSelecionado === 6) {
-            
             itensFiltrados = itens.filter((item) => item.grupoc === 5);
-            
         } else {
             itensFiltrados = itens.filter((item) => item.grupoc === 8);
         }
 
         return (
             <div className='inventarioOp'>
-                <ul ref={listaRef} style={{ display: 'flex', flexWrap: 'wrap', height: '648px', width: '900px', overflow: 'auto', position: 'relative', top: `${scrollTop}px` }}>
+                <ul ref={listaRef} >
                     {itensFiltrados.map((item, index) => (
                         <li key={index}>
-                            <button className={`GPX${item.grupo}`} onClick={() => ivAdd(item, 4)} style={{ height: alturaBotao, width: larguraBotao }}>{item.nomeproduto}</button>
+                            <button
+                                className={`GPX${item.grupo}`}
+                                onClick={() => ivAdd(item, 4)}
+                                style={{ height: alturaBotao, width: larguraBotao }}
+                            >
+                                {item.nomeproduto}
+                            </button>
                         </li>
                     ))}
                 </ul>
