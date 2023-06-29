@@ -474,7 +474,7 @@
   position: fixed;
   bottom: -47px;
   right: 0px;
-  background-color: #ffffff5c;
+  background-color: #ffffffb8;
   padding: 20px;
   border-radius: 5px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -487,11 +487,11 @@
 }
 .ntconter-activate{
   bottom: 0px;
-  max-height: 9vh;
+  max-height: 7vh;
 }
 .ntconter-dritive{
   bottom: 0px;
-  max-height: 35vh;
+  max-height: 85vh;
 }
 .notification-item{
   margin: 8px;

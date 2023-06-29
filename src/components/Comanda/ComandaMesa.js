@@ -57,7 +57,7 @@ function Comanda({
   const [mostrarInventario3, setMostrarInventario3] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
   const [pagamento, setPagamento] = useState(0);
-
+  const [grupoCompain, setGrupoCompain] = useState(0);
   const [mostrarAlerta, setMostrarAlerta] = useState(false);
   const [selectedItems, setSelectedItems] = useState([]);
   const [selectedItemId, setSelectedItemId] = useState(null);
@@ -508,9 +508,11 @@ function Comanda({
         { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 },
       ]);
 
-      if (numeros.includes(item.grupoc)) {
-        toggleModal();
-      }
+      
+    }
+    if (item.grupoc != 0) {
+      setGrupoCompain(item.grupoc);
+      toggleModal();
     }
   };
 
@@ -773,10 +775,13 @@ function Comanda({
           itens={inventario}
           listaRef={listaRef}
           adicionarItem={adicionarItemOption}
+          grupoCompain={grupoCompain}
         />
 
 
-        <InventarioGrupo mostrarTodos={mostrarTodos} filtrarPorGrupo={filtrarPorGrupo} />
+        <InventarioGrupo 
+         mostrarTodos={mostrarTodos}
+          filtrarPorGrupo={filtrarPorGrupo} />
         <div className='inventario'>
           <ul ref={listaRef} className='i-inventario'>
             {mostrarFormulario ? (
@@ -788,6 +793,7 @@ function Comanda({
                 calcularValorRestante={calcularValorRestante}
                 calcularTotal={calcularTotal}
                 adicionarItem={adicionarItem}
+                
               />
             ) : (
               <>

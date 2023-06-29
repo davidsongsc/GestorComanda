@@ -8,35 +8,56 @@ function Inventario({
     setMostrarInventario3,
     itens,
     listaRef,
-    adicionarItem
+    adicionarItem,
+    handleContador,
+    contagem,
+    grupoCompain
 }) {
     const alturaBotao = '15vh';
     const larguraBotao = '15vh';
     const [itemSelecionado, setItemSelecionado] = useState(null);
-    const [observacao, setObservacao] = useState('true');
-    const [elementoExibidor, setElemento] = useState('block');
     const [displayOption, setDisplayOption] = useState(['block', 'none']);
+    const [verificado, setVerificado] = useState(false);
+    const [indice, setIndice] = useState();
+    const [limite, setLimite] = useState(5);
+    const contar = () => {
+        return handleContador(+1)
+    }
+
+    useEffect(() => {
+        setItemSelecionado(grupoCompain);
+    }, [item]);
+
+
+
+
+    const handleOptionClick = (index) => {
+        console.log(index);
+        const updatedDisplayOption = [...displayOption];
+        updatedDisplayOption[index] = displayOption[index] === 'none' ? 'block' : 'none';
+        console.log(updatedDisplayOption[index]);
+        updatedDisplayOption[1 + index] = displayOption[1 - index] === 'none' ? 'block' : 'none';
+        console.log(updatedDisplayOption[1 + index]);
+        setDisplayOption(updatedDisplayOption);
+    };
 
 
     useEffect(() => {
-        setItemSelecionado(item.grupoc);
-    }, [item]);
 
-    const handleAbrirInventario = (mostrar, setMostrar) => {
-        setMostrarInventario(mostrar);
-        setMostrarInventario2(false);
-        setMostrarInventario3(false);
-    };
 
-    const ocultarObservacao = (v) => {
-        setObservacao('false');
-        if (v) {
-            toggleModal();
+        console.log('Effect: OK');
+        if (verificado === true) {
+            console.log(contagem);
+            if (contagem >= limite) {
+                toggleModal();
+            }
+            setVerificado(!verificado);
         }
-    };
+    }, [contagem]);
 
     const ivAdd = (item, i, ii) => {
-        console.log(ii);
+        setVerificado(!verificado);
+        console.log(contar());
         adicionarItem({
             avaliacao: item.avaliacao,
             combinac: item.combinac,
@@ -56,54 +77,54 @@ function Inventario({
             valor: item.valor,
         });
         if (i === 0) {
-            handleAbrirInventario(true, setMostrarInventario);
-        } else if (i === 1) {
-            handleAbrirInventario(true, setMostrarInventario2);
-        } else if (i === 2) {
-            handleAbrirInventario(true, setMostrarInventario3);
-        } else if (i === 3) {
-            handleAbrirInventario(true, setMostrarInventario3);
-        } else if (i === 4) {
-            toggleModal();
+            contar();
+            setIndice(i);
         }
     };
 
-    const handleOptionClick = (index) => {
-        const updatedDisplayOption = [...displayOption];
-        updatedDisplayOption[index] = 'none';
-        updatedDisplayOption[1 - index] = 'block';
-        setDisplayOption(updatedDisplayOption);
-      };
-      
-      const renderOption = (options, index) => {
-        const shouldHide = options.length === 2;
-        const displayStyle = shouldHide ? displayOption[index] : 'block';
-      
+    const renderOption = (options, index, parametro1, parametro2) => {
+
+        let displayStyle
+        if (contagem >= 0 && contagem <= 4) {
+            displayStyle = 'block';
+
+        }
+        else {
+            displayStyle = 'none';
+
+        }
         return (
-          <div key={index} style={{ display: displayStyle }} onClick={() => handleOptionClick(index)}>
-            <div className='inventarioOption'>
-              <ul ref={listaRef}>
-                {options.map((item, i) => (
-                  <li key={i}>
-                    <button
-                      className={`GPX${item.grupo}`}
-                      onClick={() => ivAdd(item, i, index)}
-                      style={{ height: alturaBotao, width: larguraBotao }}
-                    >
-                      {item.nomeproduto}
-                    </button>
-                  </li>
-                ))}
-              </ul>
+            <div key={index} style={{ position: 'absolute', display: displayStyle }}>
+                <div className='inventarioOption'>
+                    <ul ref={listaRef}>
+                        {options.map((item, i) => (
+                            <li key={i}>
+                                <button
+                                    className={`GPX${item.grupo}`}
+                                    onClick={(event) => {
+                                        event.stopPropagation(); // Impede a propagação do evento de clique para o elemento pai
+                                        handleOptionClick(index);
+                                        ivAdd(item, index, parametro1, parametro2);
+                                    }}
+                                    style={{ height: alturaBotao, width: larguraBotao }}
+                                >
+                                    {item.nomeproduto}
+                                </button>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
             </div>
-          </div>
         );
-      };
+    };
+
     const inventarioOptions = {
         1: {
             options: [
                 { filter: (item) => item.grupoc === 1 },
                 { filter: (item) => item.grupoc === 2 },
+                { filter: (item) => item.grupoc === 4 },
+                { filter: (item) => item.grupoc === 5 },
             ],
         },
         2: {
@@ -144,44 +165,57 @@ function Inventario({
     };
 
     const options = inventarioOptions[item.grupoc]?.options;
-
     if (options) {
-        return options.map((option, index) => {
-            const filteredItems = itens.filter(option.filter);
-            return renderOption(filteredItems, index);
-        });
-    } else {
-        let itensFiltrados;
+        if (contagem < 4) {
+            return options.map((option, index) => {
+                const filteredItems = itens.filter(option.filter);
+                return renderOption(filteredItems, index);
+            });
 
-        if (itemSelecionado === 11) {
-            itensFiltrados = itens.filter((item) => item.grupoc === 11);
-        } else if (itemSelecionado === 26) {
-            itensFiltrados = itens.filter((item) => item.grupoc === 19);
-        } else if (itemSelecionado === 5) {
-            itensFiltrados = itens.filter((item) => item.grupoc === 4);
-        } else if (itemSelecionado === 6) {
-            itensFiltrados = itens.filter((item) => item.grupoc === 5);
         } else {
-            itensFiltrados = itens.filter((item) => item.grupoc === 8);
-        }
+            let itensFiltrados;
 
-        return (
-            <div className='inventarioOp'>
-                <ul ref={listaRef} >
-                    {itensFiltrados.map((item, index) => (
-                        <li key={index}>
-                            <button
-                                className={`GPX${item.grupo}`}
-                                onClick={() => ivAdd(item, 4)}
-                                style={{ height: alturaBotao, width: larguraBotao }}
-                            >
-                                {item.nomeproduto}
-                            </button>
-                        </li>
-                    ))}
-                </ul>
-            </div>
-        );
+            if (itemSelecionado === 1) {
+                itensFiltrados = itens.filter((item) => item.grupoc === 5);
+            } else if (itemSelecionado === 26) {
+                itensFiltrados = itens.filter((item) => item.grupoc === 19);
+            } else if (itemSelecionado === 5) {
+                itensFiltrados = itens.filter((item) => item.grupoc === 4);
+            } else if (itemSelecionado === 6) {
+                itensFiltrados = itens.filter((item) => item.grupoc === 5);
+            } else {
+                itensFiltrados = itens.filter((item) => item.grupoc === 8);
+            }
+            let displayStyle
+            if (contagem >= 4 && contagem < 6) {
+                displayStyle = 'block';
+
+            }
+            else {
+                displayStyle = 'none';
+
+            }
+            return (
+                <div key={indice} style={{ position: 'absolute', display: displayStyle }}>
+                    <div className='inventarioOp'>
+                        <ul ref={listaRef}>
+                            {itensFiltrados.map((item, index) => (
+                                <li key={index}>
+                                    <button
+                                        className={`GPX${item.grupo}`}
+                                        onClick={() => ivAdd(item, 4)}
+                                        style={{ height: alturaBotao, width: larguraBotao }}
+                                    >
+                                        {item.nomeproduto}
+                                    </button>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                </div>
+
+            );
+        }
     }
 }
 
