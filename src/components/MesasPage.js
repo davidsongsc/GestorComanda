@@ -3,7 +3,6 @@ import { Modal/*, Button*/ } from 'react-bootstrap';
 import { useNavigate } from 'react-router-dom';
 import Mesa from './Comanda/Mesa';
 import Comanda from './Comanda/ComandaMesa';
-import ComandaMesa from './Comanda/CaixaComanda';
 import './estilo.css';
 import AlertaPersonalizado from './Sistema/AlertaPersonalizado';
 import { AiOutlineUser } from 'react-icons/ai';
@@ -441,7 +440,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     </Modal.Header>
                     <Modal.Body>
                         {caixaStatus != false ?
-                            <ComandaMesa caixaStatus={caixaStatus} handleGorjeta={handleGorjeta} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} /> : <Comanda caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />
+                            <Comanda caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} /> : <Comanda caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />
                             }
 
 

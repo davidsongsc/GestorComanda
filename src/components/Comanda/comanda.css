@@ -19,36 +19,107 @@
 .i-inventario {
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
     height: 66.5vh;
     width: 47vw;
     overflow: auto;
     position: relative;
     left: 0;
     top: 0px;
+    align-content: center;
+    justify-content: center;
+}
+
+
+@keyframes menuOptionsOut {
+    0% {
+        opacity: 1;
+        left: 57%;
+    }
+
+    100% {
+        opacity: 0;
+        left: 68%;
+        display: none;
+    }
+}
+
+@keyframes menuOptions {
+    0% {
+        opacity: 0;
+        left: 110%;
+    }
+
+    10% {
+        opacity: 0.1;
+    }
+
+    20% {
+        opacity: 0.2;
+    }
+
+    30% {
+        opacity: 0.3;
+    }
+
+    40% {
+        opacity: 0.4;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+
+    60% {
+        opacity: 0.6;
+    }
+
+    70% {
+        opacity: 0.7;
+    }
+
+    80% {
+        opacity: 0.8;
+    }
+
+    90% {
+        opacity: 0.9;
+    }
+
+    100% {
+        opacity: 1;
+        left: 96%;
+    }
 }
 
 .inventarioOp {
+    animation: menuOptions .9s cubic-bezier(0.42, 0, 0, 0.71);
     display: flex;
     border-width: 10px;
     border-style: outset;
-    left: 17vw;
+    left: 96%;
     position: relative;
-    width: 58vw;
-    background: brown;
- 
+    width: 85%;
+    background: rgb(151, 187, 10);
+    transition: 2s;
 
 }
 
 .inventarioOption {
+    animation: menuOptions .9s cubic-bezier(0.42, 0, 0, 0.71);
     display: flex;
     border-width: 10px;
     border-style: outset;
-    left: 17vw;
+    left: 96%;
     position: relative;
-    width: 58vw;
-    background: rgb(10, 98, 138);
+    width: 85%;
+    background: rgb(203, 194, 225);
+    transition: 2s;
+}
 
+.inventarioOp.out,
+.inventarioOption.out {
+    animation: menuOptionsOut 0.9s cubic-bezier(0.42, 0, 0, 0.71);
+    transition-delay: 1.2s;
 }
 
 .inventarioOption ul {
@@ -56,17 +127,25 @@
     flex-wrap: wrap;
     height: 86vh;
     width: 900px;
-    overflow-y: auto; 
+    overflow-y: auto;
     position: relative;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
 }
+
 .inventarioOp ul {
     display: flex;
     flex-wrap: wrap;
     height: 86vh;
     width: 900px;
-    overflow-y: auto; 
+    overflow-y: auto;
     position: relative;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
 }
+
 .inventario div button,
 .inventarioOption div button {
     margin: 5px;
@@ -96,7 +175,7 @@
     width: 15vw;
     top: 2px;
     left: 34.5vw;
-    max-height: 63vh;
+    max-height: 60vh;
     overflow-y: scroll;
 
 }
@@ -142,10 +221,11 @@
 }
 
 .GPX10 {
-    background-image: linear-gradient(gainsboro, gray, gray, gray, gainsboro);
+    background-image: linear-gradient(rgb(93, 23, 23), rgb(68, 12, 12), rgb(101, 15, 15), rgb(48, 25, 25), rgb(0, 0, 0));
     background-color: gainsboro;
     text-shadow: 1px 1px 2px black;
-
+    font-weight: 800;
+    letter-spacing: 3px;
     color: rgb(255, 255, 255);
 }
 
@@ -235,6 +315,35 @@ table tbody {
 
 }
 
+.janela-alerta-comanda-pn {
+    width: 95%;
+    height: 90%;
+    background-color: transparent;
+    position: absolute;
+    z-index: 999;
+}
+
+.janela-alerta-comanda-pn ul {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    align-items: flex-end;
+    align-content: flex-end;
+    height: 100%;
+}
+
+.janela-alerta-comanda-pn ul button {
+    background: radial-gradient(black, black, transparent);
+}
+
+.janela-alerta-comanda-pn ul button:hover {
+    background-color: black;
+}
+
+.janela-alerta-comanda-pn ul button:active {
+    background-color: brown;
+}
+
 .A {
     background-color: rgb(216, 104, 29);
 }
@@ -278,15 +387,15 @@ em {
 
 }
 
-A,
-B,
-C,
-D,
-E,
-F,
-G,
-H,
-I {
+.A,
+.B,
+.C,
+.D,
+.E,
+.F,
+.G,
+.H,
+.I {
     text-shadow: 1px 1px 1px black;
 }
 
@@ -391,7 +500,7 @@ input[type="submit"]:hover {
 
 .controlea {
     position: absolute;
-    top: 65vh;
+    top: 62vh;
     background: brown;
     left: 35%;
     height: 205px;
@@ -479,7 +588,7 @@ option {
     background: brown;
     height: 100vh;
     width: 100vw;
-    top: 0vh;
+    top: 0.5vh;
     left: 0;
 }
 

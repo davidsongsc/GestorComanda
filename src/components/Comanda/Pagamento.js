@@ -142,7 +142,11 @@ const PagamentoForm = ({
 
     return (
         <>
-            {handleMostrarFormularioConfirm() ? <JanelaAlerta /> :
+            {handleMostrarFormularioConfirm() ? <JanelaAlerta
+             finalizarComanda={finalizarComanda}
+             valorRestante={calcularValorRestante()}
+             valorPagamento={valorPagamento}
+             /> :
                 <form >
 
                     <div className='pagament-class-pg-div'>
@@ -152,9 +156,9 @@ const PagamentoForm = ({
                             id='valorPagamento'
                             value={valorPagamento !== '' ? parseFloat(valorPagamento).toFixed(2) : ''}
                             style={{
-                                width: '180px',
-                                height: '50px',
-                                fontSize: '40px',
+                                width: '245px',
+                                height: '61px',
+                                fontSize: '52px',
                                 fontWeight: '900',
                                 fontFamily: 'monospace'
                             }}
@@ -174,7 +178,7 @@ const PagamentoForm = ({
                             <button
                                 key={metodo.numero}
                                 type='button'
-                                style={{ width: '115px', height: '75px', margin: '8px 8px' }}
+                                style={{ width: '150px', height: '95px', margin: '8px 8px' }}
                                 className={bandeiraCartao === metodo.nome ? 'selected' : 'selectedn'}
                                 onClick={() => handleSelectCartao(metodo)}
                             >

@@ -1,6 +1,5 @@
 import './comanda.css';
 import React, { useState, useRef, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
 import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
 import PagamentoForm from './Pagamento';
@@ -23,7 +22,7 @@ const usuarioError = [{
 }]
 
 function Comanda({
-  caixaStatus,
+
   handleGorjeta,
   handleDeletarComanda,
   atendente,
@@ -35,7 +34,7 @@ function Comanda({
   handleShowModalMesa,
   handleComandaItens,
   handleDeletarItem }) {
-  const { id } = useParams();
+
   // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
   const [showModal, setShowModal] = useState(false);
@@ -54,7 +53,6 @@ function Comanda({
   const [teclado, setTeclado] = useState(1);
   const [mostrarInventario, setMostrarInventario] = useState(false);
   const [mostrarInventario2, setMostrarInventario2] = useState(false);
-  const [mostrarInventario3, setMostrarInventario3] = useState(false);
   const [GORJETA, setGorjeta] = useState(0);
   const [pagamento, setPagamento] = useState(0);
   const [grupoCompain, setGrupoCompain] = useState(0);
@@ -65,6 +63,8 @@ function Comanda({
   const [selectCombinaG, setCombinaG] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarFormularioConfirm, setMostrarFormularioConfirm] = useState(false);
+  const tbodyRef = useRef(null);
+
 
   const handleMostrarFormulario = () => {
     if (
@@ -77,6 +77,7 @@ function Comanda({
       handleNotification(`Usuário ${atendente.usuario} não pode receber pagamentos na comanda!`);
     }
   };
+
   const handleSelectItem = (index) => {
     const isSelected = selectedItems.includes(index);
     if ((atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
@@ -210,21 +211,7 @@ function Comanda({
       setActive(false)
     }
   };
-  // Itens Menu Seta ↓
-  const handleScrollUp = () => {
-    listaRef.current.scrollBy({
-      top: -470,
-      behavior: 'smooth'
-    });
-  };
 
-  // Itens Menu Seta ↑
-  const handleScrollDown = () => {
-    listaRef.current.scrollBy({
-      top: 470,
-      behavior: 'smooth'
-    });
-  };
   const handleComandaFilter = (id, lista) => {
     return parseInt(
       lista
@@ -243,6 +230,7 @@ function Comanda({
       setTeclado(tecla)
     }
   }
+
   const calcularValorSelecionado = () => {
     let valorTotal = 0;
 
@@ -320,6 +308,7 @@ function Comanda({
   const handleClick = (id) => {
 
     if (id === 'O.K.') {
+
       handleFecharComanda();
       handleEmitStatus(mesa, 3);
       handleUpInsert();
@@ -365,15 +354,15 @@ function Comanda({
     }
     else if (id === 'desconto') {
       const valorSelecionado = calcularValorSelecionado().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
-      const contaAtual = calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
-      const contaAguarda = calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
+      const contaAtual = calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
+      const valorDescontos = Math.abs(calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
       if (
         (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
       ) {
 
-        if (contaAguarda <= valorSelecionado) {
-          if (valorSelecionado > contaAtual) {
+        if (contaAtual >= valorSelecionado) {
+          if (contaAtual > valorDescontos) {
             handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
             adicionarItem(
               {
@@ -396,14 +385,15 @@ function Comanda({
               },
               'M'
             );
+          } else {
+            handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
           }
-        } else {
-          handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
+
         }
       } else {
         handleNotification(`Usuário ${atendente.usuario} não pode finalizar a comanda!`);
       }
-
+      console.log(valorSelecionado, contaAtual, valorDescontos)
     } else if (id === 'remover') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
@@ -498,9 +488,9 @@ function Comanda({
     }
     if (itemExistente) {
       setComanda((comanda) =>
-        comanda.map((i) =>
+        [comanda.map((i) =>
           i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
-        )
+        )]
       );
     } else {
       setComanda((comanda) => [
@@ -508,7 +498,7 @@ function Comanda({
         { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 },
       ]);
 
-      
+
     }
     if (item.grupoc != 0) {
       setGrupoCompain(item.grupoc);
@@ -547,6 +537,22 @@ function Comanda({
     return total;
   };
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [comanda]); // Certifique-se de substituir "comanda" pela variável correta que indica a matriz de itens
+
+
+  const scrollToBottom = () => {
+    if (tbodyRef.current) {
+      const tbody = tbodyRef.current;
+      const lastItem = tbody.lastElementChild;
+      if (lastItem) {
+        setTimeout(() => {
+          lastItem.scrollIntoView({ behavior: 'smooth' });
+        }, 300);
+      }
+    }
+  };
 
   function filtrarPorGrupo(grupo) {
     setGrupoSelecionado(grupo);
@@ -684,35 +690,39 @@ function Comanda({
     });
   }
 
-  const finalizarComanda = (pagamento, resta) => {
+  const finalizarComanda = (pagamento, resta, verificador) => {
     let p = pagamento.replace(',', '.')
     let r = resta.replace(',', '.')
 
     if ((r - p) <= 0) {
-      //handleEmitStatus(mesaId, 6);
+
       setMostrarFormularioConfirm(true);
-      //handleClick('finalizarcontarecebida');
+      if (verificador === 1) {
+        handleEmitStatus(mesaId, 6);
+        handleClick('finalizarcontarecebida');
+      }
+
 
     }
 
   }
-  const handleIniciarOpcoes = () => {
-    // Lógica para lidar com o clique do botão ou qualquer outro evento
-    // onde você queira executar o componente TelaOption
+  let telaOptionSistema;
+  telaOptionSistema = (
 
-    // Exemplo de chamada do componente TelaOption
-    return (
-      <TelaOption
-        cmdComanda={comanda}
-        setMostrarInventario={setMostrarInventario}
-        setMostrarInventario2={setMostrarInventario2}
-        setMostrarInventario3={setMostrarInventario3}
-        itens={inventario}
-        listaRef={listaRef}
-        adicionarItem={adicionarItemOption}
-      />
-    );
-  };
+    <TelaOption
+      cmdComanda={comanda}
+      showModal={showModal}
+      toggleModal={setShowModal}
+      itens={inventario}
+      listaRef={listaRef}
+      adicionarItem={adicionarItemOption}
+      grupoCompain={grupoCompain}
+    />
+  )
+  useEffect(() => {
+    console.log('executado!')
+
+  }, [showModal]);
 
   return (
     <div className='container-comanda fade-in' style={{ position: 'relative', top: '0px', left: '0%' }}>
@@ -737,7 +747,7 @@ function Comanda({
                 <td>V TOTAL</td>
               </tr>
             </thead>
-            <tbody>
+            <tbody ref={tbodyRef}>
               {comanda.map((item, index) => (
                 <tr
                   key={index}
@@ -765,22 +775,12 @@ function Comanda({
             </tbody>
           </table>
         </div>
-        <TelaOption
-          cmdComanda={comanda}
-          showModal={showModal}
-          toggleModal={setShowModal}
-          setMostrarInventario={setMostrarInventario}
-          setMostrarInventario2={setMostrarInventario2}
-          setMostrarInventario3={setMostrarInventario3}
-          itens={inventario}
-          listaRef={listaRef}
-          adicionarItem={adicionarItemOption}
-          grupoCompain={grupoCompain}
-        />
 
 
-        <InventarioGrupo 
-         mostrarTodos={mostrarTodos}
+        {telaOptionSistema}
+
+        <InventarioGrupo
+          mostrarTodos={mostrarTodos}
           filtrarPorGrupo={filtrarPorGrupo} />
         <div className='inventario'>
           <ul ref={listaRef} className='i-inventario'>
@@ -793,7 +793,7 @@ function Comanda({
                 calcularValorRestante={calcularValorRestante}
                 calcularTotal={calcularTotal}
                 adicionarItem={adicionarItem}
-                
+
               />
             ) : (
               <>
@@ -838,40 +838,47 @@ function Comanda({
         <table className='tabela-fixa'>
           <thead>
             <tr className='titulo-tb'>
-              <td className='titulo-table'>COMANDA</td>
               <td className='titulo-table'>ATENDIMENTO</td>
-              <td className='titulo-table'>GORJETA</td>
-              <td className='titulo-table'>DESCONTOS</td>
-              <td className='titulo-table'>CONTA</td>
               <td className='titulo-table'>TOTAL</td>
-              <td className='titulo-table'>Pago</td>
-              <td className='titulo-table'>Falta</td>
+              <td className='titulo-table'>MESA</td>
+              <td className='titulo-table'>CONSUMO</td>
+              <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>Pago</td>
+              <td className='titulo-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0' }}>GORJETA</td>
+              <td className='titulo-table' style={{ opacity: calcularDesconto() != 0 ? '1' : '0' }}>DESCONTOS</td>
+
+              <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>Falta</td>
+
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '50px', width: '1px', fontSize: '65px', fontWeight: '800' }}>
-                {mesa}
-              </td>
-              <td className='linha-table'>
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '13px', width: '305px', textTransform: 'capitalize', fontSize: '27px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
                 <em>{usuario}</em>
               </td>
-              <td className='linha-table'>{calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>
-                {calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)', fontWeight: 900, fontSize: '30px' }}>
+                R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '35px', width: '205px', fontSize: '65px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
+                {mesa}
               </td>
               <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>
                 {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
-              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>
-                R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-              </td>
-              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)' }}>
+              <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)', opacity: calcularPagamento() != 0 ? '1' : '0' }}>
                 R$ {calcularPagamento().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
-              <td className='linha-table' style={{ backgroundColor: '#8f2020' }}>
+              <td className='linha-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0', fontWeight: '800' }} >R$ {calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table' style={{ backgroundColor: '#8f2020', opacity: calcularDesconto() != 0 ? '1' : '0' }}>
+                {calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </td>
+
+
+
+              <td className='linha-table' style={{ backgroundColor: '#8f2020', opacity: calcularPagamento() != 0 ? '1' : '0' }}>
                 R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
+
             </tr>
           </tbody>
         </table>
