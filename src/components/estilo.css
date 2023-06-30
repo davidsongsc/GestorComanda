@@ -9,8 +9,7 @@
   position: relative;
   flex-direction: column;
   top: 0;
-  overflow: auto;
-
+  overflow: hidden;
 }
 
 /* Estilos para a página de mesas */
@@ -19,10 +18,10 @@
   display: flex;
   font-family: Arial, sans-serif;
   background-color: #f7f7f7;
-  height: 86vh;
-  margin: -11px;
-  width: 99%;
-  padding: 11px;
+  margin: 0;
+  width: 100%;
+  height: 96vh;
+  padding: 0px;
   transition: 1.9s;
 }
 
@@ -70,7 +69,6 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
-  height: 81vh;
   align-items: flex-start;
   align-content: flex-start;
 }
@@ -117,15 +115,16 @@
   padding: 5px;
   display: flex;
   width: auto;
-  position: relative;
+  position: fixed;
   text-align: center;
   box-shadow: 0 0 10px rgb(34 30 30);
   transition: .9s ease-in-out;
-  top: 8px;
+  bottom: -500px;
+  flex-direction: column;
 }
 
 .senha-active {
-  top: -512px;
+  top: 0px;
 }
 
 .senha-area h2 {
@@ -136,7 +135,7 @@
   text-transform: uppercase;
   text-shadow: 1px 1px 1px black;
   color: white;
-  transition: .8s;
+  transition: .8s ease-in-out;
 }
 
 .area-digito {
@@ -161,6 +160,7 @@
   padding: 10px;
   font-size: 38px;
   border-radius: 5px;
+  width: 313px;
   border: 1px solid #ccc;
   margin-bottom: 10px;
   transition-delay: .2s;
@@ -186,7 +186,7 @@
 
 .status-mesa-comanda {
   display: flex;
-  position: absolute;
+  position: relative;
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
@@ -214,7 +214,7 @@
 
 .digitos .g1,
 .digitosLogin .g1 {
-  width: 572px;
+  width: 480px;
 }
 
 .digitosComanda {
@@ -282,7 +282,7 @@
 .digitosLogin div button {
   background-color: gray;
   font-size: 26px;
-  width: 180px;
+  width: 110px;
   margin: 4px;
   transition-delay: .2s;
   transition: .2s;
@@ -471,40 +471,51 @@
 
 
 .notification-container {
+  display: block;
   position: fixed;
-  bottom: -47px;
+  top: -47px;
   right: 0px;
-  background-color: #ffffffb8;
-  padding: 20px;
-  border-radius: 5px;
+  background-color: #ffffff;
+  padding: 10px 5px;
+  border-bottom-left-radius: 17px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   max-height: 0vh;
   overflow-y: auto;
-  z-index: 9999;
+  z-index: 999;
   width: 305px;
   transition: .9s ease-in-out;
 
 }
-.ntconter-activate{
+
+.ntconter-activate {
   transition: .9s ease-in-out;
-  bottom: 0px;
-  max-height: 7vh;
+  top: 0px;
+  max-height: 10vh;
 }
-.ntconter-dritive{
+
+.ntconter-dritive {
   transition: .9s ease-in-out;
-  bottom: 0px;
+  top: 0px;
   max-height: 85vh;
 }
-.notification-item{
+
+.notification-item {
   margin: 8px;
 }
-.notification-group{
-  background-color: #008080;
+
+.notification-group {
+  background-color: #18001e;
   margin: 3px auto;
-  padding: 10px 10px;
+  padding: 1px 14px;
+  color: #ffffff;
 }
 
 .notification-text {
+  transition: .9s ease-in-out;
+  margin: 0;
+}
+
+.notification-item {
   transition: .9s ease-in-out;
   margin: 0;
 }
@@ -522,7 +533,7 @@
 
 .notification-icon {
   position: fixed;
-  top: 1.2vh;
+  bottom: 1.2vh;
   right: 0.5vw;
   width: 45px;
   height: 45px;
@@ -535,9 +546,6 @@
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   z-index: 995;
-  transition-property: background-color;
-  transition-duration: 0.3s;
-  transition-timing-function: ease-in-out;
   opacity: 0.2;
   transition-property: opacity;
   transition-duration: 0.3s;
@@ -554,7 +562,17 @@
   width: 80px;
   height: 80px;
   opacity: 0.8;
-  
+
+}
+
+.nova-notification {
+
+  animation: rotateAnimation 2s ease-in-out;
+
+
+  width: 80px;
+  height: 80px;
+  opacity: 0.8;
 }
 
 .notification-icon.inactive {
@@ -1049,8 +1067,8 @@
   }
 
   .senha-active .butaoUps {
-    top: 185px;
-    left: -216px;
+    top: -19px;
+    right: 1px;
     height: 75px;
   }
 
@@ -1076,16 +1094,70 @@
   }
 
   .senha-area button {
-    top: -82px;
-    height: 35px;
-    left: -291px;
+    top: -30px;
+    height: 37px;
+    left: 1px;
   }
 
   .digitos,
   .digitosLogin {
     margin-top: 10vh;
-
-
   }
+
+  .container-comanda {
+    font-size: 10px;
+  }
+.operadores button {
+    width: 63px;
+    margin: 4px;
+    height: 35px;
+}
+.inventario{
+  bottom: 0px;
+}
+.i-inventario {
+  display: flex;
+  flex-wrap: wrap;
+  height: 32vh;
+  width: 54.5vw;
+  overflow: auto;
+  position: relative;
+  left: 0;
+  top: 0px;
+}
+  .inventario li button {
+    height: 35px;
+    width: 65px;
+    font-size: 8px;
+    text-align: left;
+  }
+
+  .operadores button {
+    width: 63px;
+    margin: 4px;
+    height: 35px;
+  }
+  .grupo-produto {
+    background: brown;
+    padding: 5px;
+    border-width: 3px;
+    position: absolute;
+    border-style: none;
+    width: 63vw;
+    top: 35vh;
+    left: 34.5vw;
+    max-height: 31vh;
+    overflow-y: scroll;
+}
+.cm-comanda-pn {
+  height: 67vh;
+  width: 54vw;
+  overflow: auto;
+  background: beige;
+}
+.linhas-tb .ndd {
+
+  font-size: 7px;
+}
 
 }

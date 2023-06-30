@@ -33,7 +33,7 @@ const App = () => {
 
   return (
     <BrowserRouter>
-      <Notification notification={notification} />
+      <Notification notification={notification} atendente={atendente} />
       <Routes>
         <Route path="/" element={<MesasPage setNotification={handleNotification} handlelogin={handleLoginSistema} socket={socket}  />} />
         <Route path="/gestor" element={<Gestor socket={socket} setNotification={handleNotification} atendente={atendente} />} />

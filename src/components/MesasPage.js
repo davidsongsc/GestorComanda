@@ -384,6 +384,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
 
     const handleClick = (mesaId) => {
+        
         if (mesaId) {
             setMesaAberta(mesaId);
             /*navigation(`/mesa/${mesaId}/comanda`);*/
@@ -401,7 +402,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         if (atendente.usuario === null) {
             mudarTipoAlertaId(0);
             setNivel(1);
-
+            handleClickMostrar();
         } else {
             mudarTipoAlertaId(1);
 
@@ -478,7 +479,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
             <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && atendente.auth === 'dev' ? ' senha-background' : '')}>
 
-                <div className='status-mesa-comanda'>
+                <div className='status-mesa-comanda' >
+                <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
                     <table className='vertical'>
                         <thead>
                             <tr>
@@ -578,7 +580,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                     </div>
                 }
-                <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
+                
 
             </div>
 

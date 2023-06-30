@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBell } from 'react-icons/fa';
 
-const Notification = ({ notification }) => {
+const Notification = ({ notification, atendente }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [notificationGroups, setNotificationGroups] = useState([]);
   const [showNotificationList, setShowNotificationList] = useState(false);
   const [maxvh, setMaxVh] = useState('');
+  const [hasNewNotification, setHasNewNotification] = useState(false);
 
   const notificationContainerRef = useRef(null);
 
@@ -23,22 +24,41 @@ const Notification = ({ notification }) => {
       });
 
       setShowNotification(true);
+      setHasNewNotification(true);
       setTimeout(() => {
         setShowNotification(false);
-      }, 4200);
+        setHasNewNotification(false);
+      }, 2500);
+      scrollToBottom();
     }
   }, [notification]);
 
   const handleIconClick = () => {
-    setShowNotificationList(!showNotificationList);
-    setShowNotification(!showNotification);
+    console.log(atendente.usuario);
+    if (atendente.usuario) {
+      if (
+        (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
+      ) {
+        setShowNotificationList(!showNotificationList);
+        setShowNotification(!showNotification);
+        setHasNewNotification(false);
+      }
+    }
+    scrollToBottom();
+  };
+
+  const scrollToBottom = () => {
+    if (notificationContainerRef.current) {
+      const container = notificationContainerRef.current;
+      container.scrollTop = container.scrollHeight - container.clientHeight;
+    }
   };
 
   useEffect(() => {
     if (showNotificationList) {
       setMaxVh('ntconter-dritive');
-    }
-    else{
+    } else {
       setMaxVh('');
     }
   }, [showNotificationList]);
@@ -46,15 +66,14 @@ const Notification = ({ notification }) => {
   return (
     <div>
       {/* showNotification */}
-
-      <div className={`notification-container ${showNotification ? 'ntconter-activate' : ''} ${maxvh}`}  ref={notificationContainerRef} onClick={handleIconClick}>
-        {notificationGroups.slice().reverse().map((group, groupIndex) => (
+      <div className={`notification-container ${showNotification ? 'ntconter-activate' : ''} ${maxvh}`} ref={notificationContainerRef} onClick={handleIconClick}>
+        {notificationGroups.slice().map((group, groupIndex) => (
           <div key={groupIndex}>
-            {group.reverse().map((notification, index) => (
-              <div className="notification-group" >
+            {group.map((notification, index) => (
+              <div className="notification-group">
                 <div className="notification-item" key={index}>
                   <p className="notification-text">{notification.text}</p>
-                  <p className="notification-text">{notification.timestamp}</p>
+                  <p className="notification-text-datahora">{notification.timestamp}</p>
                 </div>
               </div>
             ))}
@@ -62,13 +81,10 @@ const Notification = ({ notification }) => {
         ))}
       </div>
 
-      <div className="notification-icon" onClick={handleIconClick}>
+      <div className={`notification-icon ${hasNewNotification ? 'nova-notification' : ''}`} onClick={handleIconClick}>
         <FaBell size={30} color={'gray'} />
       </div>
-
-      
     </div>
-
   );
 };
 

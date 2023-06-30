@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useRef, useEffect } from "react";
 
 function TelaOption({
   cmdComanda,
@@ -323,7 +323,7 @@ function TelaOption({
             <div onClick={() => handleOptionClick(0)}>
               {renderOption(
                 Array.prototype.filter.call(
-                  itens,
+                  itens && Array.isArray(itens) ? itens : [],
                   options[v !== undefined ? v : 0]?.filter || (() => true)
                 ),
                 0
