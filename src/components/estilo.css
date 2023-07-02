@@ -9,7 +9,7 @@
   position: relative;
   flex-direction: column;
   top: 0;
-  overflow: hidden;
+
 }
 
 /* Estilos para a página de mesas */
@@ -20,7 +20,7 @@
   background-color: #f7f7f7;
   margin: 0;
   width: 100%;
-  height: 96vh;
+
   padding: 0px;
   transition: 1.9s;
 }
@@ -56,9 +56,11 @@
 
 .mesas-list li {
   display: flex;
-  font-size: 18px;
+  font-size: 21px;
   flex-direction: column;
   justify-content: center;
+  width: 69px;
+  margin: 2px;
 }
 
 .mesas-list li span {
@@ -68,9 +70,10 @@
 .area-mesas {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: flex-start;
   align-content: flex-start;
+  height: 92vh;
 }
 
 
@@ -112,15 +115,17 @@
 .senha-area {
   background-color: #932626;
   /* border-radius: 10px; */
-  padding: 5px;
+  padding: 0px;
   display: flex;
-  width: auto;
+  width: 100%;
   position: fixed;
   text-align: center;
   box-shadow: 0 0 10px rgb(34 30 30);
   transition: .9s ease-in-out;
-  bottom: -500px;
+  bottom: -397px;
   flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
 }
 
 .senha-active {
@@ -157,12 +162,12 @@
 }
 
 .senha-area input[type=password] {
-  padding: 10px;
+  padding: 2px;
   font-size: 38px;
   border-radius: 5px;
-  width: 313px;
+  width: 303px;
   border: 1px solid #ccc;
-  margin-bottom: 10px;
+  box-shadow: 2px 2px;
   transition-delay: .2s;
   transition: .8s;
 }
@@ -175,6 +180,7 @@
   border: none;
   font-size: 18px;
   color: #fff;
+  left: 0px;
   /* background-color: #007bff; */
   cursor: pointer;
 }
@@ -187,7 +193,6 @@
 .status-mesa-comanda {
   display: flex;
   position: relative;
-  flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
   width: 50vh;
@@ -201,20 +206,22 @@
 }
 
 .operadores button {
-  width: 102px;
+  width: 93px;
   margin: 4px;
-  height: 77px;
+  height: 57px;
 
 }
 
-.digitos,
+.digitos{
+  margin-top: 7.5vh;
+}
 .digitosLogin {
-  margin-top: 20vh;
+  margin-top: 3vh;
 }
 
 .digitos .g1,
 .digitosLogin .g1 {
-  width: 480px;
+  width: 400px;
 }
 
 .digitosComanda {
@@ -250,7 +257,7 @@
 .senha-active .g1 button {
   background-color: gray;
   font-size: 20px;
-  width: 121px;
+  width: 97px;
   margin: 4px;
   transition-delay: .2s;
   transition: .8s;
@@ -281,7 +288,7 @@
 .digitos div button,
 .digitosLogin div button {
   background-color: gray;
-  font-size: 26px;
+  font-size: 13px;
   width: 110px;
   margin: 4px;
   transition-delay: .2s;
@@ -438,26 +445,20 @@
 }
 
 .vertical {
-  writing-mode: vertical-rl;
+ /* writing-mode: vertical-rl;*/
   background: cornsilk;
 }
 
 .vertical thead th {
-  transform: rotate(-90deg);
-  width: 280px;
-  height: 50px;
+text-transform: capitalize;
+font-size: 18px;
 }
 
-.vertical tbody th {
-  transform: rotate(-90deg);
-  width: 80px;
-  height: 125px;
-  width: 57px;
-}
+
 
 .custom-alert {
   position: fixed;
-  top: 0;
+  /* top: 0; */
   left: 0;
   width: 100%;
   height: 100%;
@@ -465,7 +466,7 @@
   justify-content: center;
   align-items: center;
   background-color: rgb(0 0 0 / 43%);
-  z-index: 9999;
+  z-index: 999;
   transition: .8s;
 }
 
@@ -558,9 +559,9 @@
 .notification-icon:hover,
 .notification-icon:active {
   /* Adiciona a animação de rotação */
-  animation: rotateAnimation 2s infinite;
-  width: 80px;
-  height: 80px;
+  /*animation: rotateAnimation 2s infinite;*/
+  width: 50px;
+  height: 50px;
   opacity: 0.8;
 
 }
@@ -570,8 +571,8 @@
   animation: rotateAnimation 2s ease-in-out;
 
 
-  width: 80px;
-  height: 80px;
+  width: 50px;
+  height: 50px;
   opacity: 0.8;
 }
 
@@ -776,8 +777,7 @@
 .message {
   background-color: brown;
 
-  width: 466px;
-  height: 466px;
+
   padding: 20px;
   border-radius: 10px;
   border-style: double;
@@ -808,11 +808,11 @@
 }
 
 .message p {
-  font-size: 35px;
+  font-size: 17px;
   background: black;
-  padding: 18px;
-  border-radius: 11px;
-  box-shadow: 2px 3px 10px #502c0fdb;
+  padding: 8px;
+  border-radius: 15px;
+  box-shadow: 2px 3px 2px #502c0f;
   color: white;
 }
 
@@ -827,15 +827,13 @@
   background: brown;
   transition: .8s;
   height: 85px;
-  width: 85px;
+  width: 120px;
 }
 
 .painel-alerta-botoes {
-  display: flex;
-  flex-direction: row;
-  position: relative;
-  top: 173px;
-  left: -373px;
+
+  top: 268px;
+
 }
 
 .div-cont-dados {
@@ -908,7 +906,7 @@
   justify-content: space-evenly;
 }
 
-@media only screen and (min-width: 1370px) {
+@media only screen and (max-width: 1570px) {
   .comandeira-comanda {
     flex-direction: row;
     height: 100vh;
@@ -923,12 +921,6 @@
   .senha-active .g1 button {
 
     width: 96px;
-  }
-
-  .digitos {
-    margin-bottom: 25px;
-    margin-left: -40px;
-    margin-top: 30vh;
   }
 
   .controlea .digitos {
@@ -946,7 +938,7 @@
 
   .area-mesas {
 
-    height: 99.5vh;
+    height: 93.5vh;
   }
 
   .digitosLogin {
@@ -959,20 +951,20 @@
   .mesas-list {
     width: auto;
   }
-
-  .senha-area {
+  .senha-area{
+    bottom: -750px;
     display: flex;
-    top: 0px;
+    align-items: center;
     flex-direction: column;
-    width: auto;
+
   }
 
   .status-mesa-comanda {
-    width: 331px;
+    width: auto;
   }
 
   .senha-area .butaoUps {
-    display: none;
+    transform: block;
   }
 
   .digitosLogin .g1 {
@@ -1010,10 +1002,12 @@
 }
 
 @media only screen and (max-width: 1024px) {
-
+  .senha-area{
+    bottom: -700px;
+  }
   .digitos,
   .digitosLogin {
-    margin-top: 13vh;
+    margin-top: 3vh;
   }
 
   .senha-area h2 {
@@ -1028,26 +1022,81 @@
   }
 
   .senha-area button {
+    top: 0px;
+    height: 50px;
+    left: 1px;
 
-    width: 76px;
-    height: 59px;
+  }
+  .inventario {
+    bottom: 0px;
+  }
 
+  .i-inventario {
+    display: flex;
+    flex-wrap: wrap;
+    height: 32vh;
+    width: 54.5vw;
+    overflow: auto;
+    position: relative;
+    left: 0;
+    top: 0px;
+  }
+
+  .inventario li button {
+    height: 35px;
+    width: 65px;
+    font-size: 8px;
+    text-align: left;
+  }
+
+  .operadores button {
+    width: 63px;
+    margin: 4px;
+    height: 35px;
+  }
+
+  .grupo-produto {
+    background: brown;
+    padding: 5px;
+    border-width: 3px;
+    position: absolute;
+    border-style: none;
+    width: 63vw;
+    top: 35vh;
+    left: 34.5vw;
+    max-height: 31vh;
+    overflow-y: scroll;
+  }
+
+  .cm-comanda-pn {
+    height: 67vh;
+    width: 54vw;
+    overflow: auto;
+    background: beige;
+  }
+
+  .linhas-tb .ndd {
+
+    font-size: 7px;
   }
 }
 
 @media only screen and (max-width: 912px) {
-
+  .senha-area{
+    bottom: -490px;
+  }
   .digitos,
   .digitosLogin {
-    margin-top: 13vh;
+    margin-top: 3vh;
   }
+
 }
 
 @media only screen and (max-width: 820px) {
 
   .digitos,
   .digitosLogin {
-    margin-top: 13vh;
+    margin-top: 3vh;
   }
 }
 
@@ -1057,9 +1106,11 @@
   .senha-area button {
     top: -16px;
     height: 50px;
-    left: -219px;
+    left: 1px;
   }
-
+  .senha-area{
+    bottom: -770px;
+  }
   .digitos,
   .digitosLogin {
     margin-top: 39vh;
@@ -1086,7 +1137,9 @@
 
 @media only screen and (max-width: 541px) {
 
-
+  .senha-area{
+    bottom: -500px;
+  }
   .senha-area .senha-active {
     top: -112px;
     right: 2px;
@@ -1107,57 +1160,13 @@
   .container-comanda {
     font-size: 10px;
   }
-.operadores button {
-    width: 63px;
-    margin: 4px;
-    height: 35px;
-}
-.inventario{
-  bottom: 0px;
-}
-.i-inventario {
-  display: flex;
-  flex-wrap: wrap;
-  height: 32vh;
-  width: 54.5vw;
-  overflow: auto;
-  position: relative;
-  left: 0;
-  top: 0px;
-}
-  .inventario li button {
-    height: 35px;
-    width: 65px;
-    font-size: 8px;
-    text-align: left;
-  }
 
   .operadores button {
     width: 63px;
     margin: 4px;
     height: 35px;
   }
-  .grupo-produto {
-    background: brown;
-    padding: 5px;
-    border-width: 3px;
-    position: absolute;
-    border-style: none;
-    width: 63vw;
-    top: 35vh;
-    left: 34.5vw;
-    max-height: 31vh;
-    overflow-y: scroll;
-}
-.cm-comanda-pn {
-  height: 67vh;
-  width: 54vw;
-  overflow: auto;
-  background: beige;
-}
-.linhas-tb .ndd {
 
-  font-size: 7px;
-}
+ 
 
 }

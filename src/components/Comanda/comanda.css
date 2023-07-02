@@ -9,8 +9,8 @@
 }
 
 .inventario {
-    position: absolute;
-    right: 0px;
+      position: absolute;
+    left: 50%;
     top: 0;
     background: darkgray;
 
@@ -19,8 +19,7 @@
 .i-inventario {
     display: flex;
     flex-wrap: wrap;
-    height: 66.5vh;
-    width: 38.5vw;
+    height: 60.5vh;
     overflow: auto;
     position: relative;
     left: 0;
@@ -110,7 +109,7 @@
     left: 96%;
     position: relative;
     width: 85%;
-    background: rgb(203, 194, 225);
+    background: rgb(254, 254, 255);
     transition: 2s;
 }
 
@@ -127,9 +126,9 @@
     width: 900px;
     overflow-y: auto;
     position: relative;
-    justify-content: center;
+    justify-content: space-around;
+    align-content: space-around;
     align-items: center;
-    align-content: center;
 }
 
 .inventarioOp ul {
@@ -139,9 +138,9 @@
     width: 900px;
     overflow-y: auto;
     position: relative;
-    justify-content: center;
+    justify-content: space-around;
+    align-content: space-around;
     align-items: center;
-    align-content: center;
 }
 
 .inventario div button,
@@ -165,14 +164,14 @@
 }
 
 .grupo-produto {
-    background: brown;
+background: brown;
     padding: 5px;
     border-width: 3px;
     position: absolute;
     border-style: none;
-    width: 15vw;
+    width: 17%;
     top: 2px;
-    left: 34.5vw;
+    left: 30%;
     max-height: 60vh;
     overflow-y: scroll;
 
@@ -417,7 +416,7 @@ ul::-webkit-scrollbar-button:end:increment {
 
 ul::-webkit-scrollbar {
     height: 15px;
-    width: 45px;
+    width: px;
     left: 5px;
     position: relative;
 }
@@ -433,7 +432,7 @@ ul::-webkit-scrollbar-track {
 }
 
 ul {
-    height: 92.8%;
+   /* height: 92.8%;*/
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: red black;
@@ -443,8 +442,8 @@ li {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 7px;
-    margin-left: -9px;
+
+
 }
 
 button {
@@ -460,9 +459,18 @@ button {
     box-shadow: 1px 1px 5px black;
     text-transform: uppercase;
 }
+.inventarioOp button,
+.inventarioOption button{
+    width: 15vh;
+    height: 15vh;
+}
+.inventarioOp button:hover,
+.inventarioOption button:hover {
 
-button:hover {
-    text-shadow: 1px 1px 1px black;
+    text-shadow: 1px 1px 1px red;
+    color: brown;
+    height: 18vh;
+    width: 18vh;
 }
 
 .buttonX {
@@ -591,8 +599,8 @@ option {
 }
 
 .cm-comanda-pn {
-    height: 87vh;
-    width: 34vw;
+    height: 89%;
+    width: 30%;
     overflow: auto;
     background: beige;
 }
@@ -606,8 +614,8 @@ option {
     position: absolute;
     bottom: 0;
     left: 0px;
-    height: 12.9vh;
-    width: 100vw;
+    height: 10%;
+    width: 100%;
 }
 
 .tabela-fixa .linha-table {
@@ -617,15 +625,13 @@ option {
 
 .butaoUps {
     position: relative;
-    left: -100px;
-    top: -15px;
     background-color: #2e2650;
     transition: .8s;
 }
 
 .senha-active .butaoUps {
-    top: -15px;
-    left: -7px;
+    top: 4px;
+    left: 0px;
     transition: .8s;
     font-size: xxx-large;
     transform: rotateX(180deg);

@@ -39,30 +39,29 @@ function AlertaPersonalizado({ usuarioError, tipoAlertaId, onClose, redirect, hA
     if (variavel === 'cmdlogar') {
       handleLogar()
     }
-    else{
+    else {
       handleAlertClose()
     }
   }
   return mostrarAlerta ? (
-    <div className="custom-alert  fade-in">
+    <div className="custom-alert fade-in">
       <div className="message">
         <h1>{usuarioError[tipoAlertaId].titulo}</h1>
         <p>{showAlertMessage}</p>
-      </div>
-      {showRedirect ? (
-        <button className="close-button" onClick={nave} onKeyPress={handleKeyPress}>
-          {usuarioError[tipoAlertaId].btn2}
-        </button>
-      ) : (
-        <div className="painel-alerta-botoes">
-          <button className="close-button" onClick={() => controlador(usuarioError[tipoAlertaId].fnb1)}>{usuarioError[tipoAlertaId].btn1}</button>
-          <button className="close-button" onClick={handleAlertClose} onKeyPress={handleKeyPress}>
+        {showRedirect ? (
+          <button className="close-button" onClick={nave} onKeyPress={handleKeyPress}>
             {usuarioError[tipoAlertaId].btn2}
           </button>
+        ) : (
+          <div className="painel-alerta-botoes">
+            <button className="close-button" onClick={() => controlador(usuarioError[tipoAlertaId].fnb1)}>{usuarioError[tipoAlertaId].btn1}</button>
+            <button className="close-button" onClick={handleAlertClose} onKeyPress={handleKeyPress}>
+              {usuarioError[tipoAlertaId].btn2}
+            </button>
 
-        </div>
-      )}
-     
+          </div>
+        )}
+      </div>
     </div>
   ) : null;
 }

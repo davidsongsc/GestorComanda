@@ -353,16 +353,17 @@ function Comanda({
 
     }
     else if (id === 'desconto') {
-      const valorSelecionado = calcularValorSelecionado().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
-      const contaAtual = calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.');
+      const valorSelecionado = parseFloat(calcularValorSelecionado().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
+      const contaAtual = parseFloat(calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
       const valorDescontos = Math.abs(calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
+      const abc = valorDescontos + valorSelecionado;
       if (
         (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
       ) {
 
         if (contaAtual >= valorSelecionado) {
-          if (contaAtual > valorDescontos) {
+          if (abc <= contaAtual) {
             handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
             adicionarItem(
               {

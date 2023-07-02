@@ -110,7 +110,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             } else {
                 handleNotification('Falha na autenticação do usuário');
                 handleSairLogin();
-                
+
             }
         });
     };
@@ -324,7 +324,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
-      
+
         if (mesa.conta) {
             if (atendente.usuario === null) {
                 mudarTipoAlertaId(1);
@@ -350,7 +350,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                 )
             ) {
                 mudarTipoAlertaId(2);
-            
+
                 handleEmitStatus(idMesa, 1);
                 handleNotification(atendente.usuario + ' Inicia a mesa ' + mesa.mesa);
 
@@ -384,13 +384,13 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
 
     const handleClick = (mesaId) => {
-        
+
         if (mesaId) {
             setMesaAberta(mesaId);
             /*navigation(`/mesa/${mesaId}/comanda`);*/
             handleShowModalMesa();
 
-        } 
+        }
     }
 
     function mudarTipoAlertaId(novoId) {
@@ -442,7 +442,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     <Modal.Body>
                         {caixaStatus != false ?
                             <Comanda caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} /> : <Comanda caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />
-                            }
+                        }
 
 
                     </Modal.Body>
@@ -460,8 +460,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                     <ul className='area-mesas'>
                         {mesas.map((mesa) => (
-                            <div key={mesa.mesa} className={`butaoMenuMesa - hmenu - princopa`} onClick={() => handleMesaClick(mesa.mesa)}><Mesa key={mesa.mesa} mesa={mesa} comandas={comandas} fazerPedido={fazerPedido} sSetMesas={setMesas} />
-                            </div>
+                            <li key={mesa.mesa} className={`butaoMenuMesa - hmenu - princopa`} onClick={() => handleMesaClick(mesa.mesa)}><Mesa key={mesa.mesa} mesa={mesa} comandas={comandas} fazerPedido={fazerPedido} sSetMesas={setMesas} />
+                            </li>
                         ))}
 
                         {mostrarAlerta && (
@@ -480,7 +480,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && atendente.auth === 'dev' ? ' senha-background' : '')}>
 
                 <div className='status-mesa-comanda' >
-                <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
+                    <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
                     <table className='vertical'>
                         <thead>
                             <tr>
@@ -499,18 +499,23 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                             </tr>
                         </tbody>
                     </table>
-
+                    {atendente.usuario != null &&
+                        <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative' }}>SAIR</button>
+                    }
 
                 </div>
+
                 {!isAuthenticated &&
                     <div className='digitosLogin'>
-                        <input
-                            type="password"
-                            placeholder="Senha"
-                            value={senha || ''}
+                        <div className='g1'>
+                            <input
+                                type="password"
+                                placeholder="Senha"
+                                value={senha || ''}
 
 
-                        />
+                            />
+                        </div>
 
                         {erroSenha && <p className="senha-erro">Senha incorreta. Tente novamente.</p>}
 
@@ -542,7 +547,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                 {isAuthenticated &&
                     <div className='digitos'>
 
-                        <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative' }}>SAIR</button>
+
 
                         {/*  */}
                         {((atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
@@ -580,7 +585,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                     </div>
                 }
-                
+
 
             </div>
 

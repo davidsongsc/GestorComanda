@@ -247,12 +247,12 @@ function TelaOption({
     return (
       <>
 
-        {contagem === limite - 1 ? (
-          <div style={{ position: "absolute", display: "block" }}>
+        {contagem === limite - 2 ? (
+          <div style={{ position: "absolute", display: "block", width: '40%' }}>
             <div className="inventarioOp">
-
+              <h1>{descricaoProduto}</h1> {/* Exibindo a descrição do produto selecionado */}
               <ul ref={listaRef}>
-                <h1>{descricaoProduto}</h1> {/* Exibindo a descrição do produto selecionado */}
+
                 {options.map((item, i) => (
                   <li key={i}>
                     <button
@@ -262,7 +262,7 @@ function TelaOption({
                         abSom();
                         ivAdd(item, secador);
                       }}
-                      style={{ height: "15vh", width: "15vh" }}
+                      style={{ height: "15vh", width: "15vh", margin: '5px' }}
                     >
                       {item.nomeproduto}
                     </button>
@@ -272,10 +272,11 @@ function TelaOption({
             </div>
           </div>
         ) : (
-          <div style={{ position: "absolute", display: "block" }}>
+          <div style={{ position: "absolute", display: "block", width: '40%' }}>
             <div className="inventarioOption">
+              <h1>{descricaoProduto}</h1> {/* Exibindo a descrição do produto selecionado */}
               <ul ref={listaRef}>
-                <h1>{descricaoProduto}</h1> {/* Exibindo a descrição do produto selecionado */}
+
                 {options.map((item, i) => (
                   <li key={i}>
                     <button
@@ -285,7 +286,7 @@ function TelaOption({
                         abSom();
                         ivAdd(item, secador);
                       }}
-                      style={{ height: "15vh", width: "15vh" }}
+                      style={{ margin: '5px' }}
                     >
                       {item.nomeproduto}
                     </button>

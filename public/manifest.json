@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "Gerenciador",
+  "name": "Loja Gerenciador Frontal",
   "icons": [
     {
       "src": "favicon.ico",
