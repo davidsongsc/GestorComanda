@@ -246,7 +246,6 @@ function TelaOption({
 
     return (
       <>
-
         {contagem === limite - 2 ? (
           <div style={{ position: "absolute", display: "block", width: '40%' }}>
             <div className="inventarioOp">
