@@ -9,11 +9,11 @@
 }
 
 .inventario {
-      position: absolute;
+    position: absolute;
     left: 50%;
     top: 0;
     background: darkgray;
-
+    width: 49%;
 }
 
 .i-inventario {
@@ -164,7 +164,7 @@
 }
 
 .grupo-produto {
-background: brown;
+    background: brown;
     padding: 5px;
     border-width: 3px;
     position: absolute;
@@ -432,7 +432,7 @@ ul::-webkit-scrollbar-track {
 }
 
 ul {
-   /* height: 92.8%;*/
+    /* height: 92.8%;*/
     overflow: auto;
     scrollbar-width: thin;
     scrollbar-color: red black;
@@ -459,18 +459,19 @@ button {
     box-shadow: 1px 1px 5px black;
     text-transform: uppercase;
 }
+
 .inventarioOp button,
-.inventarioOption button{
+.inventarioOption button {
     width: 15vh;
     height: 15vh;
 }
+
 .inventarioOp button:hover,
 .inventarioOption button:hover {
 
     text-shadow: 1px 1px 1px red;
-    color: brown;
-    height: 18vh;
-    width: 18vh;
+    background-color: brown;
+
 }
 
 .buttonX {

@@ -54,6 +54,15 @@ const usuarioError = [{
     "btn2": "ALERT",
     "fnb2": ""
 
+},
+{
+    "titulo": "Atendimento",
+    "mensagem": "Esta mesa esta senndo atendida por outra pessoa!",
+    "btn1": "OK",
+    "fnb1": "",
+    "btn2": "ALERT",
+    "fnb2": ""
+
 }]
 
 
@@ -152,7 +161,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     return comanda
                         ? {
                             ...prevMesa,
-                            atendente: comanda.operador,
+                            atendente: comanda.atendente,
                             ocupada: true,
                             aberta: true,
                             conta: comanda,
@@ -324,63 +333,55 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
-
+        console.log(mesa);
+    
         if (mesa.conta) {
-            if (atendente.usuario === null) {
+            if (!atendente.usuario) {
                 mudarTipoAlertaId(1);
-                handleNotification('Usuario não encontrado!');
-                setMostrarAlerta(true);
-            }
-            else if (!atendente.usuario) {
-                mudarTipoAlertaId(1);
-                handleNotification(mesa.atendente + ' ');
-                setMostrarAlerta(true);
-            }
-            else if (mesa.status === 5 && atendente.auth === 'j5') {
-                if (mesa.ocupada) {
-                    handleEmitStatus(idMesa, 4);
-                    setCaixaDetect(true);
-                    handleNotification('Operação de Caixa: ' + mesa.mesa);
+                handleNotification('Usuário não encontrado!');
+            } else if (mesa.atendente === atendente.usuario) {
+                if (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))){
+                    mudarTipoAlertaId(5);
+                    handleEmitStatus(idMesa, 1);
+                    handleNotification(mesa.atendente);
                 }
-            } else if (
-                (mesa.status !== 1 && mesa.status !== 5 && mesa.status !== 4) ||
-                atendente.auth === 'j5' && mesa.status === 5 ||
-                atendente.auth === 'j5' && mesa.status === 4 ||
-                (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))
-                )
-            ) {
-                mudarTipoAlertaId(2);
-
-                handleEmitStatus(idMesa, 1);
-                handleNotification(atendente.usuario + ' Inicia a mesa ' + mesa.mesa);
-
-
-            } else if (mesa.status === 1) {
-                mudarTipoAlertaId(3);
-                handleNotification('Aberta no terminal!');
-                setMostrarAlerta(true);
-
-            } else if (mesa.status === 4 || mesa.status === 5) {
-                mudarTipoAlertaId(4);
-                handleNotification('Comanda em Recebimento!');
+ 
+            } else if (mesa.status === 5 && atendente.auth === 'j5' && mesa.ocupada) {
+                handleEmitStatus(idMesa, 4);
+                setCaixaDetect(true);
+                handleNotification('Operação de Caixa: ' + mesa.mesa);
+            } else {
+                if (
+                    (mesa.status !== 1 && mesa.status !== 5 && mesa.status !== 4) ||
+                    (atendente.auth === 'j5' && (mesa.status === 5 || mesa.status === 4)) ||
+                    (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))
+                ) {
+                    mudarTipoAlertaId(5);
+                    handleEmitStatus(idMesa, 1);
+                    handleNotification(atendente.usuario + ' Inicia a mesa ' + mesa.mesa);
+                } else if (mesa.status === 1) {
+                    mudarTipoAlertaId(3);
+                    handleNotification('Aberta no terminal!');
+                } else if (mesa.status === 4 || mesa.status === 5) {
+                    mudarTipoAlertaId(4);
+                    handleNotification('Comanda em Recebimento!');
+                } else {
+                    mudarTipoAlertaId(0);
+                    handleNotification('Acesso negado, Por favor, informe sua senha!');
+                }
                 setMostrarAlerta(true);
             }
-            else {
-                mudarTipoAlertaId(0);
-                setMostrarAlerta(true);
-                handleNotification('Acesso negado, Por favor, informe sua senha!');
-            }
-
         } else {
             mudarTipoAlertaId(0);
-            setMostrarAlerta(true);
             handleNotification('Mesa ' + idMesa + ' livre, Deseja iniciar Atendimento?');
             if (isAuthenticated) {
                 handleClick(idMesa);
                 handleNovaComanda(idMesa, 1);
             }
+            setMostrarAlerta(true);
         }
     };
+    
 
 
     const handleClick = (mesaId) => {

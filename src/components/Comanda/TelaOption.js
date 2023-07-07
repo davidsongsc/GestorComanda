@@ -73,7 +73,7 @@ function TelaOption({
       10: 3,
       11: 2,
       12: 4,
-      13: 3,
+      13: 10,
       14: 3,
       15: 3,
       16: 3,
@@ -97,6 +97,10 @@ function TelaOption({
   const opcaoPao = 7;                   // Opção Para pratos com molhos
   const acAperitivoS1 = 8;              // Acompanhamento de aperitivo
   const saborRecheioOp1 = 9;            // Recheio opções 1
+  const recheioDoceGrao = 102;            // Recheio opções 1
+  const recheioDoceCalda = 103;            // Recheio opções 1
+  const copoSobremesaT = 101;            // Recheio opções 1
+
   const acompanhamentoExecutivo = 201;  // corresponde ao acompanhamento.
   const saladaExecutivo = 202;
   const inventarioExtra = 99;           // corresponde ao menu oculto / EXTRA
@@ -223,6 +227,21 @@ function TelaOption({
         { filter: (item) => item.grupoc === acompanhamentoExecutivo },
         { filter: (item) => item.grupoc === saladaExecutivo },
         { filter: (item) => item.grupoc === inventarioExtra }
+      ]
+    },
+    13: {
+      nome: "Opção Padrão",
+      options: [
+        { filter: (item) => item.grupoc === copoSobremesaT },
+        { filter: (item) => item.grupoc === recheioDoceCalda },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceCalda },
+        { filter: (item) => item.grupoc === recheioDoceCalda }
       ]
     },
   };

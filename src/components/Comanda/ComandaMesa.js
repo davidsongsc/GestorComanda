@@ -644,7 +644,7 @@ function Comanda({
       visualizar: isGerenteValido(atendente) ? 'block' : 'none',
 
     },
-    { label: 'COZINHA', className: 'B' },
+    { label: 'COZINHA', className: 'B' , visualizar: isGerenteValido(atendente) ? 'block' : 'none'},
     { label: 'FECHAR', handleClick: () => handleClick('fechar'), className: 'F' },
     {
       label: 'Zerar Gorjeta', handleClick: removerGorjeta,
@@ -669,8 +669,9 @@ function Comanda({
       disabled: isCaixaValido(atendente) ? false : true,
       visualizar: isCaixaValido(atendente) ? 'block' : 'none',
     },
-    { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true },
-    { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true },
+    { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
+    { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none'  },
+    { label: 'mudar atendente', handleClick: () => handleClick('fechar'), className: 'F', disabled: isGerenteValido(atendente) ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
   ];
 
   function renderizarBotoes() {

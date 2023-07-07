@@ -122,10 +122,12 @@
   text-align: center;
   box-shadow: 0 0 10px rgb(34 30 30);
   transition: .9s ease-in-out;
-  bottom: -397px;
+  transition-delay: .9s;
+  bottom: -91vh;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
+  height: 100vh;
 }
 
 .senha-active {
@@ -435,12 +437,12 @@
 
 ::-webkit-scrollbar {
   width: 10px;
-  background-color: #f0f0f0;
+  background-color: #f0f0f030;
   /* cor cinza */
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: black;
+  background-color: #0000006b;
   border-radius: 1px;
 }
 
@@ -476,7 +478,7 @@ font-size: 18px;
   position: fixed;
   top: -47px;
   right: 0px;
-  background-color: #ffffff;
+  background-color: #eee3e30d;
   padding: 10px 5px;
   border-bottom-left-radius: 17px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -498,22 +500,38 @@ font-size: 18px;
   transition: .9s ease-in-out;
   top: 0px;
   max-height: 85vh;
-}
 
+}
+.notification-text-datahora{
+  background-color: #00000082;
+  color: white;
+  margin: 10px auto;
+  width: 35%;
+  padding: 5px;
+  border-radius: 2px;
+  box-shadow: 1px 1px;
+  font-size: 10px;
+}
 .notification-item {
   margin: 8px;
 }
 
 .notification-group {
-  background-color: #18001e;
-  margin: 3px auto;
-  padding: 1px 14px;
-  color: #ffffff;
+  background-color: #b1b0b017;
+  margin: 11px auto;
+  padding: 12px 14px;
+  color: #000000;
 }
 
 .notification-text {
   transition: .9s ease-in-out;
   margin: 0;
+  background: #00000082;
+  box-shadow: 1px 1px;
+  color: aliceblue;
+  margin: -11px 0;
+  padding: 10px;
+  border-top-left-radius: 10px;
 }
 
 .notification-item {
@@ -547,7 +565,7 @@ font-size: 18px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
   cursor: pointer;
   z-index: 995;
-  opacity: 0.2;
+  opacity: 0.052;
   transition-property: opacity;
   transition-duration: 0.3s;
   transition-timing-function: ease-in-out;
@@ -568,7 +586,7 @@ font-size: 18px;
 
 .nova-notification {
 
-  animation: rotateAnimation 2s ease-in-out;
+  animation: rotateAnimation 1.4s ease-in-out;
 
 
   width: 50px;
@@ -577,7 +595,7 @@ font-size: 18px;
 }
 
 .notification-icon.inactive {
-  animation: rotateAnimation 2s infinite;
+  animation: rotateAnimation 1.4s infinite;
   width: 75px;
   height: 75px;
   opacity: 0.8;
@@ -585,19 +603,28 @@ font-size: 18px;
 
 @keyframes rotateAnimation {
   0% {
+    transform: rotate(5deg);
+  }
+
+
+  20% {
+    transform: rotate(-35deg);
+  }
+
+  40% {
     transform: rotate(35deg);
   }
 
-  25% {
-    transform: rotate(45deg);
-  }
-
-  75% {
+  60% {
     transform: rotate(-45deg);
   }
 
+  80% {
+    transform: rotate(45deg);
+  }
+
   100% {
-    transform: rotate(35deg);
+    transform: rotate(-5deg);
   }
 }
 
@@ -704,7 +731,6 @@ font-size: 18px;
 
 .relatorios-container table th {
   font-weight: bold;
-  color: black;
   font-size: 25px;
 }
 
