@@ -138,8 +138,8 @@ const Caixa = ({ socket, atendente, setNotification }) => {
 
   const calcularTotalValores = () => {
 
-    const valoresNumericos = relatorios.filter(relatorio => !isNaN(parseFloat(relatorio.valor)));
-    const total = valoresNumericos.reduce((acc, relatorio) => acc + parseFloat(relatorio.valor), 0);
+    const valoresNumericos = relatorios.filter(relatorio => !isNaN(parseFloat(relatorio.valor*relatorio.qtd)));
+    const total = valoresNumericos.reduce((acc, relatorio) => acc + parseFloat(relatorio.valor*relatorio.qtd), 0);
     setTotalValores(total.toLocaleString(undefined, { minimumFractionDigits: 2 }));
   };
   
@@ -150,7 +150,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
       const valorAtribuido = valor < 0 ? 0 : valor;
   
       if (nomes[relatorio.operador]) {
-        nomes[relatorio.operador].totalValores += valorAtribuido;
+        nomes[relatorio.operador].totalValores += (valorAtribuido*relatorio.qtd);
         nomes[relatorio.operador].frequencia++;
       } else {
         nomes[relatorio.operador] = {
@@ -297,7 +297,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
                   .map((relatorio) => (
                     <tr key={relatorio.id}>
                       <td style={{ position: 'relative', zIndex: '1' }}>{nomeProduto(relatorio.produto)}</td>
-                      <td>R$ {relatorio.valor}</td>
+                      <td>R$ {(relatorio.valor*relatorio.qtd)}</td>
                       <td>{relatorio.comanda}</td>
                       <td>{relatorio.operador}</td>
                       <td>{relatorio.datahora}</td>

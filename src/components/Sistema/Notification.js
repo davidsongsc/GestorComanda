@@ -66,7 +66,7 @@ const Notification = ({ notification, atendente }) => {
   return (
     <div>
       {/* showNotification */}
-      <div className={`notification-container ${showNotification ? 'ntconter-activate' : ''} ${maxvh}`} ref={notificationContainerRef} onClick={handleIconClick}>
+      <div style={{display: atendente.nivel > 8 ? 'block': 'none' }} className={`notification-container ${showNotification ? 'ntconter-activate' : ''} ${maxvh}`} ref={notificationContainerRef} onClick={handleIconClick}>
         {notificationGroups.slice().map((group, groupIndex) => (
           <div key={groupIndex}>
             {group.map((notification, index) => (
@@ -81,7 +81,7 @@ const Notification = ({ notification, atendente }) => {
         ))}
       </div>
 
-      <div className={`notification-icon ${hasNewNotification ? 'nova-notification' : ''}`} onClick={handleIconClick}>
+      <div style={{display: atendente.usuario != null ? 'flex': 'none' }} className={`notification-icon ${hasNewNotification ? 'nova-notification' : ''}`} onClick={handleIconClick}>
         <FaBell size={30} color={'gray'} />
       </div>
     </div>

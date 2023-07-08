@@ -73,10 +73,10 @@ function TelaOption({
       10: 3,
       11: 2,
       12: 4,
-      13: 10,
-      14: 3,
+      13: 2,
+      14: 2,
       15: 3,
-      16: 3,
+      16: 4,
     };
 
     const itemModal = cmdComanda.find((item) => {
@@ -100,6 +100,7 @@ function TelaOption({
   const recheioDoceGrao = 102;            // Recheio opções 1
   const recheioDoceCalda = 103;            // Recheio opções 1
   const copoSobremesaT = 101;            // Recheio opções 1
+  const saborAcai = 104;            // Recheio opções 1
 
   const acompanhamentoExecutivo = 201;  // corresponde ao acompanhamento.
   const saladaExecutivo = 202;
@@ -233,15 +234,35 @@ function TelaOption({
       nome: "Opção Padrão",
       options: [
         { filter: (item) => item.grupoc === copoSobremesaT },
+        { filter: (item) => item.grupoc === saborAcai },
+        { filter: (item) => item.grupoc === inventarioExtra }
+      ]
+    },
+    14: {
+      nome: "Opção Padrão",
+      options: [
         { filter: (item) => item.grupoc === recheioDoceCalda },
-        { filter: (item) => item.grupoc === recheioDoceGrao },
-        { filter: (item) => item.grupoc === recheioDoceGrao },
-        { filter: (item) => item.grupoc === recheioDoceGrao },
-        { filter: (item) => item.grupoc === recheioDoceGrao },
-        { filter: (item) => item.grupoc === recheioDoceGrao },
-        { filter: (item) => item.grupoc === recheioDoceGrao },
         { filter: (item) => item.grupoc === recheioDoceCalda },
-        { filter: (item) => item.grupoc === recheioDoceCalda }
+        { filter: (item) => item.grupoc === inventarioExtra }
+      ]
+    },
+    15: {
+      nome: "Opção Padrão",
+      options: [
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao }
+      ]
+    },
+    16: {
+      nome: "Opção Padrão",
+      options: [
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao },
+        { filter: (item) => item.grupoc === recheioDoceGrao }
+
       ]
     },
   };

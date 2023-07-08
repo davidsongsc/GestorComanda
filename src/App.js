@@ -1,5 +1,9 @@
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import MesasPage from './components/MesasPage';
+import DeliveryPage from './components/DeliveryPage';
+import ExternaPage from './components/ExternaPage';
+import GiralPage from './components/GiralPage';
+import BarPage from './components/BarPage';
 import Notification from './components/Sistema/Notification';
 import React, { useState, useEffect } from 'react';
 import Gestor from './components/Administrativo/Gestor';
@@ -36,6 +40,10 @@ const App = () => {
       <Notification notification={notification} atendente={atendente} />
       <Routes>
         <Route path="/" element={<MesasPage setNotification={handleNotification} handlelogin={handleLoginSistema} socket={socket}  />} />
+        <Route path="/dlvy" element={<DeliveryPage setNotification={handleNotification} handlelogin={handleLoginSistema} socket={socket}  />} />
+        <Route path="/bar" element={<BarPage setNotification={handleNotification} handlelogin={handleLoginSistema} socket={socket}  />} />
+        <Route path="/giral" element={<GiralPage setNotification={handleNotification} handlelogin={handleLoginSistema} socket={socket}  />} />
+        <Route path="/externa" element={<ExternaPage setNotification={handleNotification} handlelogin={handleLoginSistema} socket={socket}  />} />
         <Route path="/gestor" element={<Gestor socket={socket} setNotification={handleNotification} atendente={atendente} />} />
         <Route path="/venda" element={<Venda socket={socket} setNotification={handleNotification} atendente={atendente} />} />
         <Route path="/cadastrocolaborador" element={<CadastroColaborador socket={socket} setNotification={handleNotification} atendente={atendente} />} />

@@ -82,7 +82,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [senha, setSenha] = useState('');
     const [comandas, setComandas] = useState([]);
     const [mesas, setMesas] = useState(
-        [...Array(99)].map((_, index) => ({
+        [...Array(520)].map((_, index) => ({
             mesa: index + 1,
             ocupada: false,
             status: 0,
@@ -90,7 +90,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             conta: null,
             atendente: null,
             nivel: 0,
-            operacao: index > 0 ? 0 : index < 99 ? 1 : 2,
+            operacao: index > 399 ? 4 : 0,
         }))
     );
     const [atendente, setAtendente] = useState({ "usuario": null, "nivel": null, "auth": '0' });
@@ -136,7 +136,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
             } else {
                 handleNotification('Falha na autenticação do usuário');
-                handleSairLogin();
+                //handleSairLogin();
 
             }
         });
@@ -234,25 +234,29 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         setMostrarAlerta(false);
     }
 
-    function handleSairLogin() {
+    function handleSairLogin(v) {
         handleCloseModalMesa();
-        setCaixaStatus(false);
-        setCaixaDetect(false);
-        clearTimeout(timeoutId);
-        handleNotification(`${atendente.usuario} Desconectado...`)
-        //handleNotification('Usuario Desconectado!');
-        setAtendente({ "usuario": null });
-        handleLoginSistema({ "usuario": null });
-        setIsAuthenticated(false);
-        localStorage.removeItem('usuario');
+        if (v === true) {
+            setCaixaStatus(false);
+            setCaixaDetect(false);
+            clearTimeout(timeoutId);
+            handleNotification(`${atendente.usuario} Desconectado...`)
+            //handleNotification('Usuario Desconectado!');
+            setAtendente({ "usuario": null });
+            handleLoginSistema({ "usuario": null });
+            setIsAuthenticated(false);
+            localStorage.removeItem('usuario');
 
+
+        }
         /*
+     
         window.location.reload();
         */
 
 
 
-    }
+    };
     const handleClickMostrar = () => {
         if (areaActive === false) {
             setActive(true)
@@ -279,7 +283,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         const data = {
             id: idMesa,
             status: op,
-            operacao: 0,
+            operacao: 4,
         };
 
         socket.emit('modificar_status_comanda', data);
@@ -489,7 +493,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                         {mesas.map((mesa) => (
                             <li key={mesa.mesa}
                                 className={`butaoMenuMesa - hmenu - princopa`}
-                                style={{ display: mesa.operacao === 0 ? 'flex' : 'none' }}
+                                style={{ display: mesa.operacao === 4 ? 'flex' : 'none' }}
                                 onClick={() => handleMesaClick(mesa.mesa)}>
                                 <Mesa key={mesa.mesa} mesa={mesa} comandas={comandas}
                                     fazerPedido={fazerPedido}
@@ -534,7 +538,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                         </tbody>
                     </table>
                     {atendente.usuario != null &&
-                        <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative' }}>SAIR</button>
+                        <button onClick={()=>handleSairLogin(true)} style={{ width: '300px', position: 'relative' }}>SAIR</button>
                     }
 
                 </div>

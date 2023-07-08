@@ -532,16 +532,19 @@ input[type="submit"]:hover {
 
 select {
     width: 100%;
-    padding: 5px;
-    margin-bottom: 10px;
+    /* padding: 3px 0; */
+    height: 23px;
+    background: black;
+    color: white;
+    text-decoration: none;
 
 }
 
 option {
-    padding: 5px;
-    font-size: 1.2em;
-    background-color: #f2f2f2;
-    color: #000;
+    
+    font-size: 3.2em;
+    background-color: black;
+    color: white;
 }
 
 .itemNormal {

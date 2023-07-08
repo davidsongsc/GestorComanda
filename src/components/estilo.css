@@ -59,7 +59,8 @@
   font-size: 21px;
   flex-direction: column;
   justify-content: center;
-  width: 69px;
+  width: 90px;
+  height: 97px;
   margin: 2px;
 }
 
@@ -131,7 +132,7 @@
 }
 
 .senha-active {
-  top: 0px;
+  top: 50vh;
 }
 
 .senha-area h2 {
@@ -521,8 +522,13 @@ font-size: 18px;
   margin: 11px auto;
   padding: 12px 14px;
   color: #000000;
+  transition: .9s ease-in-out;
 }
-
+.notification-group:hover{
+  background-color: black;
+  border-radius: 4px;
+  box-shadow: 1px 1px;
+}
 .notification-text {
   transition: .9s ease-in-out;
   margin: 0;
@@ -1066,6 +1072,10 @@ font-size: 18px;
     position: relative;
     left: 0;
     top: 0px;
+  }
+
+  .obs-produtos-inventario{
+    position: absolute;
   }
 
   .inventario li button {

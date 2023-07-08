@@ -4,12 +4,12 @@ import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
 import PagamentoForm from './Pagamento';
 import TelaOption from './TelaOption';
+import ControleDigitosComanda from '../PagePainel/ControleDigitosComanda';
 
 const TX = 0;
 const limiteOptionsCardapio = 55;
 const nome = 'maquina';
 const token = 'abc123';
-//const ipNucleo = 'https://dagesico.pythonanywhere.com;'
 const ipNucleo = 'http://192.168.0.50:5000';
 
 const usuarioError = [{
@@ -22,7 +22,7 @@ const usuarioError = [{
 }]
 
 function Comanda({
-
+  atendentes,
   handleGorjeta,
   handleDeletarComanda,
   atendente,
@@ -63,8 +63,33 @@ function Comanda({
   const [selectCombinaG, setCombinaG] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mostrarFormularioConfirm, setMostrarFormularioConfirm] = useState(false);
+  const [selectedValue, setSelectedValue] = useState('');
+  const [selectedValueUser, setSelectedValueUser] = useState('');
   const tbodyRef = useRef(null);
+  const options = [
+    { value: 0, label: 'Loja' },
+    { value: 1, label: 'Delivery' },
+    { value: 2, label: 'Externa' },
+    { value: 3, label: 'Giral' },
+    { value: 4, label: 'Bar' },
+  ];
 
+  const optionsAtendente = atendentes.map((atendente, index) => ({
+    value: index,
+    label: atendente,
+  }));
+
+  const optionElements = options.map((option) => (
+    <option key={option.value} value={option.value}>
+      {option.label}
+    </option>
+  ));
+
+  const optionElementsAtendimento = optionsAtendente.map((user) => (
+    <option key={user.value} value={user.value}>
+      {user.label}
+    </option>
+  ));
 
   const handleMostrarFormulario = () => {
     if (
@@ -120,29 +145,48 @@ function Comanda({
     handleEmitStatus(mesa, 4);
   }
 
-  useEffect(() => {
+  const handleDisponibilidade = (id, disponibilidade, quantidade) => {
+    if (disponibilidade && disponibilidade === 0) {
+      return (
+        <>
 
+        </>
+      )
+    }
+    else if (disponibilidade && disponibilidade === 1) {
+      return (
+        <>
+        </>
+      )
+    } else if (disponibilidade && disponibilidade === 2) {
+      return (
+        <text style={{ fontWeight: '900' }}>
+          {quantidade}
+        </text>
+      )
+    }
+  }
+  useEffect(() => {
     function carregarComanda() {
+
 
       fetch(`${ipNucleo}/comandas?nome=${nome}&token=${token}`)
         .then(response => response.json())
         .then(data => {
           const comandaMesa = data.filter(comad => comad.mesa === parseInt(mesaId));
 
-          comandaMesa.map(listaComanda => (
+          comandaMesa.map(listaComanda => {
 
-            // eslint-disable-next-line no-sequences
-            setMesa(listaComanda.mesa),
-            setUsuario(listaComanda.operador),
-            setGorjeta(listaComanda.gorjeta),
-            setComanda(listaComanda.itens[0].map(item => ({ ...item, status: 0 })))
 
-          ));
+            setMesa(listaComanda.mesa);
+            setUsuario(listaComanda.operador);
+            setGorjeta(listaComanda.gorjeta);
+            setComanda(listaComanda.itens[0].map(item => ({ ...item, status: 0 })));
+          });
 
         })
         .catch(error => console.error(error));
 
-      //setComanda(clManad[0].itens[0].map(item => ({ ...item, })))
       fetch(`${ipNucleo}/produtos?nome=${nome}&token=${token}&version=100a`)
         .then(response => response.json())
         .then(data => {
@@ -158,9 +202,14 @@ function Comanda({
           localStorage.setItem('inventario', JSON.stringify(data.inventario));
         })
         .catch(error => console.error(error));
+
+      // Aqui você terá acesso ao array "atendentes" com os nomes dos atendentes
+
     }
+
     carregarComanda();
   }, [mesaId]);
+
 
   function handleFecharAlerta() {
     setMostrarAlerta(false);
@@ -644,7 +693,7 @@ function Comanda({
       visualizar: isGerenteValido(atendente) ? 'block' : 'none',
 
     },
-    { label: 'COZINHA', className: 'B' , visualizar: isGerenteValido(atendente) ? 'block' : 'none'},
+    { label: 'COZINHA', className: 'B', visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
     { label: 'FECHAR', handleClick: () => handleClick('fechar'), className: 'F' },
     {
       label: 'Zerar Gorjeta', handleClick: removerGorjeta,
@@ -670,7 +719,7 @@ function Comanda({
       visualizar: isCaixaValido(atendente) ? 'block' : 'none',
     },
     { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
-    { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none'  },
+    { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
     { label: 'mudar atendente', handleClick: () => handleClick('fechar'), className: 'F', disabled: isGerenteValido(atendente) ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
   ];
 
@@ -801,48 +850,46 @@ function Comanda({
               <>
                 {itensFiltrados.map((item, index) => (
                   <li key={index}>
-                    <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>
-                      {item.nomeproduto}
-                    </button>
+                    <div className='obs-produtos-inventario'>
+                      <text style={{ position: 'absolute', margin: '2px 16px' }}>{handleDisponibilidade(item.id, item.disponibilidade, item.qtd)}</text>
+                      <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>
+                        {item.nomeproduto}
+                      </button>
+                    </div>
                   </li>
                 ))}
               </>
             )}
           </ul>
         </div>
-        <div className='controlea'>
-          <div className='digitosComanda'>
-            <div className='g2'>
-              <button onClick={() => handleTeclado(1)}>1</button>
-              <button onClick={() => handleTeclado(2)}>2</button>
-              <button onClick={() => handleTeclado(3)}>3</button>
-            </div>
-            <div className='g2'>
-              <button onClick={() => handleTeclado(4)}>4</button>
-              <button onClick={() => handleTeclado(5)}>5</button>
-              <button onClick={() => handleTeclado(6)}>6</button>
-            </div>
-            <div className='g2'>
-              <button onClick={() => handleTeclado(7)}>7</button>
-              <button onClick={() => handleTeclado(8)}>8</button>
-              <button onClick={() => handleTeclado(9)}>9</button>
-            </div>
-            <div className='g2'>
-              <button onClick={() => handleTeclado('A')}>A</button>
-              <button onClick={() => handleTeclado(0)}>0</button>
-              <button onClick={() => handleTeclado('B')}>B</button>
-            </div>
-          </div>
-        </div>
+        <ControleDigitosComanda handleTeclado={handleTeclado} />
+
         <div className='controleb'>
-          <div className='operadores'>{renderizarBotoes()}</div>
+          <div className='operadores'>
+            {renderizarBotoes()}
+          </div>
         </div>
         <table className='tabela-fixa'>
           <thead>
             <tr className='titulo-tb'>
-              <td className='titulo-table'>ATENDIMENTO</td>
+              <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
+                <select
+                  value={selectedValueUser}
+                  onChange={(e) => setSelectedValueUser(e.target.value)}
+
+                >
+                  {optionElementsAtendimento}
+                </select> : 'atendimento'}</td>
               <td className='titulo-table'>TOTAL</td>
-              <td className='titulo-table'>MESA</td>
+              <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
+                <select
+                  value={selectedValue}
+                  onChange={(e) => setSelectedValue(e.target.value)}
+
+                >
+                  {optionElements}
+                </select> : 'mesa'}
+              </td>
               <td className='titulo-table'>CONSUMO</td>
               <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>Pago</td>
               <td className='titulo-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0' }}>GORJETA</td>
