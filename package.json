@@ -20,7 +20,7 @@
     "react-scripts": "5.0.1",
     "react-spring": "^9.7.1",
     "socket.io": "^4.6.1",
-    "socket.io-client": "^4.6.1",
+    "socket.io-client": "^4.7.1",
     "web-vitals": "^2.1.4",
     "websocket": "^1.0.34"
   },

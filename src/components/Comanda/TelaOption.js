@@ -77,6 +77,7 @@ function TelaOption({
       14: 2,
       15: 3,
       16: 4,
+      17: 4,
     };
 
     const itemModal = cmdComanda.find((item) => {
@@ -101,6 +102,10 @@ function TelaOption({
   const recheioDoceCalda = 103;            // Recheio opções 1
   const copoSobremesaT = 101;            // Recheio opções 1
   const saborAcai = 104;            // Recheio opções 1
+  const festivalFavorito = 301;            // Festival Produto
+  const festivalAc1 = 302;            // Festival Produto
+  const festivalAc2 = 303;            // Festival Produto
+  const festivalMolho = 304            // Festival Produto
 
   const acompanhamentoExecutivo = 201;  // corresponde ao acompanhamento.
   const saladaExecutivo = 202;
@@ -265,6 +270,17 @@ function TelaOption({
 
       ]
     },
+    17: {
+      nome: "Opção Padrão",
+      options: [
+        { filter: (item) => item.grupoc === festivalFavorito },
+        { filter: (item) => item.grupoc === festivalAc1 },
+        { filter: (item) => item.grupoc === festivalMolho },
+        { filter: (item) => item.grupoc === festivalAc2 }
+        
+
+      ]
+    },
   };
 
   const options = inventarioOptions[modalItem?.grupoc]?.options;
@@ -377,3 +393,4 @@ function TelaOption({
 }
 
 export default TelaOption;
+

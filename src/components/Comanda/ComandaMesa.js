@@ -357,7 +357,6 @@ function Comanda({
   const handleClick = (id) => {
 
     if (id === 'O.K.') {
-
       handleFecharComanda();
       handleEmitStatus(mesa, 3);
       handleUpInsert();

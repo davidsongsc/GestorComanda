@@ -344,7 +344,9 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         const data = {
             id: idMesa,
             status: op,
-            atendente: atendente.usuario
+            atendente: atendente.usuario,
+            operacao: 4,
+            cliente: null
         };
 
         socket.emit('modificar_status_comanda_nova', data);
