@@ -539,7 +539,10 @@ select {
     text-decoration: none;
 
 }
-
+.status-mesa-comanda select{
+    height: 10vh;
+    font-size: 20px;
+}
 option {
     
     font-size: 3.2em;

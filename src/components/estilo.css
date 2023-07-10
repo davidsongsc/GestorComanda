@@ -74,7 +74,7 @@
   justify-content: space-between;
   align-items: flex-start;
   align-content: flex-start;
-  height: 92vh;
+  height: 80vh;
 }
 
 
@@ -115,7 +115,6 @@
 
 .senha-area {
   background-color: #932626;
-  /* border-radius: 10px; */
   padding: 0px;
   display: flex;
   width: 100%;
@@ -124,16 +123,14 @@
   box-shadow: 0 0 10px rgb(34 30 30);
   transition: .9s ease-in-out;
   transition-delay: .9s;
-  bottom: -91vh;
-  flex-direction: column;
-  align-items: center;
+  bottom: 0;
+  flex-direction: row;
+  align-items: flex-start;
   justify-content: flex-start;
-  height: 100vh;
+  height: 20vh;
 }
 
-.senha-active {
-  top: 50vh;
-}
+
 
 .senha-area h2 {
   font-size: 18px;
@@ -168,7 +165,7 @@
   padding: 2px;
   font-size: 38px;
   border-radius: 5px;
-  width: 303px;
+  width: 159px;
   border: 1px solid #ccc;
   box-shadow: 2px 2px;
   transition-delay: .2s;
@@ -188,8 +185,8 @@
   cursor: pointer;
 }
 
-.senha-area button:first-child {
-
+.senha-area button:first-child,
+.senha-area button:last-child {
   background-color: #28a745;
 }
 
@@ -198,7 +195,7 @@
   position: relative;
   justify-content: flex-start;
   align-items: flex-start;
-  width: 50vh;
+  width: 40%;
 }
 
 .button {
@@ -215,11 +212,8 @@
 
 }
 
-.digitos{
+.digitos {
   margin-top: 7.5vh;
-}
-.digitosLogin {
-  margin-top: 3vh;
 }
 
 .digitos .g1,
@@ -259,11 +253,11 @@
 
 .senha-active .g1 button {
   background-color: gray;
-  font-size: 20px;
-  width: 97px;
-  margin: 4px;
+  height: 40px;
+  width: 40px;
   transition-delay: .2s;
   transition: .8s;
+
 }
 
 @keyframes gradiente {
@@ -292,7 +286,8 @@
 .digitosLogin div button {
   background-color: gray;
   font-size: 13px;
-  width: 110px;
+  width: 40px;
+  height: 40px;
   margin: 4px;
   transition-delay: .2s;
   transition: .2s;
@@ -448,16 +443,18 @@
 }
 
 .vertical {
- /* writing-mode: vertical-rl;*/
+  /* writing-mode: vertical-rl;*/
   background: cornsilk;
 }
 
 .vertical thead th {
-text-transform: capitalize;
-font-size: 18px;
+  text-transform: capitalize;
+  font-size: 18px;
 }
 
-
+.vertical tr {
+  height: 8vh;
+}
 
 .custom-alert {
   position: fixed;
@@ -503,7 +500,8 @@ font-size: 18px;
   max-height: 85vh;
 
 }
-.notification-text-datahora{
+
+.notification-text-datahora {
   background-color: #00000082;
   color: white;
   margin: 10px auto;
@@ -513,6 +511,7 @@ font-size: 18px;
   box-shadow: 1px 1px;
   font-size: 10px;
 }
+
 .notification-item {
   margin: 8px;
 }
@@ -524,11 +523,13 @@ font-size: 18px;
   color: #000000;
   transition: .9s ease-in-out;
 }
-.notification-group:hover{
+
+.notification-group:hover {
   background-color: black;
   border-radius: 4px;
   box-shadow: 1px 1px;
 }
+
 .notification-text {
   transition: .9s ease-in-out;
   margin: 0;
@@ -543,6 +544,7 @@ font-size: 18px;
 .notification-item {
   transition: .9s ease-in-out;
   margin: 0;
+  text-align: center;
 }
 
 .notification-list {
@@ -938,6 +940,10 @@ font-size: 18px;
   justify-content: space-evenly;
 }
 
+.digitos .g1s button {
+  width: 125px;
+}
+
 @media only screen and (max-width: 1570px) {
   .comandeira-comanda {
     flex-direction: row;
@@ -983,7 +989,8 @@ font-size: 18px;
   .mesas-list {
     width: auto;
   }
-  .senha-area{
+
+  .senha-area {
     bottom: -750px;
     display: flex;
     align-items: center;
@@ -1003,9 +1010,7 @@ font-size: 18px;
     width: 335px;
   }
 
-  .g1s {
-    width: 375px;
-  }
+
 
   .digitos div button {
     font-size: 13px;
@@ -1034,9 +1039,10 @@ font-size: 18px;
 }
 
 @media only screen and (max-width: 1024px) {
-  .senha-area{
+  .senha-area {
     bottom: -700px;
   }
+
   .digitos,
   .digitosLogin {
     margin-top: 3vh;
@@ -1059,6 +1065,7 @@ font-size: 18px;
     left: 1px;
 
   }
+
   .inventario {
     bottom: 0px;
   }
@@ -1074,7 +1081,7 @@ font-size: 18px;
     top: 0px;
   }
 
-  .obs-produtos-inventario{
+  .obs-produtos-inventario {
     position: absolute;
   }
 
@@ -1118,9 +1125,10 @@ font-size: 18px;
 }
 
 @media only screen and (max-width: 912px) {
-  .senha-area{
+  .senha-area {
     bottom: -490px;
   }
+
   .digitos,
   .digitosLogin {
     margin-top: 3vh;
@@ -1144,9 +1152,11 @@ font-size: 18px;
     height: 50px;
     left: 1px;
   }
-  .senha-area{
+
+  .senha-area {
     bottom: -770px;
   }
+
   .digitos,
   .digitosLogin {
     margin-top: 39vh;
@@ -1173,9 +1183,10 @@ font-size: 18px;
 
 @media only screen and (max-width: 541px) {
 
-  .senha-area{
+  .senha-area {
     bottom: -500px;
   }
+
   .senha-area .senha-active {
     top: -112px;
     right: 2px;
@@ -1203,6 +1214,6 @@ font-size: 18px;
     height: 35px;
   }
 
- 
+
 
 }

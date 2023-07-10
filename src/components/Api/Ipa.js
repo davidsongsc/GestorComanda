@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { useSocket } from './Hooks';
 
 const SocketTest = () => {
-    const { socket } = useSocket('ws://192.168.0.50:8000/ws/myapp/');
+    const { socket } = useSocket('ws://dagesico.pythonanywhere.com:8000/ws/myapp/');
 
     useEffect(() => {
         // registra um evento para receber dados do servidor

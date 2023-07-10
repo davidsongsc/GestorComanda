@@ -81,18 +81,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [showModalMesa, setShowModalMesa] = useState(false);
     const [senha, setSenha] = useState('');
     const [comandas, setComandas] = useState([]);
-    const [mesas, setMesas] = useState(
-        [...Array(99)].map((_, index) => ({
-            mesa: index + 1,
-            ocupada: false,
-            status: 0,
-            aberta: false,
-            conta: null,
-            atendente: null,
-            nivel: 0,
-            operacao: index > 0 ? 0 : index < 99 ? 1 : 2,
-        }))
-    );
+
     const [atendente, setAtendente] = useState({ "usuario": null, "nivel": null, "auth": '0' });
     const [mesaAberta, setMesaAberta] = useState(null);
     const [mostrarAlerta, setMostrarAlerta] = useState(false);
@@ -100,7 +89,144 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [areaActive, setActive] = useState(false);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [nivel, setNivel] = useState(1);
-    const [caixaDetect, setCaixaDetect] = useState(false);
+    const [displayVisualizando, setDisplayVisualizador] = useState(0);
+    const [selectedOption, setSelectedOption] = useState('loja');
+    useEffect(() => {
+        if (selectedOption === 'loja') {
+            setDisplayVisualizador(0);
+            const minMesa = 1;
+            const maxMesa = 99;
+            const operacao = 0;
+            setMesas(
+                [...Array(maxMesa - minMesa + 1)].map((_, index) => ({
+                    mesa: index + minMesa,
+                    ocupada: false,
+                    status: 0,
+                    aberta: false,
+                    conta: null,
+                    atendente: null,
+                    nivel: 0,
+                    operacao: operacao,
+                }))
+            );
+        }
+        else if (selectedOption === 'bar') {
+            setDisplayVisualizador(1);
+            const minMesa = 100;
+            const maxMesa = 120;
+            const operacao = 1;
+            setMesas(
+                [...Array(maxMesa - minMesa + 1)].map((_, index) => ({
+                    mesa: index + minMesa,
+                    ocupada: false,
+                    status: 0,
+                    aberta: false,
+                    conta: null,
+                    atendente: null,
+                    nivel: 0,
+                    operacao: operacao,
+                }))
+            );
+        }
+        else if (selectedOption === 'giral') {
+            setDisplayVisualizador(2);
+            const minMesa = 121;
+            const maxMesa = 200;
+            const operacao = 2;
+            setMesas(
+                [...Array(maxMesa - minMesa + 1)].map((_, index) => ({
+                    mesa: index + minMesa,
+                    ocupada: false,
+                    status: 0,
+                    aberta: false,
+                    conta: null,
+                    atendente: null,
+                    nivel: 0,
+                    operacao: operacao,
+                }))
+            );
+        }
+        else if (selectedOption === 'externa') {
+            setDisplayVisualizador(3);
+            const minMesa = 201;
+            const maxMesa = 299;
+            const operacao = 3;
+            setMesas(
+                [...Array(maxMesa - minMesa + 1)].map((_, index) => ({
+                    mesa: index + minMesa,
+                    ocupada: false,
+                    status: 0,
+                    aberta: false,
+                    conta: null,
+                    atendente: null,
+                    nivel: 0,
+                    operacao: operacao,
+                }))
+            );
+        }
+        if (selectedOption === 'delivery') {
+            setDisplayVisualizador(4);
+            const minMesa = 300;
+            const maxMesa = 420;
+            const operacao = 4;
+            setMesas(
+                [...Array(maxMesa - minMesa + 1)].map((_, index) => ({
+                    mesa: index + minMesa,
+                    ocupada: false,
+                    status: 0,
+                    aberta: false,
+                    conta: null,
+                    atendente: null,
+                    nivel: 0,
+                    operacao: operacao,
+                }))
+            );
+        }
+    }, [selectedOption]);
+
+    const handleChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
+
+    let minMesa;
+    let maxMesa;
+    let operacao;
+
+    if (displayVisualizando === 0) {
+        minMesa = 1;
+        maxMesa = 99;
+        operacao = 0;
+    } else if (displayVisualizando === 1) {
+        minMesa = 100;
+        maxMesa = 120;
+        operacao = 1;
+    } else if (displayVisualizando === 2) {
+        minMesa = 200;
+        maxMesa = 300;
+        operacao = 2;
+    } else if (displayVisualizando === 3) {
+        minMesa = 300;
+        maxMesa = 400;
+        operacao = 3;
+    } else if (displayVisualizando === 4) {
+        minMesa = 400;
+        maxMesa = 600;
+        operacao = 4;
+    }
+
+    const [mesas, setMesas] = useState(
+        [...Array(maxMesa - minMesa + 1)].map((_, index) => ({
+            mesa: index + minMesa,
+            ocupada: false,
+            status: 0,
+            aberta: false,
+            conta: null,
+            atendente: null,
+            nivel: 0,
+            operacao: operacao,
+        }))
+    );
+
     const [listaUsuarios, setListaUsuarios] = useState();
 
     const [caixaStatus, setCaixaStatus] = useState(false);
@@ -136,7 +262,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
             } else {
                 handleNotification('Falha na autenticação do usuário');
-                handleSairLogin();
+
 
             }
         });
@@ -167,7 +293,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const fetchComandas = () => {
         socket.emit('get_comandas');
     };
-    
+
     useEffect(() => {
         fetchComandas();
         const atendentes = [];
@@ -188,12 +314,13 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                             conta: comanda,
                             status: comanda.status,
                             operacao: comanda.operacao,
+                            cliente: null,
                         }
                         : prevMesa;
                 })
             );
             setListaUsuarios(atendentes);
-            
+
         });
 
         socket.on('disconnect', () => {
@@ -236,8 +363,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     function handleSairLogin() {
         handleCloseModalMesa();
+
         setCaixaStatus(false);
-        setCaixaDetect(false);
         clearTimeout(timeoutId);
         handleNotification(`${atendente.usuario} Desconectado...`)
         //handleNotification('Usuario Desconectado!');
@@ -245,6 +372,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         handleLoginSistema({ "usuario": null });
         setIsAuthenticated(false);
         localStorage.removeItem('usuario');
+
 
         /*
         window.location.reload();
@@ -264,12 +392,12 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const handleCaixaStatus = () => {
         if (atendente.nivel > 6 || atendente.auth === 'j5') {
             setCaixaStatus(true);
-            setCaixaDetect(true);
+
         }
         else {
             handleNotification('Acesso restrito, Usuario sem privilégios. Por favor, procure um gerente!');
             setCaixaStatus(false);
-            setCaixaDetect(false);
+
         }
 
     };
@@ -279,7 +407,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         const data = {
             id: idMesa,
             status: op,
-            operacao: 0,
+            operacao: displayVisualizando,
+            cliente: null
         };
 
         socket.emit('modificar_status_comanda', data);
@@ -341,7 +470,8 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             id: idMesa,
             status: op,
             atendente: atendente.usuario,
-            operacao: 0
+            operacao: displayVisualizando,
+            cliente: null
         };
 
         socket.emit('modificar_status_comanda_nova', data);
@@ -367,7 +497,6 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                 handleNotification('Usuário não encontrado!');
             } else if (mesa.status === 5 && atendente.auth === 'j5' && mesa.ocupada) {
                 handleEmitStatus(idMesa, 4);
-                setCaixaDetect(true);
                 handleNotification('Operação de Caixa: ' + mesa.mesa);
             } else if (mesa.atendente != atendente.usuario) {
                 if (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) {
@@ -490,7 +619,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                         {mesas.map((mesa) => (
                             <li key={mesa.mesa}
                                 className={`butaoMenuMesa - hmenu - princopa`}
-                                style={{ display: mesa.operacao === 0 ? 'flex' : 'none' }}
+                                style={{ display: mesa.operacao === displayVisualizando ? 'flex' : 'none' }}
                                 onClick={() => handleMesaClick(mesa.mesa)}>
                                 <Mesa key={mesa.mesa} mesa={mesa} comandas={comandas}
                                     fazerPedido={fazerPedido}
@@ -515,12 +644,20 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                 <div className='status-mesa-comanda' >
                     <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
-                    <table className='vertical'>
+                    <select id="myComboBox" value={selectedOption} onChange={handleChange} disabled={atendente.nivel > 4 ? false : true}>
+                        <option value="loja">Loja</option>
+                        <option value="bar">Bar</option>
+                        <option value="giral">Giral</option>
+                        <option value="externa">Externa</option>
+                        <option value="delivery">Delivery</option>
+                    </select>
+
+                    <table className='vertical' disabled={atendente.nivel > 1 ? false : true}>
                         <thead>
                             <tr>
                                 <th><em>{atendente.usuario}</em></th>
                                 <th><FuncaoComponent codigo={atendente.auth} /></th>
-                                <th>Area Externa</th>
+                                <th>{selectedOption} </th>
                             </tr>
                         </thead>
                         <tbody>
@@ -542,15 +679,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                 {!isAuthenticated &&
                     <div className='digitosLogin'>
-                        <div className='g1'>
-                            <input
-                                type="password"
-                                placeholder="Senha"
-                                value={senha || ''}
 
-
-                            />
-                        </div>
 
                         {erroSenha && <p className="senha-erro">Senha incorreta. Tente novamente.</p>}
 
@@ -578,6 +707,19 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                         </div>
                     </div>}
+                <div className='g1'>
+                    <input
+                        type="password"
+                        placeholder="Senha"
+                        value={senha || ''}
+
+
+                        disabled={atendente.auth === null ? false : true} />
+
+                </div>
+
+
+
 
                 {isAuthenticated && <BarraMenuOperacional atendente={atendente} />
                 }

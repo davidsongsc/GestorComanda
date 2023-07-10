@@ -274,7 +274,7 @@ function TelaOption({
       nome: "Opção Padrão",
       options: [
         { filter: (item) => item.grupoc === festivalFavorito },
-        { filter: (item) => item.grupoc === festivalAc1 },
+         { filter: (item) => item.grupoc === festivalAc1 },
         { filter: (item) => item.grupoc === festivalMolho },
         { filter: (item) => item.grupoc === festivalAc2 }
         

@@ -10,7 +10,7 @@ const TX = 0;
 const limiteOptionsCardapio = 55;
 const nome = 'maquina';
 const token = 'abc123';
-const ipNucleo = 'http://192.168.0.50:5000';
+const ipNucleo = 'https://dagesico.pythonanywhere.com';
 
 const usuarioError = [{
   "titulo": "Impressora!",
