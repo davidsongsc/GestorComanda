@@ -17,7 +17,7 @@ function Opt({ id, mesas }) {
     useEffect(() => {
         function carregarComanda() {
 
-            fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&versi  on=100a`)
+            fetch(`https://dagesico.pythonanywhere.com/comandas?nome=${nome}&token=${token}&version=100a`)
                 .then(response => response.json())
                 .then(data => {
                     const comandaMesa = data.filter(comad => comad.mesa === parseInt(id));

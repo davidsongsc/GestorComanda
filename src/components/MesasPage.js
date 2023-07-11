@@ -361,17 +361,19 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         setMostrarAlerta(false);
     }
 
-    function handleSairLogin() {
+    const handleSairLogin = (v) => {
         handleCloseModalMesa();
+        if (v === 'true') {
+            setCaixaStatus(false);
+            clearTimeout(timeoutId);
+            handleNotification(`${atendente.usuario} Desconectado...`)
+            //handleNotification('Usuario Desconectado!');
+            setAtendente({ "usuario": null });
+            handleLoginSistema({ "usuario": null });
+            setIsAuthenticated(false);
+            localStorage.removeItem('usuario');
+        }
 
-        setCaixaStatus(false);
-        clearTimeout(timeoutId);
-        handleNotification(`${atendente.usuario} Desconectado...`)
-        //handleNotification('Usuario Desconectado!');
-        setAtendente({ "usuario": null });
-        handleLoginSistema({ "usuario": null });
-        setIsAuthenticated(false);
-        localStorage.removeItem('usuario');
 
 
         /*
@@ -598,7 +600,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     </Modal.Header>
                     <Modal.Body>
                         {caixaStatus != false ?
-                            <Comanda atendentes={listaUsuarios} caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} /> : <Comanda atendentes={listaUsuarios} caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />
+                            <Comanda displayVisualizando={displayVisualizando} atendentes={listaUsuarios} caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} /> : <Comanda displayVisualizando={displayVisualizando} atendentes={listaUsuarios} caixaStatus={caixaStatus} handleDeletarComanda={handleDeletarComanda} atendente={atendente} setCaixaStatus={handleCaixaStatus} setNotification={handleNotification} socket={socket} handleSairLogin={handleSairLogin} comandaLis={comandas} mesaId={mesaAberta} handleShowModalMesa={handleShowModalMesa} handleGorjeta={handleGorjeta} handleEmitStatus={handleEmitStatus} handleComandaItens={handleComandaItens} handleDeletarItem={handleDeletarItem} />
                         }
 
 
@@ -672,7 +674,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                         </tbody>
                     </table>
                     {atendente.usuario != null &&
-                        <button onClick={handleSairLogin} style={{ width: '300px', position: 'relative' }}>SAIR</button>
+                        <button onClick={() => handleSairLogin('true')} style={{ width: '300px', position: 'relative' }}>SAIR</button>
                     }
 
                 </div>

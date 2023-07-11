@@ -21,7 +21,6 @@ function TelaOption({
   const [indice, setIndice] = useState(null);
   const [v, setV] = useState(0);
 
-
   useEffect(() => {
     if (contagem >= limite) {
       toggleModal();
@@ -78,6 +77,7 @@ function TelaOption({
       15: 3,
       16: 4,
       17: 4,
+      18: 2,
     };
 
     const itemModal = cmdComanda.find((item) => {
@@ -109,6 +109,7 @@ function TelaOption({
 
   const acompanhamentoExecutivo = 201;  // corresponde ao acompanhamento.
   const saladaExecutivo = 202;
+  const acompanhamentoBurguer = 203;  // corresponde ao acompanhamento.
   const inventarioExtra = 99;           // corresponde ao menu oculto / EXTRA
   const inventarioOptions = {
     /* Produto sem Opções */
@@ -277,6 +278,16 @@ function TelaOption({
          { filter: (item) => item.grupoc === festivalAc1 },
         { filter: (item) => item.grupoc === festivalMolho },
         { filter: (item) => item.grupoc === festivalAc2 }
+        
+
+      ]
+    },
+    18: {
+      nome: "Opção Padrão",
+      options: [
+        { filter: (item) => item.grupoc === pontoCarnes },
+         { filter: (item) => item.grupoc === acompanhamentoBurguer }
+
         
 
       ]

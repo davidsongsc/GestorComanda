@@ -137,11 +137,12 @@ const Caixa = ({ socket, atendente, setNotification }) => {
   };
 
   const calcularTotalValores = () => {
-
-    const valoresNumericos = relatorios.filter(relatorio => !isNaN(parseFloat(relatorio.valor*relatorio.qtd)));
-    const total = valoresNumericos.reduce((acc, relatorio) => acc + parseFloat(relatorio.valor*relatorio.qtd), 0);
+    console.log(relatorios);
+    const valoresNumericos = relatorios.filter(relatorio => !isNaN(parseFloat(relatorio.valor * relatorio.qtd)));
+    const total = valoresNumericos.reduce((acc, relatorio) => acc + parseFloat(relatorio.valor * relatorio.qtd), 0);
     setTotalValores(total.toLocaleString(undefined, { minimumFractionDigits: 2 }));
   };
+  
   
   const encontrarNomesFrequentes = () => {
     const nomes = {};
@@ -238,17 +239,22 @@ const Caixa = ({ socket, atendente, setNotification }) => {
                   <td className='pnconfg-table-td'>R$ {totalValores}</td>
                 </tr>
                 <tr>
-                  <td className='pnconfg-table-td'>Quiosque</td>
+                  <td className='pnconfg-table-td'>Bar</td>
+                  <td className='pnconfg-table-td'> ... </td>
+                  <td className='pnconfg-table-td'>R$ 0</td>
+                </tr>
+                <tr>
+                  <td className='pnconfg-table-td'>Giral</td>
+                  <td className='pnconfg-table-td'> ... </td>
+                  <td className='pnconfg-table-td'>R$ 0</td>
+                </tr>
+                <tr>
+                  <td className='pnconfg-table-td'>Externa</td>
                   <td className='pnconfg-table-td'> ... </td>
                   <td className='pnconfg-table-td'>R$ 0</td>
                 </tr>
                 <tr>
                   <td className='pnconfg-table-td'>Delivery</td>
-                  <td className='pnconfg-table-td'> ... </td>
-                  <td className='pnconfg-table-td'>R$ 0</td>
-                </tr>
-                <tr>
-                  <td className='pnconfg-table-td'>Para Viagem</td>
                   <td className='pnconfg-table-td'> ... </td>
                   <td className='pnconfg-table-td'>R$ 0</td>
                 </tr>

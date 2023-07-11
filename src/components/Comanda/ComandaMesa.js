@@ -10,7 +10,7 @@ const TX = 0;
 const limiteOptionsCardapio = 55;
 const nome = 'maquina';
 const token = 'abc123';
-const ipNucleo = 'https://dagesico.pythonanywhere.com';
+const ipNucleo = 'http://192.168.0.50:5000';
 
 const usuarioError = [{
   "titulo": "Impressora!",
@@ -22,6 +22,7 @@ const usuarioError = [{
 }]
 
 function Comanda({
+  displayVisualizando,
   atendentes,
   handleGorjeta,
   handleDeletarComanda,
@@ -358,9 +359,21 @@ function Comanda({
 
     if (id === 'O.K.') {
       handleFecharComanda();
-      handleEmitStatus(mesa, 3);
+      if (displayVisualizando === 4) {
+        handleEmitStatus(mesa, 2);
+      } else {
+        handleEmitStatus(mesa, 3);
+      }
+
       handleUpInsert();
-      handleSairLogin();
+
+
+      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+        handleSairLogin();
+      } else {
+        handleSairLogin('true');
+      }
     } else if (id === 'conta') {
       handleNotification('Imprimindo conferência mesa: ' + mesa);
       handleEmitStatus(mesa, 5);

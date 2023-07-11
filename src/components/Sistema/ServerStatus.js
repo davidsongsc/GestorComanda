@@ -25,7 +25,7 @@ function ServerStatus({setNotification}) {
 
     async function connectSocket() {
         return new Promise((resolve, reject) => {
-            const socket = io('http://192.168.0.50:8000');
+            const socket = io('http://192.168.0.50:8010');
             socket.on('connect', () => {
                 resolve(socket);
             });
