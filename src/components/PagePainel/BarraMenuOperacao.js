@@ -26,11 +26,11 @@ const BarraMenuOperacional = ({ atendente }) => {
             {(atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)) ||
             atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?
                 <div className='g1s'>
-                    <button onClick={() => handleNavigation('/')}>Loja</button>
-                    <button onClick={() => handleNavigation('/bar')}>Bar</button>
-                    <button onClick={() => handleNavigation('/dlvy')}>Delivery</button>
-                    <button onClick={() => handleNavigation('/externa')}>Externa</button>
-                    <button onClick={() => handleNavigation('/giral')}>Giral</button>
+                    <button onClick={() => handleNavigation('/venda')}>Vendas</button>
+                    <button onClick={() => handleNavigation('/')}>Bar</button>
+                    <button onClick={() => handleNavigation('/')}>Delivery</button>
+                    <button onClick={() => handleNavigation('/')}>Externa</button>
+                    <button onClick={() => handleNavigation('/')}>Giral</button>
                 </div> : <></>}
 
             {(atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?

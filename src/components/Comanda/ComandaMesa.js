@@ -66,7 +66,27 @@ function Comanda({
   const [mostrarFormularioConfirm, setMostrarFormularioConfirm] = useState(false);
   const [selectedValue, setSelectedValue] = useState('');
   const [selectedValueUser, setSelectedValueUser] = useState('');
+  const [mudarAtendenteComanda, setMudarAtendimento] = useState(false);
+  const [botaoMudarAtendenteComanda, setBotaoMudarAtendimento] = useState(true);
+  const [mudarAreaComanda, setMudarArea] = useState(false);
+  const [botaoMudarAreaComanda, setBotaoMudarArea] = useState(true);
+
   const tbodyRef = useRef(null);
+
+  const handleMudarAtendimento = () => {
+    setUsuario(selectedValueUser);
+    setMudarAtendimento(!mudarAtendenteComanda);
+    setBotaoMudarAtendimento(!botaoMudarAtendenteComanda);
+
+  }
+
+  const handleMudarArea = () => {
+
+    setMudarArea(!mudarAreaComanda);
+    setBotaoMudarArea(!botaoMudarAreaComanda);
+
+  }
+
   const options = [
     { value: 0, label: 'Loja' },
     { value: 1, label: 'Delivery' },
@@ -85,12 +105,22 @@ function Comanda({
       {option.label}
     </option>
   ));
+  const optionElementsAtendimento = optionsAtendente.map((user) => {
+    if (user.value === usuario) {
+      return (
+        <option key={user.value} value={user.label}>
+          {user.label}
+        </option>
 
-  const optionElementsAtendimento = optionsAtendente.map((user) => (
-    <option key={user.value} value={user.value}>
-      {user.label}
-    </option>
-  ));
+      );
+    } else {
+      return (
+        <option key={user.value} value={user.label}>
+          {usuario} : {user.label}
+        </option>
+      );
+    }
+  });
 
   const handleMostrarFormulario = () => {
     if (
@@ -703,7 +733,6 @@ function Comanda({
       className: isCaixaValido(atendente) ? 'A' : 'C',
       disabled: isCaixaValido(atendente) ? false : true,
       visualizar: isGerenteValido(atendente) ? 'block' : 'none',
-
     },
     { label: 'COZINHA', className: 'B', visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
     { label: 'FECHAR', handleClick: () => handleClick('fechar'), className: 'F' },
@@ -731,8 +760,8 @@ function Comanda({
       visualizar: isCaixaValido(atendente) ? 'block' : 'none',
     },
     { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
-    { label: 'Juntar Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
-    { label: 'mudar atendente', handleClick: () => handleClick('fechar'), className: 'F', disabled: isGerenteValido(atendente) ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
+    { label: 'mudar area', handleClick: () => handleMudarArea(), className: mudarAreaComanda ? 'A' : 'C', disabled: botaoMudarAreaComanda ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
+    { label: 'mudar atendente', handleClick: () => handleMudarAtendimento(), className: botaoMudarAtendenteComanda ? 'A' : 'C', disabled: botaoMudarAtendenteComanda ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
   ];
 
   function renderizarBotoes() {
@@ -888,7 +917,7 @@ function Comanda({
                 <select
                   value={selectedValueUser}
                   onChange={(e) => setSelectedValueUser(e.target.value)}
-
+                  disabled={mudarAtendenteComanda}
                 >
                   {optionElementsAtendimento}
                 </select> : 'atendimento'}</td>

@@ -68,7 +68,7 @@ const usuarioError = [{
 },
 {
     "titulo": "",
-    "mensagem": "Os itens serão comandados com nome do garçom da comanda!",
+    "mensagem": "Por favor, observe que os itens serão registrados com o nome do garçom responsável pela comanda!",
     "btn1": "OK",
     "fnb1": "",
     "btn2": "Fechar",

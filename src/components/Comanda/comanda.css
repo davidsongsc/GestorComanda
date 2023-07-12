@@ -509,7 +509,7 @@ input[type="submit"]:hover {
     position: absolute;
     top: 62vh;
     background: brown;
-    left: 35%;
+    left: 30%;
     height: 205px;
     width: 13%;
     padding: 9px;
@@ -609,6 +609,7 @@ option {
     height: 89%;
     width: 30%;
     overflow: auto;
+    box-shadow: 1px 3px;
     background: beige;
 }
 
