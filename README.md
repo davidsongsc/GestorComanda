@@ -4,10 +4,9 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 </div>
 </br>
 
-## 📜 Status
-### :menu: Status:
-> Status: em desenvolvimento
-> Versão: 1.00A
+## 📜 Notas
+> * Status: em desenvolvimento
+> * Versão: 1.00A
 
 ### :memo: Funcionalidades: 
 > * ✔ Cardapio Digital integrado 📲
