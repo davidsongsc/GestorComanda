@@ -1,11 +1,12 @@
-# **📱 WebIntern Restaurante Digital**
+# **📱 Sistema Restaurante Digital**
 <div align="center" >
-Desenvolvimento de projeto react para gestão de mesas e comandas.
+Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto permite gerir pequenos estabelecimentos comerciais.
 </div>
 </br>
 
 ## 📜 Status
 > Status: em desenvolvimento
+> Versão: 1.00A
 
 
 ## 🚀 Tecnologias utilizadas 
