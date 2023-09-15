@@ -7,17 +7,7 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 ## 🚀 Tecnologias utilizadas 
 
 <br/>
-<p align="left">
-
-<a href="https://react.dev/" target="_blank">
-    <img
-      src="https://www.cdnlogo.com/logos/r/85/react.svg"
-      alt="React"
-      width="120"
-      height="120"
-    />
-  </a>
-  
+<p align="left"> 
   <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
     <img
       src="https://raw.githubusercontent.com/devicons/devicon/master/icons/javascript/javascript-original.svg"
