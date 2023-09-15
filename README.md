@@ -86,16 +86,16 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 <table align="center">
     <tr>
         <td align="center">
-            <a href="https://github.com/teteusAraujo">
-                <img src="https://avatars2.githubusercontent.com/u/60048274?s=460&u=a7f56af7dbe7d6338401d5b256fba528d8f0400b&v=4" width="150px;" alt="Image do Mateus Araújo" />
+            <a href="https://github.com/davidsongsc">
+                <img src="https://avatars.githubusercontent.com/u/53156529?v=4" width="150px;" alt="Image do Davidson George" />
                 <br />
-                <sub><b>Mateus Araújo</b></sub>
+                <sub><b>Davidson George</b></sub>
             </a>
         </td>    
     </tr>
 </table>
 <h4 align="center">
-   Feito com 💜 by  <a href="https://www.linkedin.com/in/mateusara%C3%BAjo/" target="_blank"> Mateus Araújo </a>
+   linkedin  <a href="https://www.linkedin.com/in/davidsongsc/" target="_blank"> Davidson George </a>
 </h4>
 
 </br>
