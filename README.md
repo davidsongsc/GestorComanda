@@ -5,13 +5,12 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 </br>
 
 ## 📜 Status
+### :menu: Status:
 > Status: em desenvolvimento
 > Versão: 1.00A
 
-
-## 💻 Funcionalidades
-
-> * ✔ Cardapio Digital integrado
+### :memo: Funcionalidades: 
+> * ✔ Cardapio Digital integrado 📲
 > * ✔ Area de Comanda
 > * ✔ Area de Delivery
 > * ✔ Area de Bar
@@ -20,7 +19,23 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 > * ✔ Cadastro de Funcionarios 📲
 > * ✔ Cadastro de Clientes 📲
 
-###  **🔗 Links e autorias**
+### Dependências globais
+
+dependência necessaria:
+
+- Node.js LTS v16 (ou qualquer versão superior)
+
+Após ter o Node.js Instalado, execute o seguinte comando na pasta raiz:
+
+```bash
+npm install
+```
+
+para rodar o projeto localmente, use o seguinte comando:
+
+```bash
+npm start
+```
 
 </br>
 
@@ -30,15 +45,14 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 ## 👀 Preview
  
 > <img src="md/img/gerenciador1.png" style="width: 48%;">
-> <img src="md/img/gerenciador2.png" style="width: 51%;">
 > <img src="md/img/gerenciador3.png" style="width: 48%;">
 > <img src="md/img/gerenciador4.png" style="width: 48%;">
 > <img src="md/img/gerenciador5.png" style="width: 48%;">
 > <img src="md/img/gerenciador6.png" style="width: 48%;">
 > <img src="md/img/gerenciador7.png" style="width: 48%;">
-> <img src="md/img/gerenciador8.png" style="width: 51%;">
-> <img src="md/img/gerenciador9.png" style="width: 51%;">
-> <img src="md/img/gerenciador10.png" style="width: 51%;">
+> <img src="md/img/gerenciador8.png" style="width: 48%;">
+> <img src="md/img/gerenciador9.png" style="width: 48%;">
+> <img src="md/img/gerenciador10.png" style="width: 48%;">
 
 </br>
 
