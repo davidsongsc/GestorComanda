@@ -11,7 +11,7 @@ Desenvolvimento de projeto react para gestão de mesas e comandas.
 ## 🚀 Tecnologias utilizadas 
 
 <br/>
-<p align="left">
+> <p align="left">
   <a href="https://developer.mozilla.org/pt-BR/docs/Web/HTML" target="_blank">
     <img
       src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg"
