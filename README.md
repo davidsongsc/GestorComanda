@@ -1,70 +1,53 @@
-# Iniciando com o Create React App
-# Aplicativo de Gestão de Comandas
-Este projeto foi criado com o [Create React App](https://github.com/facebook/create-react-app).
+# **📱 WebIntern Restaurante Digital**
+<div align="center" >
+Desenvolvimento de projeto react para gestão de mesas e comandas.
+</div>
+</br>
 
-## Scripts Disponíveis
+## 📜 Status
+> Status: em desenvolvimento
 
-No diretório do projeto, você pode executar os seguintes comandos:
 
-### `npm start`
+## 💻 Funcionalidades
 
-Executa o aplicativo no modo de desenvolvimento.\
-Abra [http://localhost:3000](http://localhost:3000) para visualizá-lo no navegador.
+> * ✔ Cardapio Digital integrado
+> * ✔ Area de Comanda
+> * ✔ Area de Delivery
+> * ✔ Area de Bar
+> * ✔ Relatórios
+> * ✔ Cadastro de Produtos 📲
+> * ✔ Cadastro de Funcionarios 📲
+> * ✔ Cadastro de Clientes 📲
 
-A página será recarregada automaticamente quando você fizer alterações.\
-Você também poderá ver erros de lint no console.
+###  **🔗 Links e autorias**
 
-### `npm test`
+</br>
 
-Inicia o executor de testes no modo de observação interativo.\
-Consulte a seção sobre [execução de testes](https://facebook.github.io/create-react-app/docs/running-tests) para obter mais informações.
+<div align="center">
 
-### `npm run build`
+> <a href="https://github.com/davidsongsc"><b> @davidsongsc </b></a>
+> </br>
+> <q>Obrigado a todos que contribuíram e pode nos ajudar neste projeto de estudos.</q>
+>
+></br>
+>
+>
+></div>
 
-Compila o aplicativo para produção na pasta `build`.\
-Ele agrupa corretamente o React em modo de produção e otimiza a construção para obter o melhor desempenho.
+</br>
 
-A construção é minificada e os nomes dos arquivos incluem os hashes.\
-Seu aplicativo está pronto para ser implantado!
 
-Consulte a seção sobre [implantação](https://facebook.github.io/create-react-app/docs/deployment) para obter mais informações.
+## 👀 Preview
+ 
+> <img src="md/img/gerenciador1.png" style="width: 48%;">
+> <img src="md/img/gerenciador2.png" style="width: 51%;">
+> <img src="md/img/gerenciador3.png" style="width: 48%;">
+> <img src="md/img/gerenciador4.png" style="width: 51%;">
+> <img src="md/img/gerenciador5.png" style="width: 48%;">
+> <img src="md/img/gerenciador6.png" style="width: 51%;">
+> <img src="md/img/gerenciador7.png" style="width: 48%;">
+> <img src="md/img/gerenciador8.png" style="width: 51%;">
+> <img src="md/img/gerenciador9.png" style="width: 51%;">
+> <img src="md/img/gerenciador10.png" style="width: 51%;">
 
-### `npm run eject`
-
-**Observação: esta é uma operação unidirecional. Uma vez que você fizer "eject", não poderá voltar atrás!**
-
-Se você não estiver satisfeito com a ferramenta de construção e as opções de configuração, poderá "eject" a qualquer momento. Este comando removerá a única dependência de construção do seu projeto.
-
-Em vez disso, ele copiará todos os arquivos de configuração e as dependências transitivas (webpack, Babel, ESLint, etc) diretamente para o seu projeto, para que você tenha controle total sobre eles. Todos os comandos, exceto o `eject`, continuarão funcionando, mas apontarão para os scripts copiados, para que você possa ajustá-los. A partir desse ponto, você está por conta própria.
-
-Você não precisa usar o `eject` se não quiser. O conjunto de recursos selecionados é adequado para implantações pequenas e médias, e você não deve se sentir obrigado a usar esse recurso. No entanto, entendemos que essa ferramenta não seria útil se você não pudesse personalizá-la quando estiver pronto.
-
-## Saiba Mais
-
-Você pode aprender mais na [documentação do Create React App](https://facebook.github.io/create-react-app/docs/getting-started).
-
-Para aprender React, consulte a [documentação do React](https://reactjs.org/).
-
-### Divisão de Código
-
-Esta seção foi movida para [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting).
-
-### Análise do Tamanho do Pacote
-
-Esta seção foi movida para [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size).
-
-### Criando um Progressive Web App
-
-Esta seção foi movida para [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app).
-
-### Configuração Avançada
-
-Esta seção foi movida para [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration).
-
-### Implantação
-
-Esta seção foi movida para [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment).
-
-### `npm run build` Falha ao Minificar
-
-Esta seção foi movida para [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify).
+</br>
