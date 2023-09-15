@@ -7,7 +7,7 @@
 .comandeira-comanda {
   display: flex;
   position: relative;
-  flex-direction: column;
+  flex-direction: row;
   top: 0;
 
 }
@@ -19,7 +19,7 @@
   font-family: Arial, sans-serif;
   background-color: #f7f7f7;
   margin: 0;
-  width: 100%;
+  width: 80%;
   justify-content: center;
   padding: 0px;
   transition: 1.9s;
@@ -50,8 +50,8 @@
 .mesas-list ul {
   cursor: pointer;
   list-style: none;
-  padding: 0;
-  margin: 0;
+  padding: 15px 20px;
+  margin: 0px;
 }
 
 .mesas-list li {
@@ -74,7 +74,7 @@
   justify-content: space-between;
   align-items: flex-start;
   align-content: flex-start;
-  height: 80vh;
+  height: 96vh;
 }
 
 
@@ -115,19 +115,16 @@
 
 .senha-area {
   background-color: #932626;
-  padding: 0px;
   display: flex;
-  width: 100%;
-  position: fixed;
+  width: 20%;
   text-align: center;
   box-shadow: 0 0 10px rgb(34 30 30);
   transition: .9s ease-in-out;
   transition-delay: .9s;
-  bottom: 0;
-  flex-direction: row;
-  align-items: flex-start;
+  flex-direction: column;
+  align-items: center;
   justify-content: flex-start;
-  height: 20vh;
+  height: 100vh;
 }
 
 
@@ -163,10 +160,12 @@
 
 .senha-area input[type=password] {
   padding: 2px;
-  font-size: 38px;
+  margin-top: 0px;
+  font-size: 25px;
+  color: white;
   border-radius: 5px;
-  width: 159px;
-  border: 1px solid #ccc;
+  width: 140px;
+  border: 2px solid #ccc;
   box-shadow: 2px 2px;
   transition-delay: .2s;
   transition: .8s;
@@ -181,6 +180,7 @@
   font-size: 18px;
   color: #fff;
   left: 0px;
+  top: 64px;
   /* background-color: #007bff; */
   cursor: pointer;
 }
@@ -194,10 +194,20 @@
   display: flex;
   position: relative;
   justify-content: flex-start;
-  align-items: flex-start;
-  width: 40%;
+  align-items: center;
+  width: 100%;
+  flex-direction: column;
 }
-
+#selecaoAreaLoja{
+  cursor: pointer;
+  padding: 5px;
+  height: 97px;
+  width: 90px;
+  border-radius: 8px;
+  font-size: large;
+  background-color: green;
+  box-shadow: 3px 3px 1px black;
+}
 .button {
   font-size: 16px;
   font-weight: bold;
@@ -218,7 +228,11 @@
 
 .digitos .g1,
 .digitosLogin .g1 {
-  width: 400px;
+  width: 423px;
+  margin-top: 56px;
+  transform: scale(2.5);
+  top: 9px;
+  position: relative;
 }
 
 .digitosComanda {
@@ -243,7 +257,6 @@
 .senha-active .digitos input[type=password] {
   padding: 10px;
   font-size: 38px;
-  border-radius: 5px;
   border: 1px solid #ccc;
   width: 67%;
   margin-bottom: 10px;
@@ -474,9 +487,9 @@
 .notification-container {
   display: block;
   position: fixed;
-  top: -47px;
+  bottom: -22px;
   right: 0px;
-  background-color: #eee3e30d;
+  background-color: aliceblue;
   padding: 10px 5px;
   border-bottom-left-radius: 17px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
@@ -485,28 +498,27 @@
   z-index: 999;
   width: 305px;
   transition: .9s ease-in-out;
-
 }
 
 .ntconter-activate {
   transition: .9s ease-in-out;
-  top: 0px;
+  bottom: 0px;
   max-height: 10vh;
 }
 
 .ntconter-dritive {
   transition: .9s ease-in-out;
-  top: 0px;
-  max-height: 85vh;
+  bottom: 0px;
+  max-height: 98vh;
 
 }
 
 .notification-text-datahora {
   background-color: #00000082;
   color: white;
-  margin: 10px auto;
+  margin: 3px auto;
   width: 35%;
-  padding: 5px;
+  padding: 0px;
   border-radius: 2px;
   box-shadow: 1px 1px;
   font-size: 10px;
@@ -517,11 +529,15 @@
 }
 
 .notification-group {
-  background-color: #b1b0b017;
-  margin: 11px auto;
+  background-color: #000000;
+  margin: 3px auto;
   padding: 12px 14px;
+  border-radius: 10px;
+  border: aliceblue;
+  box-shadow: 0px 7px 1px brown;
   color: #000000;
   transition: .9s ease-in-out;
+
 }
 
 .notification-group:hover {
@@ -532,12 +548,10 @@
 
 .notification-text {
   transition: .9s ease-in-out;
-  margin: 0;
   background: #00000082;
   box-shadow: 1px 1px;
   color: aliceblue;
-  margin: -11px 0;
-  padding: 10px;
+  padding: 0px;
   border-top-left-radius: 10px;
 }
 
@@ -942,6 +956,7 @@ width: 280px;
 
 .digitos .g1s button {
   width: 125px;
+  height: 50px;
 }
 
 @media only screen and (max-width: 1570px) {

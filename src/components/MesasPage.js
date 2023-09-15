@@ -374,13 +374,9 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             localStorage.removeItem('usuario');
         }
 
-
-
         /*
         window.location.reload();
         */
-
-
 
     }
     const handleClickMostrar = () => {
@@ -399,7 +395,6 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         else {
             handleNotification('Acesso restrito, Usuario sem privilégios. Por favor, procure um gerente!');
             setCaixaStatus(false);
-
         }
 
     };
@@ -627,7 +622,13 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                                     fazerPedido={fazerPedido}
                                     sSetMesas={setMesas} />
                             </li>
-                        ))}
+                        ))}<li><select id="selecaoAreaLoja" value={selectedOption} onChange={handleChange} disabled={atendente.nivel > 4 ? false : true}>
+                            <option value="loja">Loja</option>
+                            <option value="bar">Bar</option>
+                            <option value="giral">Giral</option>
+                            <option value="externa">Externa</option>
+                            <option value="delivery">Delivery</option>
+                        </select></li>
 
                         {mostrarAlerta && (
                             <AlertaPersonalizado
@@ -643,17 +644,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             </div>
 
             <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && atendente.auth === 'dev' ? ' senha-background' : '')}>
-
                 <div className='status-mesa-comanda' >
-                    <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
-                    <select id="myComboBox" value={selectedOption} onChange={handleChange} disabled={atendente.nivel > 4 ? false : true}>
-                        <option value="loja">Loja</option>
-                        <option value="bar">Bar</option>
-                        <option value="giral">Giral</option>
-                        <option value="externa">Externa</option>
-                        <option value="delivery">Delivery</option>
-                    </select>
-
                     <table className='vertical' disabled={atendente.nivel > 1 ? false : true}>
                         <thead>
                             <tr>
@@ -673,15 +664,25 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                             </tr>
                         </tbody>
                     </table>
+
                     {atendente.usuario != null &&
-                        <button onClick={() => handleSairLogin('true')} style={{ width: '300px', position: 'relative' }}>SAIR</button>
+                        <button onClick={() => handleSairLogin('true')} style={{ width: '300px', position: 'relative', margin: '25px' }}>SAIR</button>
                     }
 
                 </div>
 
                 {!isAuthenticated &&
                     <div className='digitosLogin'>
+                        <div className='g1'>
+                            <input
+                                type="password"
+                                placeholder="Senha"
+                                value={senha || ''}
 
+
+                                disabled={atendente.auth === null ? false : true} />
+
+                        </div>
 
                         {erroSenha && <p className="senha-erro">Senha incorreta. Tente novamente.</p>}
 
@@ -709,16 +710,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                         </div>
                     </div>}
-                <div className='g1'>
-                    <input
-                        type="password"
-                        placeholder="Senha"
-                        value={senha || ''}
 
-
-                        disabled={atendente.auth === null ? false : true} />
-
-                </div>
 
 
 
@@ -726,7 +718,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                 {isAuthenticated && <BarraMenuOperacional atendente={atendente} />
                 }
 
-
+                <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
             </div>
 
 
