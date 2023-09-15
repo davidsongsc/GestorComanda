@@ -8,19 +8,11 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
 
 <br/>
 <p align="left">
-  <a href="https://developer.mozilla.org/pt-BR/docs/Web/HTML" target="_blank">
-    <img
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg"
-      alt="HTML5"
-      width="120"
-      height="120"
-    />
-  </a>
 
-  <a href="https://developer.mozilla.org/pt-BR/docs/Web/CSS" target="_blank">
+<a href="https://react.dev/" target="_blank">
     <img
-      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg"
-      alt="Css3"
+      src="https://www.cdnlogo.com/logos/r/85/react.svg"
+      alt="React"
       width="120"
       height="120"
     />
@@ -34,20 +26,32 @@ Desenvolvimento de projeto react para gestão de mesas e comandas. Este projeto 
       height="120"
     />
   </a>
-
-<a href="https://react.dev/" target="_blank">
+  <a href="https://developer.mozilla.org/pt-BR/docs/Web/CSS" target="_blank">
     <img
-      src="https://www.cdnlogo.com/logos/r/85/react.svg"
-      alt="React"
+      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/css3/css3-original.svg"
+      alt="Css3"
       width="120"
       height="120"
     />
   </a>
+
+
+  <a href="https://developer.mozilla.org/pt-BR/docs/Web/HTML" target="_blank">
+    <img
+      src="https://raw.githubusercontent.com/devicons/devicon/master/icons/html5/html5-original.svg"
+      alt="HTML5"
+      width="120"
+      height="120"
+    />
+  </a>
+
+
 </p>
 
 ## 📜 Notas
 > * Status: em desenvolvimento
 > * Versão: 1.00A
+> * Este projeto roda em parapelo com `Projeto Legion`
 
 ### :memo: Funcionalidades: 
 > * ✔ Cardapio Digital integrado 📲
