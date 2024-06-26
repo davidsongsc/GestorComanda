@@ -11,7 +11,7 @@ import CadastroCliente from './components/PessoasConfig/CadastroCliente';
 import CadastroFichaTecnica from './components/ProdutoConfig/CadastroFichaTecnica';
 import CadastroPromocao from './components/ProdutoConfig/CadastroPromocao';
 
-const socket = io('http://192.168.0.50:8010');
+const socket = io('http://192.168.1.50:8010');
 
 const App = () => {
   const [notification, setNotification] = useState('');

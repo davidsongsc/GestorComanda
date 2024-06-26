@@ -6,7 +6,7 @@ function Api() {
 
     useEffect(() => {
         // Conecta ao servidor Socket.IO
-        const socket = io('http://192.168.0.50:5000');
+        const socket = io('http://192.168.1.50:5000');
         //const socket = io('https://dagesico.pythonanywhere.com');
 
         // Escuta as atualizações

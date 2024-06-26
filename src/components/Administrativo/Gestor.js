@@ -40,7 +40,7 @@ const Relatorios = ({ socket, atendente, setNotification }) => {
 
 
   const consultarRelatorios = () => {
-    socket.emit('consultar_relatorios');
+    socket.emit('consultar_relatorios', socket.id);
   };
 
   const handleRelatoriosEncontrados = (data) => {
@@ -158,14 +158,15 @@ const Relatorios = ({ socket, atendente, setNotification }) => {
           </div>
           <h1>Dados Sistema</h1>
           <ServerStatus setNotification={handleNotification} />
+          <h1>Cancelamentos</h1>
+          <PieChart dados={dadosPieChart} />
         </div>
 
         <div className="painel-dados">
-          <h1>Cancelamentos</h1>
-          <PieChart dados={dadosPieChart} />
+    
           <h1>Dados</h1>
           <div style={{
-            maxHeight: '60vh',
+            maxHeight: '9 0vh',
             overflowY: 'auto',
           }} className="painel-vendas">
             <table>

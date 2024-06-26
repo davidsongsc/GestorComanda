@@ -6,7 +6,7 @@ import ProdutoImagem from './ProdutoImagem';
 
 const nomeSistema = 'maquina';
 const token = 'abc123';
-const ipNucleo = 'http://192.168.0.50:5000';
+const ipNucleo = 'http://192.168.1.50:5000';
 
 const CadastroProduto = ({ socket, atendente, setNotification }) => {
     const [grupo, setGrupo] = useState([]);

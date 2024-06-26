@@ -5,21 +5,8 @@ import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
 import PagamentoForm from './Pagamento';
 import TelaOption from './TelaOption';
 import ControleDigitosComanda from '../PagePainel/ControleDigitosComanda';
+import { ipNucleo, usuarioError, TX, limiteOptionsCardapio, nome, token, options } from '../principal/ExtensoesApi';
 
-const TX = 0;
-const limiteOptionsCardapio = 55;
-const nome = 'maquina';
-const token = 'abc123';
-const ipNucleo = 'http://192.168.0.50:5000';
-
-const usuarioError = [{
-  "titulo": "Impressora!",
-  "mensagem": "Por favor Aguarde! ...",
-  "btn1": "OK",
-  "fnb1": "",
-  "btn2": "fechar",
-  "fnb2": ""
-}]
 
 function Comanda({
   displayVisualizando,
@@ -72,7 +59,7 @@ function Comanda({
   const [botaoMudarAreaComanda, setBotaoMudarArea] = useState(true);
 
   const tbodyRef = useRef(null);
-
+  //ADICIONAR SOCKET PARA MUDAR ATENDENTE NO BANCO DE DADOS
   const handleMudarAtendimento = () => {
     setUsuario(selectedValueUser);
     setMudarAtendimento(!mudarAtendenteComanda);
@@ -87,13 +74,7 @@ function Comanda({
 
   }
 
-  const options = [
-    { value: 0, label: 'Loja' },
-    { value: 1, label: 'Delivery' },
-    { value: 2, label: 'Externa' },
-    { value: 3, label: 'Giral' },
-    { value: 4, label: 'Bar' },
-  ];
+
 
   const optionsAtendente = atendentes.map((atendente, index) => ({
     value: index,
@@ -105,6 +86,7 @@ function Comanda({
       {option.label}
     </option>
   ));
+
   const optionElementsAtendimento = optionsAtendente.map((user) => {
     if (user.value === usuario) {
       return (
@@ -116,7 +98,7 @@ function Comanda({
     } else {
       return (
         <option key={user.value} value={user.label}>
-          {usuario} : {user.label}
+          {usuario} → {user.label}
         </option>
       );
     }
@@ -128,6 +110,7 @@ function Comanda({
       (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
     ) {
       setMostrarFormulario(true);
+      handleEmitStatus(mesaId, 4);
     }
     else {
       handleNotification(`Usuário ${atendente.usuario} não pode receber pagamentos na comanda!`);
@@ -234,8 +217,6 @@ function Comanda({
         })
         .catch(error => console.error(error));
 
-      // Aqui você terá acesso ao array "atendentes" com os nomes dos atendentes
-
     }
 
     carregarComanda();
@@ -256,7 +237,7 @@ function Comanda({
 
   const removerGorjeta = () => {
     setGorjeta(0);
-    handleNotification('Gorjeta alterada ');
+    handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para R$ 0.');
     handleGorjeta(mesaId, 0)
   };
 
@@ -397,7 +378,6 @@ function Comanda({
 
       handleUpInsert();
 
-
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
         (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
         handleSairLogin();
@@ -418,7 +398,9 @@ function Comanda({
 
     } else if (id === 'cancelar') {
       if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
+        (calcularConta() == 0)
+      ) {
 
         handleNotification('Comanda encerrada');
         handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
@@ -574,7 +556,7 @@ function Comanda({
   const adicionarItem = (item, t) => {
     const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
     const numeros = [];
-
+    handleEmitStatus(mesaId, 1);
     for (let i = 1; i <= limiteOptionsCardapio; i++) {
       numeros.push(i);
     }
@@ -584,6 +566,7 @@ function Comanda({
           i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
         )]
       );
+
     } else {
       setComanda((comanda) => [
         ...comanda,
@@ -592,6 +575,7 @@ function Comanda({
 
 
     }
+    handleNotification(item.nomeProduto);
     if (item.grupoc != 0) {
       setGrupoCompain(item.grupoc);
       toggleModal();
@@ -689,6 +673,8 @@ function Comanda({
       setSelectedItems([]);
     }
   };
+  const isCancelarValido = (atendente) =>
+    (calcularTotal() == 0 || atendente.auth.startsWith('g') && atendente.nivel > 5);
 
   const isCaixaValido = (atendente) =>
     (atendente.auth.startsWith('j')) &&
@@ -697,6 +683,10 @@ function Comanda({
   const isGerenteValido = (atendente) =>
     (atendente.auth.startsWith('g') || atendente.auth.startsWith('j')) &&
     /^\d+$/.test(atendente.auth.slice(1));
+
+  const IsReceberConta = (atendente) =>
+    (atendente.auth.startsWith('g') || atendente.auth.startsWith('j')) &&
+    /^\d+$/.test(atendente.auth.slice(1)) && calcularTotal() > 0;
 
   const isGestorValido = (atendente) =>
     (atendente.auth.startsWith('g')) &&
@@ -709,28 +699,28 @@ function Comanda({
     {
       label: 'Receber',
       handleClick: handleMostrarFormulario,
-      className: isGerenteValido(atendente) ? 'A' : 'C',
-      disabled: isGerenteValido(atendente) ? false : true,
-      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+      className: IsReceberConta(atendente) ? 'A' : 'C',
+      disabled: IsReceberConta(atendente) ? false : true,
+      visualizar: IsReceberConta(atendente) ? 'block' : 'none',
     },
     {
       label: 'Desconto',
       handleClick: () => handleClick('desconto'),
-      className: isGestorValido(atendente) ? 'A' : 'C',
-      disabled: isGestorValido(atendente) ? false : true,
-      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+      className: IsReceberConta(atendente) ? 'A' : 'C',
+      disabled: IsReceberConta(atendente) ? false : true,
+      visualizar: IsReceberConta(atendente) ? 'block' : 'none',
     },
     {
       label: 'CANCELAR',
       handleClick: () => handleClick('cancelar'),
-      className: isGestorValido(atendente) ? 'A' : 'C',
-      disabled: isGestorValido(atendente) ? false : true,
-      visualizar: isGerenteValido(atendente) ? 'block' : 'none',
+      className: isCancelarValido(atendente) ? 'A' : 'C',
+      disabled: isCancelarValido(atendente) ? false : true,
+      visualizar: isCancelarValido(atendente) ? 'block' : 'none',
     },
     {
       label: 'CAIXA',
       handleClick: handleMostrarCaixaStatus,
-      className: isCaixaValido(atendente) ? 'A' : 'C',
+      className: isGestorValido(atendente) ? 'A' : 'C',
       disabled: isCaixaValido(atendente) ? false : true,
       visualizar: isGerenteValido(atendente) ? 'block' : 'none',
     },
@@ -798,7 +788,9 @@ function Comanda({
     }
 
   }
+
   let telaOptionSistema;
+
   telaOptionSistema = (
 
     <TelaOption
@@ -915,15 +907,6 @@ function Comanda({
             <tr className='titulo-tb'>
               <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
                 <select
-                  value={selectedValueUser}
-                  onChange={(e) => setSelectedValueUser(e.target.value)}
-                  disabled={mudarAtendenteComanda}
-                >
-                  {optionElementsAtendimento}
-                </select> : 'atendimento'}</td>
-              <td className='titulo-table'>TOTAL</td>
-              <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
-                <select
                   value={selectedValue}
                   onChange={(e) => setSelectedValue(e.target.value)}
 
@@ -931,17 +914,31 @@ function Comanda({
                   {optionElements}
                 </select> : 'mesa'}
               </td>
+              <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
+                <select
+                  value={selectedValueUser}
+                  onChange={(e) => setSelectedValueUser(e.target.value)}
+                  disabled={mudarAtendenteComanda}
+                >
+                  {optionElementsAtendimento}
+                </select> : 'atendimento'}</td>
+              <td className='titulo-table'>TOTAL</td>
+
+
               <td className='titulo-table'>CONSUMO</td>
               <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>Pago</td>
               <td className='titulo-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0' }}>GORJETA</td>
               <td className='titulo-table' style={{ opacity: calcularDesconto() != 0 ? '1' : '0' }}>DESCONTOS</td>
 
-              <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>Falta</td>
+              <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>PENDENTE</td>
 
             </tr>
           </thead>
           <tbody>
             <tr>
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '35px', width: '205px', fontSize: '65px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
+                {mesa}
+              </td>
               <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '13px', width: '305px', textTransform: 'capitalize', fontSize: '27px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
                 <em>{usuario}</em>
               </td>
@@ -949,9 +946,7 @@ function Comanda({
                 R$ {calcularContaMostrar().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
-              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '35px', width: '205px', fontSize: '65px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
-                {mesa}
-              </td>
+
               <td className='linha-table' style={{ backgroundColor: 'rgb(114 97 86)' }}>
                 {calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
@@ -964,10 +959,10 @@ function Comanda({
               </td>
 
 
-
               <td className='linha-table' style={{ backgroundColor: '#8f2020', opacity: calcularPagamento() != 0 ? '1' : '0' }}>
                 R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
+
 
             </tr>
           </tbody>

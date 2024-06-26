@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 const nome = 'maquina';
 const token = 'abc123';
-const ipNucleo = 'http://192.168.0.50:5000';
+const ipNucleo = 'http://192.168.1.50:5000';
 
 function InventarioGrupo({ filtrarPorGrupo, mostrarTodos, id }) {
     const [grupo, setGrupo] = useState([]);

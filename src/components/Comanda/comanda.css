@@ -267,10 +267,10 @@ table {
 
 table tbody {
     background-color: rgba(126, 113, 113, 0.24);
-    border-radius: 5px;
+    border-radius: 2px;
     color: rgb(0, 0, 0);
     cursor: pointer;
-    line-height: 9px;
+    line-height: 16px;
 }
 
 .titulo-tb td {
@@ -539,12 +539,14 @@ select {
     text-decoration: none;
 
 }
-.status-mesa-comanda select{
+
+.status-mesa-comanda select {
     height: 10vh;
     font-size: 20px;
 }
+
 option {
-    
+
     font-size: 3.2em;
     background-color: black;
     color: white;
@@ -616,6 +618,7 @@ option {
 .operadores {
     display: flex;
     flex-wrap: wrap;
+    width: auto;
 }
 
 .tabela-fixa {
@@ -643,4 +646,81 @@ option {
     transition: .8s;
     font-size: xxx-large;
     transform: rotateX(180deg);
+}
+
+@media only screen and (max-width: 1070px) {
+    .cm-comanda-pn {
+        width: 82%;
+        position: fixed;
+        height: 50%;
+        right: 0;
+    }
+
+    .grupo-produto {
+        width: 80%;
+        left: 75px;
+        top: 51vh;
+        height: 100px;
+    }
+
+    .inventario {
+        width: 90%;
+        left: 43px;
+        height: 26%;
+        top: 66.6%;
+    }
+
+    .i-inventario {
+        height: 93%;
+        justify-content: center;
+        align-items: flex-start;
+ 
+    }
+
+    .inventario li button {
+        height: 38px;
+        width: 77px;
+        font-size: 10px;
+    }
+
+    .inventario li button {
+        height: 38px;
+        width: 75px;
+        font-size: 6.5px;
+        margin-bottom: 5px;
+    }
+    .controleb {
+        position: fixed;
+        top: 0;
+        background: brown;
+        left: 0;
+        height: 91.5vh;
+        width: 70px;
+        border-width: 2px;
+        border-style: double;
+        overflow-y: auto;
+    }
+
+    .tabela-fixa {
+        position: fixed;
+        bottom: 0;
+        left: 0px;
+        height: 10%;
+    }
+
+    .linhas-tb .ndd {
+        font-size: 10px;
+
+    }
+
+    .grupo-produto button {
+        margin: 5px 3px;
+        width: 115px;
+        height: 25px;
+    }
+
+    .controlea {
+        display: none;
+    }
+
 }

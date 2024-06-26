@@ -129,7 +129,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
     }
   }
   const consultarRelatorios = () => {
-    socket.emit('consultar_venda');
+    socket.emit('consultar_venda', socket.id);
   };
 
   const handleRelatoriosEncontrados = (data) => {
@@ -217,7 +217,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
       <div className="relatorios-container">
         <div />
         <div className="painel-container">
-          <h1>Setor / Individual</h1>
+          <h1>Vendas Abertas</h1>
           <div style={{
             maxHeight: '47vh',
             overflowY: 'auto',
@@ -268,7 +268,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
               </tbody>
             </table>
           </div>
-          <h1>Grafico Venda</h1>
+          <h1>Grafico</h1>
 
           <PieChart dados={dadosPieChart} />
           <div style={{ margin: '0px', background: 'white', padding: '1px 0px' }}>
@@ -278,7 +278,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
 
         </div>
         <div>
-          <h1>Itens Comandados</h1>
+          <h1>Relação Itens lançados</h1>
           <div style={{
             maxHeight: '80vh',
             overflowY: 'auto',
@@ -302,7 +302,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
                   .reverse()
                   .map((relatorio) => (
                     <tr key={relatorio.id}>
-                      <td style={{ position: 'relative', zIndex: '1' }}>{nomeProduto(relatorio.produto)}</td>
+                      <td style={{ position: 'relative', zIndex: '1', textTransform: 'uppercase'}}>{nomeProduto(relatorio.produto)}</td>
                       <td>R$ {(relatorio.valor*relatorio.qtd)}</td>
                       <td>{relatorio.comanda}</td>
                       <td>{relatorio.operador}</td>

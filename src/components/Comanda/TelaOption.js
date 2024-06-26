@@ -78,6 +78,7 @@ function TelaOption({
       16: 4,
       17: 4,
       18: 2,
+      19: 5,
     };
 
     const itemModal = cmdComanda.find((item) => {
@@ -111,6 +112,11 @@ function TelaOption({
   const saladaExecutivo = 202;
   const acompanhamentoBurguer = 203;  // corresponde ao acompanhamento.
   const inventarioExtra = 99;           // corresponde ao menu oculto / EXTRA
+  const pizzaMassa = 320; // Corresponde a massa da pizza
+  const pizzaMolho = 321; // Corresponde a massa da pizza
+  const pizzaRecheio1 = 322; // Corresponde a massa da pizza
+  const pizzaRecheio2 = 322; // Corresponde a massa da pizza
+  const pizzaRecheioE = 323; // Corresponde a massa da pizza
   const inventarioOptions = {
     /* Produto sem Opções */
 
@@ -287,6 +293,19 @@ function TelaOption({
       options: [
         { filter: (item) => item.grupoc === pontoCarnes },
          { filter: (item) => item.grupoc === acompanhamentoBurguer }
+
+        
+
+      ]
+    },
+    19: {
+      nome: "Opção Pizzas",
+      options: [
+        { filter: (item) => item.grupoc === pizzaMassa },
+        { filter: (item) => item.grupoc === pizzaMolho },
+        { filter: (item) => item.grupoc === pizzaRecheio1 },
+        { filter: (item) => item.grupoc === pizzaRecheio2 },
+        { filter: (item) => item.grupoc === pizzaRecheioE },
 
         
 
