@@ -613,7 +613,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                         <div className='g1'>
                             <button onClick={handleButtonClick} value="OK">OK</button>
                             <button onClick={handleButtonClick} value="0">0</button>
-                            <button onClick={handleButtonClick} value="C">C</button>
+                            <button onClick={handleButtonClick} value="C">🗑️</button>
 
                         </div>
 
