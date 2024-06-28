@@ -573,6 +573,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     <div className='vertical' disabled={atendente.nivel > 1 ? false : true}>
 
                         <div>
+                             <p> <AiOutlineUser size={16} /><em>Bar Chava</em></p>
                             <p> <AiOutlineUser size={16} /><em>{atendente.usuario}</em></p>
                             <p><BiUserPin size={16} /> <FuncaoComponent codigo={atendente.auth} /> N{atendente.nivel}</p>
                             <p><FaUtensils size={16} /> {selectedOption} </p>
