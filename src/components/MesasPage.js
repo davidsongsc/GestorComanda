@@ -321,7 +321,6 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
         socket.emit('modificar_status_comanda', socket.id, data);
         handleClick(idMesa);
-        // Abrir comanda
         setMesas((prevState) =>
             prevState.map((prevMesa) =>
                 prevMesa.mesa === idMesa ? { ...prevMesa, aberta: true, status: 2 } : prevMesa
@@ -357,10 +356,12 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         );
         // window.location.reload();
     };
+
     const handleComandaItens = (comanda, id) => {
 
         socket.emit('anotar_item_comanda', socket.id, comanda, id, atendente.usuario);
     };
+
     const handleDeletarItem = (itemId) => {
 
         socket.emit('deletar_item_comanda', socket.id, itemId);
@@ -409,7 +410,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     //setMostrarAlerta(true);
                 }
                 else {
-                    handleNotification(mesa.atendente + ' esta realizando lançamentos.' );
+                    handleNotification(mesa.atendente + ' esta realizando lançamentos.');
                 }
             }
             else {
@@ -544,23 +545,17 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                 : <></>}
             <div className={isAuthenticated === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && atendente.auth === 'dt9' ? 'senha-background' : '')}>
                 <div className="mesas-list">
-                    <ul className='area-mesas'>
+                    <div className='area-mesas ul'>
                         {mesas.map((mesa) => (
-                            <li key={mesa.mesa}
-                                className={`butaoMenuMesa - hmenu - princopa`}
+                            <div key={mesa.mesa}
+                                className={`li butaoMenuMesa - hmenu - princopa`}
                                 style={{ display: mesa.operacao === displayVisualizando ? 'flex' : 'none' }}
                                 onClick={() => handleMesaClick(mesa.mesa)}>
                                 <Mesa key={mesa.mesa} mesa={mesa} comandas={comandas}
                                     fazerPedido={fazerPedido}
                                     sSetMesas={setMesas} />
-                            </li>
-                        ))}<li><select id="selecaoAreaLoja" value={selectedOption} onChange={handleChange} disabled={atendente.nivel > 1 ? false : true}>
-                            <option value="loja">Loja</option>
-                            <option value="bar">Bar</option>
-                            <option value="giral">Giral</option>
-                            <option value="externa">Externa</option>
-                            <option value="delivery">Delivery</option>
-                        </select></li>
+                            </div>
+                        ))}
                         {mostrarAlerta && (
                             <AlertaPersonalizado
                                 usuarioError={usuarioError}
@@ -570,24 +565,24 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                                 hAlerta={handleClickMostrar}
                             />
                         )}
-                    </ul>
+                    </div>
                 </div>
             </div>
             <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && atendente.auth === 'dev' ? ' senha-background' : '')}>
                 <div className='status-mesa-comanda' >
                     <div className='vertical' disabled={atendente.nivel > 1 ? false : true}>
-                
-                            <div>
-                                <p> <AiOutlineUser size={32} /><em>{atendente.usuario}</em></p>
-                                <p><BiUserPin size={32} /> <FuncaoComponent codigo={atendente.auth} /></p>
-                                <p><FaUtensils size={32} /> {selectedOption} </p>
-                            </div>
-                  
-                                
+
+                        <div>
+                            <p> <AiOutlineUser size={16} /><em>{atendente.usuario}</em></p>
+                            <p><BiUserPin size={16} /> <FuncaoComponent codigo={atendente.auth} /> N{atendente.nivel}</p>
+                            <p><FaUtensils size={16} /> {selectedOption} </p>
+                            <p></p>
+                        </div>
+
+
                     </div>
-                    {atendente.usuario != null &&
-                        <button onClick={() => handleSairLogin('true')} >SAIR</button>
-                    }
+
+
                 </div>
 
                 {!isAuthenticated &&
@@ -621,12 +616,27 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                             <button onClick={handleButtonClick} value="C">C</button>
 
                         </div>
+
+
                     </div>}
-                {isAuthenticated && <BarraMenuOperacional atendente={atendente} />
+                {atendente.usuario != null &&
+                    <button onClick={() => handleSairLogin('true')} >SAIR</button>
                 }
+                {isAuthenticated && <BarraMenuOperacional atendente={atendente} />
+
+                }
+                <select id="selecaoAreaLoja" value={selectedOption} onChange={handleChange} disabled={atendente.nivel > 1 ? false : true}>
+                    <option value="loja">Loja</option>
+                    <option value="bar">Bar</option>
+                    <option value="giral">Giral</option>
+                    <option value="externa">Externa</option>
+                    <option value="delivery">Delivery</option>
+                </select>
 
                 <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
+
             </div>
+
         </div>
 
     );

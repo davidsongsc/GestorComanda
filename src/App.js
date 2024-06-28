@@ -43,7 +43,7 @@ const App = () => {
         <Route path="/cadastroclientes" element={<CadastroCliente socket={socket} setNotification={handleNotification} atendente={atendente} />} />
         <Route path="/cadastroficha" element={<CadastroFichaTecnica socket={socket} setNotification={handleNotification} atendente={atendente} />} />
         <Route path="/cadastropromo" element={<CadastroPromocao socket={socket} setNotification={handleNotification} atendente={atendente} />} />
-
+      
       </Routes>
     </BrowserRouter>
   );

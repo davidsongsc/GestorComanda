@@ -1,5 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import DeviceInfo from '../Administrativo/DeviceInfo';
 
 const BarraMenuOperacional = ({ atendente }) => {
     const navigate = useNavigate();
@@ -27,10 +28,9 @@ const BarraMenuOperacional = ({ atendente }) => {
             atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?
                 <div className='g1s'>
                     <button onClick={() => handleNavigation('/venda')}>Vendas</button>
-                    <button onClick={() => handleNavigation('/')}>Bar</button>
-                    <button onClick={() => handleNavigation('/')}>Delivery</button>
-                    <button onClick={() => handleNavigation('/')}>Externa</button>
-                    <button onClick={() => handleNavigation('/')}>Giral</button>
+                    <button onClick={() => handleNavigation('/')}>Suport</button>
+
+                    
                 </div> : <></>}
 
             {(atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?

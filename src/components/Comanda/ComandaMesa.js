@@ -915,19 +915,19 @@ function Comanda({
 
               <td className='titulo-table'>CONSUMO</td>
               <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>Pago</td>
-              <td className='titulo-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0' }}>GORJETA</td>
-              <td className='titulo-table' style={{ opacity: calcularDesconto() != 0 ? '1' : '0' }}>DESCONTOS</td>
+              <td className='titulo-table gorjeta-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0' }}>GORJETA</td>
+              <td className='titulo-table desconto-table' style={{ opacity: calcularDesconto() != 0 ? '1' : '0' }}>DESCONTOS</td>
 
-              <td className='titulo-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>PENDENTE</td>
+              <td className='titulo-table pendente-table' style={{ opacity: calcularPagamento() != 0 ? '1' : '0' }}>PENDENTE</td>
 
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '35px', width: '205px', fontSize: '65px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '35px', width: '205px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
                 {mesa}
               </td>
-              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '13px', width: '305px', textTransform: 'capitalize', fontSize: '27px', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
+              <td className='linha-table' style={{ backgroundColor: 'white', color: 'black', borderRadius: '13px', width: '305px', textTransform: 'capitalize', fontWeight: '800', boxshadow: 'inset 0px 4px 5px 4px' }}>
                 <em>{usuario}</em>
               </td>
               <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)', fontWeight: 900, fontSize: '30px' }}>
@@ -941,13 +941,13 @@ function Comanda({
               <td className='linha-table' style={{ backgroundColor: 'rgb(193 107 50)', opacity: calcularPagamento() != 0 ? '1' : '0' }}>
                 R$ {calcularPagamento().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
-              <td className='linha-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0', fontWeight: '800' }} >R$ {calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
-              <td className='linha-table' style={{ backgroundColor: '#8f2020', opacity: calcularDesconto() != 0 ? '1' : '0' }}>
+              <td className='linha-table gorjeta-table' style={{ opacity: calcularGorjeta() != 0 ? '1' : '0', fontWeight: '800' }} >R$ {calcularGorjeta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</td>
+              <td className='linha-table desconto-table' style={{ backgroundColor: '#8f2020', opacity: calcularDesconto() != 0 ? '1' : '0' }}>
                 {calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 
 
-              <td className='linha-table' style={{ backgroundColor: '#8f2020', opacity: calcularPagamento() != 0 ? '1' : '0' }}>
+              <td className='linha-table pendente-table' style={{ backgroundColor: '#8f2020', opacity: calcularPagamento() != 0 ? '1' : '0' }}>
                 R$ {calcularContaPaga().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </td>
 

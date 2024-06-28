@@ -1,3 +1,7 @@
+html{
+  background-color: black;
+}
+
 .frente-loja {
   display: flex;
   flex-direction: column;
@@ -8,7 +12,6 @@
   display: flex;
   position: relative;
   flex-direction: row;
-  top: 0;
 
 }
 
@@ -23,6 +26,7 @@
   justify-content: center;
   padding: 0px;
   transition: 1.9s;
+  border-radius: 10px;
 }
 
 .mesas-list {
@@ -47,14 +51,16 @@
   margin-bottom: 10px;
 }
 
-.mesas-list ul {
+.mesas-list .ul {
   cursor: pointer;
   list-style: none;
   padding: 2px 2px;
-  margin: 0px;
+  margin: 1px;
+  max-height: 97vh;
+  overflow-y: auto;
 }
 
-.mesas-list li {
+.mesas-list .li {
   display: flex;
   font-size: 21px;
   flex-direction: column;
@@ -79,8 +85,8 @@
 
 
 .mesa-menu {
-  width: 70px;
-  height: 70px;
+  width: 50px;
+  height: 56px;
   border-radius: 6px;
   box-shadow: 2px 2px 2px black;
   margin: 3px;
@@ -90,7 +96,7 @@
 .n-mesa-menu {
   position: relative;
   width: 58%;
-  left: 2px;
+  left: -9px;
   font-size: 24px;
   border-radius: 15px;
   padding: 3px 3px;
@@ -124,7 +130,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  height: 100vh;
+  height: 98vh;
+  border-radius: 10px;
+  
 }
 
 
@@ -176,17 +184,19 @@
 }
 
 .senha-area button {
-  padding: 10px 20px;
+  padding: 5px 10px;
   border-radius: 5px;
-  width: 85px;
-  height: 74px;
+  width: 95px;
+  height: 35px;
   border: none;
-  font-size: 18px;
+  font-size: 16px;
   color: #fff;
   left: 0px;
-  top: 339px;
+  top: 0px;
   /* background-color: #007bff; */
   cursor: pointer;
+  box-shadow: 3px 3px 1px black;
+
 }
 
 .senha-area button:first-child,
@@ -206,9 +216,9 @@
 #selecaoAreaLoja {
   cursor: pointer;
   padding: 5px;
-  height: 97px;
-  width: 90px;
-  border-radius: 8px;
+  height: 35px;
+  width: 95px;
+  border-radius: 5px;
   font-size: large;
   background-color: green;
   box-shadow: 3px 3px 1px black;
@@ -255,8 +265,10 @@
 
 .mostrar-display-login {
   left: 0;
+  top: 0;
   width: 100%;
   transition: ease-in-out .8s;
+  z-index: 1;
 }
 
 .digitosComanda {
@@ -266,8 +278,8 @@
 
 .digitosComanda .g2 button {
   background-color: gray;
-  font-size: 38px;
-  width: 4vw;
+  font-size: 28px;
+  width: 3vw;
   margin: 2.5px;
   transition-delay: .2s;
   transition: .8s;
@@ -482,6 +494,8 @@
 .vertical {
   /* writing-mode: vertical-rl;*/
   background: cornsilk;
+  border-radius: 10px;
+  box-shadow: 1px 1px 1px black;
 }
 
 .vertical thead th {
@@ -987,8 +1001,9 @@
 }
 
 .digitos .g1s button {
-  width: 125px;
-  height: 50px;
+  width: 95px;
+  height: 35px;
+  box-shadow: 3px 3px 1px black;
 }
 
 @media only screen and (max-width: 1570px) {
@@ -1000,10 +1015,10 @@
     font-size: 8px;
   }
 
-  .mesas-list li {
-
-    width: 75px;
-    height: 77px;
+  .mesas-list .li {
+    margin: 2px;
+    width: 49px;
+    height: 59px;
 
   }
 

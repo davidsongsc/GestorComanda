@@ -169,12 +169,12 @@
     border-width: 3px;
     position: absolute;
     border-style: none;
-    width: 17%;
+    width: 280px;
     top: 2px;
     left: 30%;
     max-height: 60vh;
     overflow-y: scroll;
-
+ 
 }
 
 
@@ -182,6 +182,7 @@
     margin: 5px 3px;
     width: 118px;
     height: 50px;
+    font-size: 15px;
 }
 
 .GPX0 {
@@ -383,7 +384,10 @@ em {
     position: relative;
 
 }
-
+.vertical p{
+    text-transform: uppercase;
+    font-size: 12px;
+}
 .A,
 .B,
 .C,
@@ -605,6 +609,7 @@ option {
     width: 100vw;
     top: 0.5vh;
     left: 0;
+    z-index: 1;
 }
 
 .cm-comanda-pn {
@@ -618,7 +623,8 @@ option {
 .operadores {
     display: flex;
     flex-wrap: wrap;
-    width: auto;
+    
+    
 }
 
 .tabela-fixa {
@@ -631,7 +637,7 @@ option {
 
 .tabela-fixa .linha-table {
     color: white;
-    font-size: 22px;
+    font-size: 32px;
 }
 
 .butaoUps {
@@ -641,10 +647,10 @@ option {
 }
 
 .senha-active .butaoUps {
-    top: 62px;
+    top: 7px;
     left: 0px;
     transition: .8s;
-    font-size: xxx-large;
+    font-size: large;
     transform: rotateX(180deg);
 }
 
@@ -653,14 +659,16 @@ option {
         width: 82%;
         position: fixed;
         height: 50%;
-        right: 0;
+        right: 4px;
+        z-index: 1;
     }
 
     .grupo-produto {
-        width: 80%;
-        left: 75px;
+        width: auto;
+        left: 67px;
         top: 51vh;
         height: 100px;
+        z-index: 1;
     }
 
     .inventario {
@@ -703,9 +711,11 @@ option {
 
     .tabela-fixa {
         position: fixed;
-        bottom: 0;
+        bottom: 0px;
         left: 0px;
-        height: 10%;
+        height: 5vh;
+        /* width: 300px; */
+        overflow-y: auto;
     }
 
     .linhas-tb .ndd {
@@ -715,12 +725,19 @@ option {
 
     .grupo-produto button {
         margin: 5px 3px;
-        width: 115px;
+        width: 85px;
         height: 25px;
+        font-size: 9px;
     }
 
     .controlea {
         display: none;
     }
-
+    .tabela-fixa .linha-table {
+        color: white;
+        font-size: 18px;
+    }
+    .desconto-table, .gorjeta-table, .pendente-table{
+        display: none;
+    }
 }
