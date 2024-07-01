@@ -4,25 +4,29 @@ import InventarioGrupo from './InventarioGrupo';
 import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
 import PagamentoForm from './Pagamento';
 import TelaOption from './TelaOption';
+import { useDispatch } from 'react-redux';
+
 import ControleDigitosComanda from '../PagePainel/ControleDigitosComanda';
 import { ipNucleo, usuarioError, TX, limiteOptionsCardapio, nome, token, options } from '../principal/ExtensoesApi';
 import removerItem from './extra_comandas/C_removeritem';
+import { useSelector } from 'react-redux';
+import { setNotification } from '../../features/notification/notificationSlice';
 
 
 function Comanda({
   displayVisualizando,
-  atendentes,
   handleGorjeta,
   handleDeletarComanda,
-  atendente,
   setCaixaStatus,
   mesaId,
   handleSairLogin,
   handleEmitStatus,
-  setNotification,
   handleShowModalMesa,
   handleComandaItens,
   handleDeletarItem }) {
+  const dispatch = useDispatch();
+  const atendente = useSelector(state => state.user);
+  const atendentes = useSelector(state => state.atendentes.listaUsuarios);
 
   // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
@@ -67,6 +71,9 @@ function Comanda({
     setBotaoMudarAtendimento(!botaoMudarAtendenteComanda);
 
   }
+  const handleNotification = (text) => {
+    dispatch(setNotification({ text: text }));
+  };
 
   const handleMudarArea = () => {
 
@@ -74,8 +81,6 @@ function Comanda({
     setBotaoMudarArea(!botaoMudarAreaComanda);
 
   }
-
-
 
   const optionsAtendente = atendentes.map((atendente, index) => ({
     value: index,
@@ -106,10 +111,7 @@ function Comanda({
   });
 
   const handleMostrarFormulario = () => {
-    if (
-      (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-      (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
-    ) {
+    if (atendente.restricoes.c_caixa_cobrar) {
       setMostrarFormulario(true);
       handleEmitStatus(mesaId, 4);
     }
@@ -120,8 +122,8 @@ function Comanda({
 
   const handleSelectItem = (index) => {
     const isSelected = selectedItems.includes(index);
-    if ((atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
-      (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) {
+    if ((atendente.posto.startsWith('j') && /^\d+$/.test(atendente.posto.slice(1))) ||
+      (atendente.posto.startsWith('g') && /^\d+$/.test(atendente.posto.slice(1)))) {
       if (!isSelected) {
         // Caso contrário, adicione o item ao array de selecionadoss
         setSelectedItems([...selectedItems, index]);
@@ -142,9 +144,6 @@ function Comanda({
     }
   };
 
-  const handleNotification = (text) => {
-    setNotification(text);
-  };
 
   const handleDelComanda = (comanda, valor) => {
     handleDeletarComanda(comanda, valor);
@@ -237,13 +236,18 @@ function Comanda({
   };
 
   const removerGorjeta = () => {
-    setGorjeta(0);
-    handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para R$ 0.');
-    handleGorjeta(mesaId, 0)
+    if (atendente.restricoes.c_comanda_RemoverGorjeta) {
+      setGorjeta(0);
+      handleNotification(atendente.usuario + ' modificou a gorjeta da mesa ' + mesaId + ' para R$ 0.');
+      handleGorjeta(mesaId, 0)
+    }
+    else {
+      handleNotification('usuario não tem permissão para remover gorjeta.');
+    }
   };
 
   const adicionarGorjeta = (valor) => {
-    if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) {
+    if (atendente.restricoes.c_comanda_alterarGorjeta) {
       if (valor === 10) {
         setGorjeta(0.10);
         handleGorjeta(mesaId, 0.10)
@@ -379,17 +383,22 @@ function Comanda({
 
       handleUpInsert();
 
-      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+      if (atendente.restricoes.loginSistemaSempreOn) {
         handleSairLogin();
       } else {
         handleSairLogin('true');
       }
     } else if (id === 'conta') {
-      handleNotification('Imprimindo conferência mesa: ' + mesa);
-      handleEmitStatus(mesa, 5);
-      handleUpInsert();
-      handleSairLogin();
+      if (atendente.restricoes.loginSistemaSempreOn) {
+        handleNotification('Imprimindo conferência mesa: ' + mesa);
+        handleEmitStatus(mesa, 5);
+        handleUpInsert();
+        handleSairLogin();
+      }
+      else {
+        handleNotification('Não é possivel imprimir: ' + mesa);
+
+      }
 
     } else if (id === 'fechar') {
       handleFecharComanda();
@@ -398,14 +407,10 @@ function Comanda({
 
 
     } else if (id === 'cancelar') {
-      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (calcularConta() == 0)
-      ) {
-
-        handleNotification('Comanda encerrada');
+      if (atendente.restricoes.c_caixa_cancelamento) {
         handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
-
+        handleEmitStatus(mesa, 3);
+        handleNotification('Comanda encerrada');
         window.location.reload();
       } else {
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
@@ -414,8 +419,7 @@ function Comanda({
 
     }
     else if (id === 'finalizarcontarecebida') {
-      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+      if (atendente.restricoes.c_caixa_receber) {
 
         handleNotification('Comanda Finalizada.');
         handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
@@ -431,10 +435,7 @@ function Comanda({
       const contaAtual = parseFloat(calcularTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
       const valorDescontos = Math.abs(calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
       const abc = valorDescontos + valorSelecionado;
-      if (
-        (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))
-      ) {
+      if (atendente.restricoes.c_caixa_desconto) {
 
         if (contaAtual >= valorSelecionado) {
           if (abc <= contaAtual) {
@@ -466,12 +467,11 @@ function Comanda({
 
         }
       } else {
-        handleNotification(`Usuário ${atendente.usuario} não pode finalizar a comanda!`);
+        handleNotification(`Usuário ${atendente.usuario} não pode solicitar desconto a comanda!`);
       }
       console.log(valorSelecionado, contaAtual, valorDescontos)
     } else if (id === 'remover') {
-      if ((atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)))) {
+      if (atendente.restricoes.g_caixa_remover_desconto) {
 
         if (selectedItems.length === 1) {
           setSelectCodeDelete(null);
@@ -570,27 +570,34 @@ function Comanda({
   };
 
   const adicionarItem = (item, t) => {
-    const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
-    const numeros = [];
-    handleEmitStatus(mesaId, 1);
-    for (let i = 1; i <= limiteOptionsCardapio; i++) {
-      numeros.push(i);
+    if (atendente.restricoes.mesaComandarItem) {
+
+      const itemExistente = itens.find((i) => i.nome === item.nomeproduto);
+      const numeros = [];
+      handleEmitStatus(mesaId, 1);
+      for (let i = 1; i <= limiteOptionsCardapio; i++) {
+        numeros.push(i);
+      }
+      if (itemExistente) {
+        setComanda((comanda) =>
+          [comanda.map((i) =>
+            i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
+          )]
+        );
+
+      } else {
+        setComanda((comanda) => [
+          ...comanda,
+          { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 },
+        ]);
+
+      }
+
     }
-    if (itemExistente) {
-      setComanda((comanda) =>
-        [comanda.map((i) =>
-          i.nome === item.nomeproduto ? { ...item, qtd: i.qtd + 1, status: 0 } : i
-        )]
-      );
-
-    } else {
-      setComanda((comanda) => [
-        ...comanda,
-        { ...item, qtd: parseInt(teclado), produto_id: item.id, status: 1 },
-      ]);
-
-
+    else {
+      handleNotification('Lançamentos não autorizados.');
     }
+
     handleNotification(item.nomeProduto);
     if (item.grupoc != 0) {
       setGrupoCompain(item.grupoc);
@@ -662,27 +669,35 @@ function Comanda({
   // eslint-disable-next-line no-unused-vars
 
   const isCancelarValido = (atendente) =>
-    (calcularTotal() == 0 || atendente.auth.startsWith('g') && atendente.nivel > 5);
+    (calcularTotal() == 0 && atendente.restricoes.g_comandaZeradaCancelar || atendente.restricoes.g_comandaCancelamento);
 
   const isCaixaValido = (atendente) =>
-    (atendente.auth.startsWith('j')) &&
-    /^\d+$/.test(atendente.auth.slice(1));
+    (atendente.restricoes.c_caixa_operador);
 
   const isGerenteValido = (atendente) =>
-    (atendente.auth.startsWith('g') || atendente.auth.startsWith('j')) &&
-    /^\d+$/.test(atendente.auth.slice(1));
+    (atendente.restricoes.g_comanda_maitre);
 
   const IsReceberConta = (atendente) =>
-    (atendente.auth.startsWith('g') || atendente.auth.startsWith('j')) &&
-    /^\d+$/.test(atendente.auth.slice(1)) && calcularTotal() > 0;
+    (atendente.restricoes.c_caixa_cobrar) && calcularTotal() > 0;
 
   const isGestorValido = (atendente) =>
-    (atendente.auth.startsWith('g')) &&
-    /^\d+$/.test(atendente.auth.slice(1));
+    (atendente.restricoes.g_caixa_operador);
+
+  const isTransferirAtendenteValido = (atendente) =>
+    (atendente.restricoes.m_ComandaTransfere);
+
+  const isDividirMesaValido = (atendente) =>
+    (atendente.restricoes.m_ComandaDivide);
+
+  const isTransferirAreaComandaValido = (atendente) =>
+    (atendente.restricoes.m_AreaComandaTransfere);
+
+  const IsImprimirValido = (atendente) =>
+    (atendente.restricoes.imprimirMesa);
 
   const buttons = [
     { label: 'O.K.', handleClick: () => handleClick('O.K.'), className: 'H' },
-    { label: 'IMPRIMIR', handleClick: () => handleClick('conta'), className: 'A' },
+    { label: 'IMPRIMIR', handleClick: () => handleClick('conta'), className: 'A', disabled: IsImprimirValido(atendente) ? false : true, visualizar: IsImprimirValido(atendente) ? 'block' : 'none' },
 
     {
       label: 'Receber',
@@ -737,9 +752,9 @@ function Comanda({
       disabled: isCaixaValido(atendente) ? false : true,
       visualizar: isCaixaValido(atendente) ? 'block' : 'none',
     },
-    { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
-    { label: 'mudar area', handleClick: () => handleMudarArea(), className: mudarAreaComanda ? 'A' : 'C', disabled: botaoMudarAreaComanda ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
-    { label: 'mudar atendente', handleClick: () => handleMudarAtendimento(), className: botaoMudarAtendenteComanda ? 'A' : 'C', disabled: botaoMudarAtendenteComanda ? false : true, visualizar: isGerenteValido(atendente) ? 'block' : 'none' },
+    { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: isDividirMesaValido(atendente) ? true : false, visualizar: isDividirMesaValido(atendente) ? 'block' : 'none' },
+    { label: 'mudar area', handleClick: () => handleMudarArea(), className: mudarAreaComanda ? 'A' : 'C', disabled: isTransferirAreaComandaValido(atendente) ? false : true, visualizar: isTransferirAreaComandaValido(atendente) ? 'block' : 'none' },
+    { label: 'mudar atendente', handleClick: () => handleMudarAtendimento(), className: botaoMudarAtendenteComanda ? 'A' : 'C', disabled: isTransferirAtendenteValido(atendente) ? false : true, visualizar: isTransferirAtendenteValido(atendente) ? 'block' : 'none' },
   ];
 
   function renderizarBotoes() {
@@ -761,6 +776,7 @@ function Comanda({
   }
 
   const finalizarComanda = (pagamento, resta, verificador) => {
+
     let p = pagamento.replace(',', '.')
     let r = resta.replace(',', '.')
 
@@ -893,7 +909,7 @@ function Comanda({
         <table className='tabela-fixa'>
           <thead>
             <tr className='titulo-tb'>
-              <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
+              <td className='titulo-table'>{atendente.posto.startsWith('g') && /^\d+$/.test(atendente.posto.slice(1)) ?
                 <select
                   value={selectedValue}
                   onChange={(e) => setSelectedValue(e.target.value)}
@@ -902,7 +918,7 @@ function Comanda({
                   {optionElements}
                 </select> : 'mesa'}
               </td>
-              <td className='titulo-table'>{atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)) ?
+              <td className='titulo-table'>{atendente.posto.startsWith('g') && /^\d+$/.test(atendente.posto.slice(1)) ?
                 <select
                   value={selectedValueUser}
                   onChange={(e) => setSelectedValueUser(e.target.value)}

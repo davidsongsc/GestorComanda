@@ -664,8 +664,8 @@ option {
     }
 
     .grupo-produto {
-        width: auto;
-        left: 67px;
+        width: 80%;
+        left: 17%;
         top: 51vh;
         height: 100px;
         z-index: 1;

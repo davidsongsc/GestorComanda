@@ -213,16 +213,6 @@ html{
   flex-direction: column;
 }
 
-#selecaoAreaLoja {
-  cursor: pointer;
-  padding: 5px;
-  height: 35px;
-  width: 95px;
-  border-radius: 5px;
-  font-size: large;
-  background-color: green;
-  box-shadow: 3px 3px 1px black;
-}
 
 .button {
   font-size: 16px;

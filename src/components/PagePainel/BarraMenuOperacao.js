@@ -1,16 +1,25 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DeviceInfo from '../Administrativo/DeviceInfo';
+import { useSelector } from 'react-redux';
+import { setLocalMesa } from '../../features/localmesa/localmesaSlice';
+import { useDispatch } from 'react-redux';
 
-const BarraMenuOperacional = ({ atendente }) => {
+const BarraMenuOperacional = () => {
+    const user = useSelector(state => state.user);
+    const mesaSelect = useSelector(state => state.localmesa.localmesa);
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const handleNavigation = (path) => {
         navigate(path);
     };
 
+    const handleLocalView = (local) => {
+        dispatch(setLocalMesa(local));
+    }
+
     const handleFullscreen = () => {
-        const element = document.documentElement; // Elemento raiz da página
+        const element = document.documentElement;
         if (element.requestFullscreen) {
             element.requestFullscreen();
         } else if (element.mozRequestFullScreen) {
@@ -21,25 +30,35 @@ const BarraMenuOperacional = ({ atendente }) => {
             element.msRequestFullscreen();
         }
     };
+    const handleLojaArea = (text) => {
+        console.log(text);
+        dispatch(setLocalMesa(text));
+        console.log(mesaSelect);
+
+    };
+
+    if (!user) {
+        return null; // Ou algum indicador de carregamento enquanto o usuário não é carregado
+    }
 
     return (
-        <div className='digitos'>
-            {(atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1)) ||
-            atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?
-                <div className='g1s'>
-                    <button onClick={() => handleNavigation('/venda')}>Vendas</button>
-                    <button onClick={() => handleNavigation('/')}>Suport</button>
+        <>
+            {user.nivel >= 1 &&
+                <div className='digitos'>
 
-                    
-                </div> : <></>}
+                    <div className='g1s'>
+                        <button onClick={() => handleLojaArea('loja')} style={{ display: user.restricoes.area_rLoja ? 'row' : 'none' }}>Principal</button>
+                        <button onClick={() => handleLojaArea('delivery')} style={{ display: user.restricoes.area_rDelivery ? 'row' : 'none' }}>Delivery</button>
+                        <button onClick={() => handleLojaArea('bar')} style={{ display: user.restricoes.area_rBar ? 'row' : 'none' }}>Bar</button>
+                        <button onClick={() => handleLojaArea('giral')} style={{ display: user.restricoes.area_rGiral ? 'row' : 'none' }}>Giral</button>
+                        <button onClick={() => handleLojaArea('externa')} style={{ display: user.restricoes.area_rExterna ? 'row' : 'none' }}>Externa</button>
 
-            {(atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ?
-                <div className='g1s'>
-                    <button onClick={() => handleNavigation('/gestor')}>Gestor</button>
-                    <button onClick={handleFullscreen}>TELA</button>
-                </div> : <></>}
-
-        </div>
+                        <button onClick={() => handleNavigation('')} style={{ display: user.restricoes.g_caixa_operador ? 'row' : 'none' }}>Gestor</button>
+                        <button onClick={handleFullscreen} style={{ display: user.restricoes.g_comanda_maitre ? 'row' : 'none' }}>TELA</button>
+                    </div>
+                </div>
+            }
+        </>
     );
 };
 

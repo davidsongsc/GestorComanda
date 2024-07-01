@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Modal/*, Button*/ } from 'react-bootstrap';
-import { useNavigate } from 'react-router-dom';
 import Mesa from './Comanda/Mesa';
 import Comanda from './Comanda/ComandaMesa';
 import './estilo.css';
@@ -11,13 +10,25 @@ import { BiUserPin } from 'react-icons/bi';
 import FuncaoComponent from './Outros/FuncaoComponent';
 import BarraMenuOperacional from './PagePainel/BarraMenuOperacao';
 import { usuarioError } from './principal/ExtensaoMesa';
+import { useDispatch } from 'react-redux';
+import { clearUser, setUser } from '../features/user/userSlice';
+import UserLogin from '../features/user/UserLogin';
+import { useSelector } from 'react-redux';
+import { setNotification } from '../features/notification/notificationSlice';
+import { setLocalMesa } from '../features/localmesa/localmesaSlice';
+import ComandaProvider from '../features/cservidor/comandaProvedor';
+import { updateListaUsuarios } from '../store/actions';
+import { disconnectSocket, initializeSocket } from '../features/cservidor/conexaoSlice';
+import connectarServidor from './Api/loglogin';
+
 // ALERTA DE ERRO USUARIO NÃO AUTENTICADO
 
 let minMesa;
 let maxMesa;
 let operacao;
 
-const MesasPage = ({ setNotification, handlelogin, socket }) => {
+const MesasPage = () => {
+    const dispatch = useDispatch();
     const [showModalMesa, setShowModalMesa] = useState(false);
     const [senha, setSenha] = useState('');
     const [comandas, setComandas] = useState([]);
@@ -29,13 +40,48 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [nivel, setNivel] = useState(1);
     const [displayVisualizando, setDisplayVisualizador] = useState(0);
-    const [selectedOption, setSelectedOption] = useState('loja');
+
     const [listaUsuarios, setListaUsuarios] = useState();
     const [caixaStatus, setCaixaStatus] = useState(false);
-    const navigate = useNavigate();
+    const user = useSelector(state => state.user);
+    const selectedOption = useSelector(state => state.localmesa.localmesa);
+    const socket = useSelector(state => state.socket.socket); // Ajuste conforme sua estrutura Redux
+    const deviceName = navigator.userAgent;
+    const platform = navigator.platform;
+    const userLanguage = navigator.language;
+
+    useEffect(() => {
+        // Inicializa o socket quando o componente monta
+        dispatch(initializeSocket(connectarServidor)); // Ajuste para sua URL de servidor
+        console.log(platform);
+        console.log(`Idioma do usuário: ${userLanguage}`);
+        const isOnline = navigator.onLine;
+        console.log(`O usuário está online? ${isOnline}`);
+        console.log(deviceName);
+        const isCookieEnabled = navigator.cookieEnabled;
+        console.log(`Cookies estão habilitados? ${isCookieEnabled}`);
+        if ("geolocation" in navigator) {
+            document.cookie = "username=John Doe; expires=Thu, 18 Dec 2023 12:00:00 UTC; path=/";
+            const cookies = document.cookie;
+            console.log(cookies);
+            navigator.geolocation.getCurrentPosition(function (position) {
+                const latitude = position.coords.latitude;
+                const longitude = position.coords.longitude;
+                handleNotification(`Localização: ${latitude}, ${longitude}`);
+            });
+        } else {
+            handleNotification("Geolocalização não suportada pelo navegador.");
+            console.log("Geolocalização não suportada pelo navegador.");
+        }
+        return () => {
+            // Desconecta o socket quando o componente desmonta
+            dispatch(disconnectSocket());
+        };
+    }, [dispatch]);
 
     useEffect(() => {
         if (selectedOption === 'loja') {
+            dispatch(setLocalMesa(selectedOption));
             setDisplayVisualizador(0);
             const minMesa = 1;
             const maxMesa = 99;
@@ -54,6 +100,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             );
         }
         else if (selectedOption === 'bar') {
+            dispatch(setLocalMesa(selectedOption));
             setDisplayVisualizador(1);
             const minMesa = 100;
             const maxMesa = 120;
@@ -72,6 +119,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             );
         }
         else if (selectedOption === 'giral') {
+            dispatch(setLocalMesa(selectedOption));
             setDisplayVisualizador(2);
             const minMesa = 121;
             const maxMesa = 200;
@@ -91,6 +139,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         }
 
         else if (selectedOption === 'externa') {
+            dispatch(setLocalMesa(selectedOption));
             setDisplayVisualizador(3);
             const minMesa = 201;
             const maxMesa = 299;
@@ -109,6 +158,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             );
         }
         if (selectedOption === 'delivery') {
+            dispatch(setLocalMesa(selectedOption));
             setDisplayVisualizador(4);
             const minMesa = 300;
             const maxMesa = 420;
@@ -128,9 +178,6 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         }
     }, [selectedOption]);
 
-    const handleChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
 
     if (displayVisualizando === 0) {
         minMesa = 1;
@@ -171,35 +218,22 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const [erroSenha, setErroSenha] = useState(false);
     let timeoutId;
 
-    const handleLoginSistema = (usuario) => {
-        handlelogin(usuario);
-    }
-
     const handleNotification = (text) => {
-        setNotification(text);
+        dispatch(setNotification({ text: text }));
     };
-
-    const enviarDadosUsuario = () => {
-        socket.emit('usuariodlogin', socket.id, { senha });
-        console.log({ senha });
-        socket.on('autenticacao', (data) => {
-            if (data.success) {
-                handleNotification(`Entrou como: ${data.usuario}`);
-                setAtendente({ "usuario": data.usuario, "nivel": data.nivel, "auth": data.auth });
-                handleLoginSistema({ "usuario": data.usuario, "nivel": data.nivel, "auth": data.auth });
-                handleClickMostrar();
-                setSenha('');
-                setIsAuthenticated(true);
-
-                // Salvar os dados do usuário no localStorage
-                localStorage.setItem('usuario', JSON.stringify(data));
-
-            } else {
-                handleNotification('Falha na autenticação do usuário');
-
-            }
-        });
-    };
+    useEffect(() => {
+        // Verificar se há um usuário salvo no localStorage ao iniciar o componente
+        const usuario = localStorage.getItem('usuario');
+        if (usuario) {
+            const userData = JSON.parse(usuario);
+            dispatch(setUser(userData));
+            setIsAuthenticated(true);
+        }
+        else {
+            dispatch(clearUser());
+            setIsAuthenticated(false);
+        }
+    }, [dispatch]);
 
     useEffect(() => {
         // Recuperar os dados do usuário do localStorage
@@ -222,53 +256,62 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     }
 
     const fetchComandas = () => {
-        // Emitir o evento 'get_comandas' com o identificador da sessão do socket
-        socket.emit('get_comandas', socket.id);
+        if (socket && socket.emit) {
+            socket.emit('get_comandas', socket.id);
+        } else {
+            handleNotification('Socket não está inicializado corretamente.');
+        }
+
     };
 
     useEffect(() => {
-        fetchComandas();
-        const atendentes = [];
-        socket.on('comandas', (data) => {
-            setComandas(data);
-            setMesas((prevState) =>
-                prevState.map((prevMesa) => {
-                    if (!atendentes.includes(prevMesa.atendente) && prevMesa.atendente != null) {
-                        atendentes.push(prevMesa.atendente);
-                    }
-                    const comanda = data.find((comanda) => comanda.mesa === prevMesa.mesa);
-                    return comanda
-                        ? {
-                            ...prevMesa,
-                            atendente: comanda.atendente,
-                            ocupada: true,
-                            aberta: true,
-                            conta: comanda,
-                            status: comanda.status,
-                            operacao: comanda.operacao,
-                            cliente: null,
-                        }
-                        : prevMesa;
-                })
-            );
-            setListaUsuarios(atendentes);
-
-        });
-
-        socket.on('disconnect', () => {
-            // Implemente a lógica para lidar com a desconexão do cliente, se necessário
-        });
-
-        socket.on('connect', () => {
-            // Implemente a lógica para lidar com a reconexão do cliente, se necessário
-        });
-
-        return () => {
-            socket.off('comandas');
-            socket.off('disconnect');
-            socket.off('connect');
+        const fetchComandas = async () => {
+            // Simula uma requisição inicial para buscar comandas
+            const initialData = []; // Substitua com dados reais
+            setComandas(initialData);
         };
-    }, []);
+
+        fetchComandas();
+        const atendentes = new Set(); // Use Set para evitar duplicatas
+
+        if (socket) {
+            socket.on('comandas', (data) => {
+                setComandas(data);
+
+                setMesas((prevState) =>
+                    prevState.map((prevMesa) => {
+                        if (prevMesa.atendente) {
+                            atendentes.add(prevMesa.atendente); // Adiciona atendentes ao Set
+                        }
+
+                        const comanda = data.find((comanda) => comanda.mesa === prevMesa.mesa);
+
+                        return comanda
+                            ? {
+                                ...prevMesa,
+                                atendente: comanda.atendente,
+                                ocupada: true,
+                                aberta: true,
+                                conta: comanda,
+                                status: comanda.status,
+                                operacao: comanda.operacao,
+                                cliente: null,
+                            }
+                            : prevMesa;
+                    })
+                );
+
+                // Enviar apenas os atendentes (dados serializáveis) para o Redux
+                dispatch(updateListaUsuarios(Array.from(atendentes)));  // Converte Set para Array
+            });
+
+            return () => {
+                socket.off('comandas');
+            };
+        }
+    }, [socket, dispatch]);
+
+
 
     function handleFecharAlerta() {
         setMostrarAlerta(false);
@@ -277,12 +320,11 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
     const handleSairLogin = (v) => {
         handleCloseModalMesa();
         if (v === 'true') {
+
+            dispatch(clearUser());
             setCaixaStatus(false);
             clearTimeout(timeoutId);
-            handleNotification(`${atendente.usuario} Desconectado...`)
-            //handleNotification('Usuario Desconectado!');
-            setAtendente({ "usuario": null });
-            handleLoginSistema({ "usuario": null });
+            handleNotification(`${user.usuario} Desconectado...`)
             setIsAuthenticated(false);
             localStorage.removeItem('usuario');
         }
@@ -301,7 +343,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         }
     };
     const handleCaixaStatus = () => {
-        if (atendente.nivel > 4 || atendente.auth === 'j5') {
+        if (user.nivel > 4 || user.auth === 'j5') {
             setCaixaStatus(true);
 
         }
@@ -318,8 +360,12 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             operacao: displayVisualizando,
             cliente: null
         };
-
-        socket.emit('modificar_status_comanda', socket.id, data);
+        if (socket && socket.emit) {
+            socket.emit('modificar_status_comanda', socket.id, data);
+        }
+        else {
+            handleNotification('Não foi possivel carregar.')
+        }
         handleClick(idMesa);
         setMesas((prevState) =>
             prevState.map((prevMesa) =>
@@ -334,19 +380,26 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
             id: idMesa,
             gorjeta: valor,
         };
-
-        socket.emit('modificar_gorjeta_comanda', socket.id, data);
+        if (socket && socket.emit) {
+            socket.emit('modificar_gorjeta_comanda', socket.id, data);
+        } else {
+            handleNotification('Não é possivel modificar a gorjeta, falha na conexão com servidor.');
+        }
     };
 
     const handleDeletarComanda = (idMesa, valorComanda) => {
         const data = {
             id: idMesa,
             status: 6,
-            atendente: atendente.usuario,
+            atendente: user.usuario,
             valor: valorComanda
         };
 
-        socket.emit('deletar_status_comanda_nova', socket.id, data);
+        if (socket && socket.emit) {
+            socket.emit('deletar_status_comanda_nova', socket.id, data);
+        } else {
+            handleNotification('Não é possivel deletar o status da comanda, falha na conexão com servidor.');
+        }
         handleClick(idMesa);
         // Abrir comanda
         setMesas((prevState) =>
@@ -359,12 +412,20 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     const handleComandaItens = (comanda, id) => {
 
-        socket.emit('anotar_item_comanda', socket.id, comanda, id, atendente.usuario);
+        if (socket && socket.emit) {
+            socket.emit('anotar_item_comanda', socket.id, comanda, id, user.usuario);
+        } else {
+            handleNotification('Não é possivel comandar o item na comanda, falha na conexão com servidor.');
+        }
     };
 
     const handleDeletarItem = (itemId) => {
 
-        socket.emit('deletar_item_comanda', socket.id, itemId);
+        if (socket && socket.emit) {
+            socket.emit('deletar_item_comanda', socket.id, itemId);
+        } else {
+            handleNotification('Não é possivel deletar comanda, falha na conexão com servidor.');
+        }
     };
 
     const handleNovaComanda = (idMesa, op) => {
@@ -372,12 +433,16 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
         const data = {
             id: idMesa,
             status: op,
-            atendente: atendente.usuario,
+            atendente: user.usuario,
             operacao: displayVisualizando,
             cliente: null
         };
 
-        socket.emit('modificar_status_comanda_nova', socket.id, data);
+        if (socket && socket.emit) {
+            socket.emit('modificar_status_comanda_nova', socket.id, data);
+        } else {
+            handleNotification('Não é possivel modificar status da comanda, falha na conexão com servidor.');
+        }
         handleClick(idMesa);
         // Abrir comanda
         setMesas((prevState) =>
@@ -389,60 +454,92 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
+
+        if (!user.restricoes.abrirMesa) {
+            handleNotification("Acesso não autorizado | mesa: " + mesa.mesa);
+            return;
+        }
+
         if (mesa.conta) {
-            if (!atendente.usuario) {
-                mudarTipoAlertaId(1);
-                handleNotification('Usuário não encontrado!');
-            } else if (mesa.status === 5 && atendente.auth === 'j5' && mesa.ocupada || (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1)))) {
-                handleEmitStatus(idMesa, 4);
-                handleNotification('Operação de Caixa: ' + mesa.mesa);
-            } else if (mesa.atendente != atendente.usuario) {
-                if (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) {
-                    handleEmitStatus(idMesa, 1);
-                    handleNotification(mesa.atendente + ' Inicia a mesa.');
-                    //mudarTipoAlertaId(6);
-                    //setMostrarAlerta(true);
-                }
-                else if (atendente.nivel > 1 && mesa.status !== 1) {
-                    handleEmitStatus(idMesa, 1);
-                    handleNotification(atendente.usuario + ' Inicia a mesa.');
-                    //mudarTipoAlertaId(6);
-                    //setMostrarAlerta(true);
-                }
-                else {
-                    handleNotification(mesa.atendente + ' esta realizando lançamentos.');
-                }
-            }
-            else {
-                if (
-                    (mesa.status !== 1 && mesa.status !== 5 && mesa.status !== 4) ||
-                    (atendente.auth === 'j5' && (mesa.status === 5 || mesa.status === 4))
-                ) {
-                    mudarTipoAlertaId(5);
-                    handleEmitStatus(idMesa, 1);
-                    handleNotification(atendente.usuario + ' Inicia a mesa ' + mesa.mesa);
-                } else if (mesa.status === 1) {
-                    mudarTipoAlertaId(3);
-                    handleNotification('Aberta no terminal!');
-                } else if (mesa.status === 4 || mesa.status === 5) {
-                    mudarTipoAlertaId(4);
-                    handleNotification('Comanda em Recebimento!');
-                } else {
-                    mudarTipoAlertaId(0);
-                    handleNotification('Acesso negado, Por favor, informe sua senha!');
-                }
-                setMostrarAlerta(true);
+            handleWithConta(mesa);
+        } else {
+            handleWithoutConta(idMesa, mesa);
+        }
+    };
+
+    const handleWithConta = (mesa) => {
+        if (!user.usuario) {
+            handleWithoutUser();
+        } else if (mesa.status === 5 && (user.restricoes.c_caixa_cobrar || user.restricoes.g_comanda_maitre)) {
+            handleOperacaoCaixa(mesa);
+        } else if (mesa.atendente !== user.usuario) {
+            handleDifferentAtendente(mesa);
+        } else {
+            handleSameAtendente(mesa);
+        }
+    };
+
+    const handleWithoutConta = (idMesa, mesa) => {
+        mudarTipoAlertaId(0);
+        handleNotification('Mesa ' + idMesa + ' livre, Deseja iniciar Atendimento?');
+        if (user.restricoes.abrirMesa && mesa.status != 4) {
+            handleClick(idMesa);
+            handleNovaComanda(idMesa, 7);
+        }
+        else if (user.restricoes.g_maitre_abrirMesa || user.restricoes.g_caixa_operador) {
+            handleEmitStatus(mesa.mesa, 1);
+            handleNotification(user.usuario + ' Inicia a mesa.');
+        }
+        setMostrarAlerta(true);
+    };
+
+    const handleWithoutUser = () => {
+        mudarTipoAlertaId(1);
+        handleNotification('Usuário não encontrado!');
+    };
+
+    const handleOperacaoCaixa = (mesa) => {
+        handleEmitStatus(mesa.mesa, 4);
+        handleNotification('Operação de Caixa: ' + mesa.mesa);
+    };
+
+    const handleDifferentAtendente = (mesa) => {
+        if (user.restricoes.g_comanda_maitre) {
+            handleEmitStatus(mesa.mesa, 1);
+            handleNotification(mesa.atendente + ' Inicia a mesa.');
+        } else if (user.restricoes.abrirMesa && mesa.status !== 1 && mesa.status !== 4 && mesa.status !== 5 && mesa.status !== 8) {
+            handleEmitStatus(mesa.mesa, 8);
+            handleNotification(user.usuario + ' Inicia a mesa.');
+        }
+        else {
+            handleNotification(mesa.atendente + ' está realizando lançamentos.');
+        }
+    };
+
+    const handleSameAtendente = (mesa) => {
+        if (user.restricoes.c_caixa_cobrar) {
+            mudarTipoAlertaId(5);
+            handleEmitStatus(mesa.mesa, 1);
+            handleNotification(user.usuario + ' Inicia a mesa ' + mesa.mesa);
+        }
+        else if (mesa.status === 1 || mesa.status === 4 || mesa.status === 5) {
+            if (user.restricoes.g_maitre_abrirMesa) {
+                mudarTipoAlertaId(3);
+                handleNotification('Aberta no terminal!');
+                handleEmitStatus(mesa.mesa, 9);
+                handleNotification(mesa.atendente + ' Inicia a mesa.');
+            } else {
+                mudarTipoAlertaId(4);
+                handleNotification('Comanda em Recebimento!');
             }
         } else {
             mudarTipoAlertaId(0);
-            handleNotification('Mesa ' + idMesa + ' livre, Deseja iniciar Atendimento?');
-            if (isAuthenticated) {
-                handleClick(idMesa);
-                handleNovaComanda(idMesa, 1);
-            }
+            handleNotification('Acesso negado, Por favor, informe sua senha!');
             setMostrarAlerta(true);
         }
     };
+
+
 
     const handleClick = (mesaId) => {
 
@@ -459,31 +556,20 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
     useEffect(() => {
 
-        if (atendente.usuario === null) {
+        if (user.usuario === null) {
             mudarTipoAlertaId(0);
             setNivel(1);
             handleClickMostrar();
         } else {
             mudarTipoAlertaId(1);
 
-            setNivel(atendente.nivel);
+            setNivel(user.nivel);
         }
     }, [atendente]);
 
-    const handleButtonClick = (event) => {
-        const value = event.target.value;
-        if (value === 'C') {
-            setSenha('');
-        } else if (value === 'OK') {
-            // Executa a ação necessária com a senha...
-            setSenha('');
-            enviarDadosUsuario();
-        } else {
-            setSenha(senha + value);
-        }
-    };
 
     const fazerPedido = () => { };
+
     return (
         <div className='comandeira-comanda'>
             {showModalMesa != false ?
@@ -497,45 +583,47 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     <Modal.Header closeButton>
                         <Modal.Title></Modal.Title>
                     </Modal.Header>
-                    <Modal.Body>
-                        {caixaStatus != false ?
-                            <Comanda
-                                displayVisualizando={displayVisualizando}
-                                atendentes={listaUsuarios}
-                                caixaStatus={caixaStatus}
-                                handleDeletarComanda={handleDeletarComanda}
-                                atendente={atendente}
-                                setCaixaStatus={handleCaixaStatus}
-                                setNotification={handleNotification}
-                                socket={socket}
-                                handleSairLogin={handleSairLogin}
-                                comandaLis={comandas}
-                                mesaId={mesaAberta}
-                                handleShowModalMesa={handleShowModalMesa}
-                                handleGorjeta={handleGorjeta}
-                                handleEmitStatus={handleEmitStatus}
-                                handleComandaItens={handleComandaItens}
-                                handleDeletarItem={handleDeletarItem} />
-                            :
-                            <Comanda
-                                displayVisualizando={displayVisualizando}
-                                atendentes={listaUsuarios}
-                                caixaStatus={caixaStatus}
-                                handleDeletarComanda={handleDeletarComanda}
-                                atendente={atendente}
-                                setCaixaStatus={handleCaixaStatus}
-                                setNotification={handleNotification}
-                                socket={socket}
-                                handleSairLogin={handleSairLogin}
-                                comandaLis={comandas}
-                                mesaId={mesaAberta}
-                                handleShowModalMesa={handleShowModalMesa}
-                                handleGorjeta={handleGorjeta}
-                                handleEmitStatus={handleEmitStatus}
-                                handleComandaItens={handleComandaItens}
-                                handleDeletarItem={handleDeletarItem} />
-                        }
-                    </Modal.Body>
+                    <ComandaProvider>
+                        <Modal.Body>
+                            {caixaStatus != false ?
+                                <Comanda
+                                    displayVisualizando={displayVisualizando}
+                                    atendentes={listaUsuarios}
+                                    caixaStatus={caixaStatus}
+                                    handleDeletarComanda={handleDeletarComanda}
+                                    atendente={atendente}
+                                    setCaixaStatus={handleCaixaStatus}
+                                    setNotification={handleNotification}
+                                    socket={socket}
+                                    handleSairLogin={handleSairLogin}
+                                    comandaLis={comandas}
+                                    mesaId={mesaAberta}
+                                    handleShowModalMesa={handleShowModalMesa}
+                                    handleGorjeta={handleGorjeta}
+                                    handleEmitStatus={handleEmitStatus}
+                                    handleComandaItens={handleComandaItens}
+                                    handleDeletarItem={handleDeletarItem} />
+                                :
+                                <Comanda
+                                    displayVisualizando={displayVisualizando}
+                                    atendentes={listaUsuarios}
+                                    caixaStatus={caixaStatus}
+                                    handleDeletarComanda={handleDeletarComanda}
+                                    atendente={atendente}
+                                    setCaixaStatus={handleCaixaStatus}
+                                    setNotification={handleNotification}
+                                    socket={socket}
+                                    handleSairLogin={handleSairLogin}
+                                    comandaLis={comandas}
+                                    mesaId={mesaAberta}
+                                    handleShowModalMesa={handleShowModalMesa}
+                                    handleGorjeta={handleGorjeta}
+                                    handleEmitStatus={handleEmitStatus}
+                                    handleComandaItens={handleComandaItens}
+                                    handleDeletarItem={handleDeletarItem} />
+                            }
+                        </Modal.Body>
+                    </ComandaProvider>
                     {/*
                 <Modal.Footer>
                     <Button onClick={handleCloseModalMesa}>Fechar</Button>
@@ -543,7 +631,7 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                  */}
                 </Modal>
                 : <></>}
-            <div className={isAuthenticated === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && atendente.auth === 'dt9' ? 'senha-background' : '')}>
+            <div className={user.auth === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && user.auth === 'dt9' ? 'senha-background' : '')}>
                 <div className="mesas-list">
                     <div className='area-mesas ul'>
                         {mesas.map((mesa) => (
@@ -568,14 +656,13 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
                     </div>
                 </div>
             </div>
-            <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && atendente.auth === 'dev' ? ' senha-background' : '')}>
+            <div className={areaActive === true ? "senha-area senha-active " : 'senha-area' + (isAuthenticated && user.auth === 'dev' ? ' senha-background' : '')}>
                 <div className='status-mesa-comanda' >
-                    <div className='vertical' disabled={atendente.nivel > 1 ? false : true}>
+                    <div className='vertical' disabled={user.nivel > 1 ? false : true}>
 
                         <div>
-                             <p> <AiOutlineUser size={16} /><em>Bar Chava</em></p>
-                            <p> <AiOutlineUser size={16} /><em>{atendente.usuario}</em></p>
-                            <p><BiUserPin size={16} /> <FuncaoComponent codigo={atendente.auth} /> N{atendente.nivel}</p>
+                            <p> <AiOutlineUser size={16} /><em>{user.usuario}</em></p>
+                            <p><BiUserPin size={16} /> <FuncaoComponent codigo={user.posto} /> N{user.nivel}</p>
                             <p><FaUtensils size={16} /> {selectedOption} </p>
                             <p></p>
                         </div>
@@ -586,55 +673,18 @@ const MesasPage = ({ setNotification, handlelogin, socket }) => {
 
                 </div>
 
-                {!isAuthenticated &&
-                    <div className={areaActive === true ? 'digitosLogin' : 'digitosLogin mostrar-display-login'}>
-                        <div className='g1'>
-                            <input
-                                type="password"
-                                placeholder="Senha"
-                                value={senha || ''}
-                                disabled={atendente.auth === null ? false : true} />
-                        </div>
-                        {erroSenha && <p className="senha-erro">Senha incorreta. Tente novamente.</p>}
-                        <div className='g1'>
-                            <button onClick={handleButtonClick} value="1">1</button>
-                            <button onClick={handleButtonClick} value="2">2</button>
-                            <button onClick={handleButtonClick} value="3">3</button>
-                        </div>
-                        <div className='g1'>
-                            <button onClick={handleButtonClick} value="4">4</button>
-                            <button onClick={handleButtonClick} value="5">5</button>
-                            <button onClick={handleButtonClick} value="6">6</button>
-                        </div>
-                        <div className='g1'>
-                            <button onClick={handleButtonClick} value="7">7</button>
-                            <button onClick={handleButtonClick} value="8">8</button>
-                            <button onClick={handleButtonClick} value="9">9</button>
-                        </div>
-                        <div className='g1'>
-                            <button onClick={handleButtonClick} value="OK">OK</button>
-                            <button onClick={handleButtonClick} value="0">0</button>
-                            <button onClick={handleButtonClick} value="C">🗑️</button>
 
-                        </div>
+                <div className={user.auth === true ? 'digitosLogin' : 'digitosLogin mostrar-display-login'}>
+                    <UserLogin />
 
 
-                    </div>}
-                {atendente.usuario != null &&
+                </div>
+                {user.auth == true &&
                     <button onClick={() => handleSairLogin('true')} >SAIR</button>
                 }
-                {isAuthenticated && <BarraMenuOperacional atendente={atendente} />
+                <BarraMenuOperacional />
 
-                }
-                <select id="selecaoAreaLoja" value={selectedOption} onChange={handleChange} disabled={atendente.nivel > 1 ? false : true}>
-                    <option value="loja">Loja</option>
-                    <option value="bar">Bar</option>
-                    <option value="giral">Giral</option>
-                    <option value="externa">Externa</option>
-                    <option value="delivery">Delivery</option>
-                </select>
 
-                <button className='butaoUps' onClick={handleClickMostrar}>↑</button>
 
             </div>
 

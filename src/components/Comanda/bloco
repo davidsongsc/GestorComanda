@@ -1,0 +1,10 @@
+{
+    "loginSistema": true,
+    "loginSistemaSempreOn": true,
+    "abrirMesa": true,
+    "abrirCaixa": true,
+    "c_caixa_cancelamento": true,
+    "c_caixa_receber": true,
+    "c_caixa_desconto": true,
+    "g_caixa_remover_desconto": true
+}

@@ -3,12 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PainelLateral from '../Administrativo/PainelLateral';
 import ProdutoImagem from './ProdutoImagem';
+import { useSelector } from 'react-redux';
+import { setNotification } from '../../features/notification/notificationSlice';
 
 const nomeSistema = 'maquina';
 const token = 'abc123';
 const ipNucleo = 'http://192.168.1.50:5000';
 
-const CadastroProduto = ({ socket, atendente, setNotification }) => {
+const CadastroProduto = () => {
     const [grupo, setGrupo] = useState([]);
     const [valor, setValor] = useState('');
     const [idProduto, setIdProduto] = useState('');
@@ -19,6 +21,7 @@ const CadastroProduto = ({ socket, atendente, setNotification }) => {
     const [senha, setSenha] = useState('');
     const [staff, setStaff] = useState(0);
     const [selectedOption, setSelectedOption] = useState('');
+    const atendente = useSelector(state => state.user);
     const [opcoes, setOpcoes] = useState({
         principal: false,
         executivo: false,
@@ -79,7 +82,7 @@ const CadastroProduto = ({ socket, atendente, setNotification }) => {
     };
 
     useEffect(() => {
-        if (!atendente.auth.startsWith('g')) {
+        if (!atendente.posto.startsWith('g')) {
             handleNotification('Usuario não identificado como gestor, Acesso restringido a ' + atendente.usuario + '. Area restrita aos administradores. ');
             navigate('/'); // Redireciona para a página de erro ou qualquer outra página desejada
 

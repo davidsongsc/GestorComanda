@@ -1,0 +1,13 @@
+{
+    "abrirMesa": false,
+    "abrirCaixa": false,
+    "usarMagia": {
+        "magiaFogo": true,
+        "magiaAgua": false
+    },
+    "entrarSalaSecreta": false,
+    "interagirNpc": {
+        "npcMago": true,
+        "npcGuerreiro": false
+    }
+}

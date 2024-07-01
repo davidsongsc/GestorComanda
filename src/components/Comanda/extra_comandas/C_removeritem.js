@@ -15,7 +15,7 @@ const removerItem = (
     setCombinaG
 ) => {
 
-    if (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) {
+    if (atendente.posto.startsWith('g') && /^\d+$/.test(atendente.posto.slice(1))) {
         // Filtra as linhas que não estão selecionadas
         const novaComanda = comanda.filter((_, i) => !selectedItems.includes(i));
         // Atualiza o estado da comanda com as linhas restantes

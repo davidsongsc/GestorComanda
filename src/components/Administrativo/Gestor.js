@@ -4,21 +4,39 @@ import PropTypes from 'prop-types';
 import PieChart from '../Comanda/PieChart';
 import PainelLateral from './PainelLateral';
 import ServerStatus from '../Sistema/ServerStatus';
+import { useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
+import { setNotification } from '../../features/notification/notificationSlice';
+import { disconnectSocket, initializeSocket } from '../../features/cservidor/conexaoSlice';
+import connectarServidor from '../Api/loglogin';
 
-const Relatorios = ({ socket, atendente, setNotification }) => {
+const Relatorios = () => {
+  const dispatch = useDispatch();
   const [relatorios, setRelatorios] = useState([]);
   const [totalValores, setTotalValores] = useState(0);
   const [nomesFrequentes, setNomesFrequentes] = useState([]);
   const [relatoriosClassificados, setRelatoriosClassificados] = useState([]);
   const [dadosPieChart, setDadosPieChart] = useState([]);
+  const atendente = useSelector(state => state.user);
+  const socket = useSelector(state => state.socket.socket);
 
+  useEffect(() => {
+    // Inicializa o socket quando o componente monta
+    dispatch(initializeSocket(connectarServidor)); // Ajuste para sua URL de servidor
+
+
+    return () => {
+        // Desconecta o socket quando o componente desmonta
+        dispatch(disconnectSocket());
+    };
+}, [dispatch]);
   const navigate = useNavigate();
   const handleNotification = (text) => {
     setNotification(text);
   };
 
   useEffect(() => {
-    if (!atendente.auth.startsWith('g')) {
+    if (!atendente.posto.startsWith('g')) {
       handleNotification('Usuario não identificado como gestor, Acesso restringido a ' + atendente.usuario + '. Area restrita aos administradores. ');
       navigate('/'); // Redireciona para a página de erro ou qualquer outra página desejada
 
@@ -116,7 +134,7 @@ const Relatorios = ({ socket, atendente, setNotification }) => {
   }
   return (
     <>
-      <PainelLateral atendente={atendente} setNotification={setNotification} />
+      <PainelLateral  />
       <div className="relatorios-container">
         <div style={{
           maxHeight: '80vh',

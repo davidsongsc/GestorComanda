@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PainelLateral from '../Administrativo/PainelLateral';
+import { setNotification } from '../../features/notification/notificationSlice';
+import { useSelector } from 'react-redux';
 
-
-const CadastroCliente = ({ socket, atendente, setNotification }) => {
+const CadastroCliente = () => {
     const [usuario, setUsuario] = useState('');
     const [nome, setNome] = useState('');
     const [snome, setSNome] = useState('');
@@ -13,6 +14,9 @@ const CadastroCliente = ({ socket, atendente, setNotification }) => {
     const [cargo, setCargo] = useState('');
     const [senha, setSenha] = useState('');
     const [staff, setStaff] = useState(0);
+    const atendente = useSelector(state => state.user);
+    console.log(atendente);
+
 
 
     const handleSubmit = (event) => {
@@ -32,7 +36,7 @@ const CadastroCliente = ({ socket, atendente, setNotification }) => {
     };
 
     useEffect(() => {
-        if (!atendente.auth.startsWith('g')) {
+        if (!atendente.posto.startsWith('g')) {
             handleNotification('Usuario não identificado como gestor, Acesso restringido a ' + atendente.usuario + '. Area restrita aos administradores. ');
             navigate('/'); // Redireciona para a página de erro ou qualquer outra página desejada
 

@@ -2,9 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PainelLateral from '../Administrativo/PainelLateral';
+import { useSelector } from 'react-redux';
+import { setNotification } from '../../features/notification/notificationSlice';
 
-
-const CadastroFichaTecnica = ({ socket, atendente, setNotification }) => {
+const CadastroFichaTecnica = () => {
     const [usuario, setUsuario] = useState('');
     const [nome, setNome] = useState('');
     const [snome, setSNome] = useState('');
@@ -13,6 +14,7 @@ const CadastroFichaTecnica = ({ socket, atendente, setNotification }) => {
     const [cargo, setCargo] = useState('');
     const [senha, setSenha] = useState('');
     const [staff, setStaff] = useState(0);
+    const atendente = useSelector(state => state.user);
 
 
     const handleSubmit = (event) => {
@@ -32,7 +34,7 @@ const CadastroFichaTecnica = ({ socket, atendente, setNotification }) => {
     };
 
     useEffect(() => {
-        if (!atendente.auth.startsWith('g')) {
+        if (!atendente.posto.startsWith('g')) {
             handleNotification('Usuario não identificado como gestor, Acesso restringido a ' + atendente.usuario + '. Area restrita aos administradores. ');
             navigate('/'); // Redireciona para a página de erro ou qualquer outra página desejada
 
@@ -57,7 +59,7 @@ const CadastroFichaTecnica = ({ socket, atendente, setNotification }) => {
     }
     return (
         <>
-           <PainelLateral atendente={atendente} setNotification={setNotification} />
+            <PainelLateral atendente={atendente} setNotification={setNotification} />
             <div className="relatorios-container">
                 <div style={{
                     maxHeight: '80vh',

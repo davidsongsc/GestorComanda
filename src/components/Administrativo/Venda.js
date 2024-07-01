@@ -3,8 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PieChart from '../Comanda/PieChart';
 import PainelLateral from './PainelLateral';
+import { setNotification } from '../../features/notification/notificationSlice';
+import { useSelector } from 'react-redux';
 
-const Caixa = ({ socket, atendente, setNotification }) => {
+const Caixa = ({ socket }) => {
   const [relatorios, setRelatorios] = useState([]);
   const [totalValores, setTotalValores] = useState(0);
   const [nomesFrequentes, setNomesFrequentes] = useState([]);
@@ -14,13 +16,15 @@ const Caixa = ({ socket, atendente, setNotification }) => {
   const [dadosPieChart, setDadosPieChart] = useState([]);
   const [itens, setItens] = useState([]);
   const [inventario, setInventario] = useState([]);
+  const atendente = useSelector(state => state.user);
   const navigate = useNavigate();
+
   const handleNotification = (text) => {
     setNotification(text);
   };
 
   useEffect(() => {
-    if (!atendente.auth.startsWith('g')) {
+    if (!atendente.posto.startsWith('g')) {
       handleNotification('Usuario não identificado como gestor, Acesso restringido a ' + atendente.usuario + '. Area restrita aos administradores. ');
       navigate('/'); // Redireciona para a página de erro ou qualquer outra página desejada
 
@@ -213,7 +217,7 @@ const Caixa = ({ socket, atendente, setNotification }) => {
   }
   return (
     <>
-      <PainelLateral atendente={atendente} setNotification={setNotification} />
+      <PainelLateral  />
       <div className="relatorios-container">
         <div />
         <div className="painel-container">

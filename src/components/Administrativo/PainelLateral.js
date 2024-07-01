@@ -2,13 +2,17 @@ import React, { useState } from "react";
 import { useTransition, animated } from "react-spring";
 import { useNavigate } from "react-router-dom";
 import FuncaoComponent from "../Outros/FuncaoComponent";
+import { setNotification } from "../../features/notification/notificationSlice";
+import { useSelector } from 'react-redux';
 
-const PainelLateral = ({ atendente, setNotification }) => {
+const PainelLateral = () => {
     const [sistemaVisible, setSistemaVisible] = useState(false);
     const [relatoriosVisible, setRelatoriosVisible] = useState(false);
     const [cadastroVisible, setCadastroVisible] = useState(false);
     const [estatisticas, setEstatisticas] = useState(false);
     const [usuario, setUsuario] = useState();
+    const atendente = useSelector(state => state.user);
+
     const navigate = useNavigate();
     const handleNotification = (text) => {
         setNotification(text);

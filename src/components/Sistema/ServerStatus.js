@@ -3,8 +3,9 @@ import axios from 'axios';
 import Relogio from './Relogio';
 import io from 'socket.io-client';
 import { AiOutlineCheckCircle, AiOutlineCloseCircle, AiOutlineExclamationCircle } from 'react-icons/ai';
+import { useSelector } from 'react-redux';
 
-function ServerStatus({setNotification}) {
+function ServerStatus({ setNotification }) {
     const tamanhoIcon = 20;
     const corDesconectado = '#f2310d'
     const corConectado = '#089919'
@@ -19,13 +20,15 @@ function ServerStatus({setNotification}) {
     const [servicosStatus, setServicosStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [impressoraOpStatus, setImpressoraOpStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
     const [terminais, setTerminaisStatus] = useState(<AiOutlineCloseCircle color="red" size={tamanhoIcon} />);
+    const socket = useSelector(state => state.socket.socket);
+
     const handleNotification = (text) => {
         setNotification(text);
     };
 
     async function connectSocket() {
         return new Promise((resolve, reject) => {
-            const socket = io('http://192.168.0.50:8010');
+
             socket.on('connect', () => {
                 resolve(socket);
             });
@@ -90,13 +93,13 @@ function ServerStatus({setNotification}) {
             setSiteStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
             handleNotification('Servidor Desconectado!');
         }
-       /* try {
-            const siteResponse = await axios.get('http://192.168.0.50:8080');
-            setCardapioDigitalStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
-        } catch (error) {
-            setCardapioDigitalStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
-        }
-*/
+        /* try {
+             const siteResponse = await axios.get('http://192.168.0.50:8080');
+             setCardapioDigitalStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
+         } catch (error) {
+             setCardapioDigitalStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
+         }
+ */
         try {
             const siteResponse = await axios.get('http://192.168.0.50:3000');
             handleNotification('Modelo Conectado!');
@@ -178,8 +181,8 @@ function ServerStatus({setNotification}) {
             <table className='server-status-table'>
                 <thead>
                     <tr>
-                        <th style={{backgroundColor:'black', color:'white'}}>Hora</th>
-                        <th style={{backgroundColor:'black', color:'white'}}><Relogio /></th>
+                        <th style={{ backgroundColor: 'black', color: 'white' }}>Hora</th>
+                        <th style={{ backgroundColor: 'black', color: 'white' }}><Relogio /></th>
                     </tr>
                     <tr>
                         <th>Serviço</th>

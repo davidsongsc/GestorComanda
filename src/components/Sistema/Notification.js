@@ -1,52 +1,45 @@
+// src/components/Sistema/Notification.js
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBell } from 'react-icons/fa';
+import { useSelector, useDispatch } from 'react-redux';
+import { clearNotification, removeNotification } from '../../features/notification/notificationSlice';
 
-const Notification = ({ notification, atendente }) => {
+const Notification = () => {
+  const dispatch = useDispatch();
+
+  // Adicione valores padrão para evitar problemas com `undefined`
+  const notificationGroups = useSelector(state => state.notification?.notificationGroups || []);
+  const hasNewNotification = useSelector(state => state.notification?.hasNewNotification || false);
+  const user = useSelector(state => state.user || {});
+
   const [showNotification, setShowNotification] = useState(false);
-  const [notificationGroups, setNotificationGroups] = useState([]);
   const [showNotificationList, setShowNotificationList] = useState(false);
   const [maxvh, setMaxVh] = useState('');
-  const [hasNewNotification, setHasNewNotification] = useState(false);
-  const timeNotificacao = 4500;
   const notificationContainerRef = useRef(null);
 
   useEffect(() => {
-    if (notification) {
-      const timestamp = new Date().toLocaleString();
-      const id = new Date().getTime(); // Gerar um ID único baseado no tempo
-      const newNotification = { id, text: notification, timestamp };
-
-      setNotificationGroups(prevGroups => {
-        const lastGroup = prevGroups[prevGroups.length - 1];
-        if (lastGroup && lastGroup.length < 3) {
-          return [...prevGroups.slice(0, -1), [...lastGroup, newNotification]];
-        } else {
-          return [...prevGroups, [newNotification]];
-        }
-      });
-
+    if (notificationGroups.length > 0) {
       setShowNotification(true);
-      setHasNewNotification(true);
       setTimeout(() => {
         setShowNotification(false);
-      }, timeNotificacao);
+      }, 4500); // timeNotificacao
     }
-  }, [notification]);
+  }, [notificationGroups]);
 
   useEffect(() => {
     scrollToBottom();
   }, [notificationGroups]);
 
   const handleIconClick = () => {
-    if (atendente.usuario) {
+    if (user.usuario) {
       if (
-        (atendente.auth.startsWith('g') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.auth.startsWith('j') && /^\d+$/.test(atendente.auth.slice(1))) ||
-        (atendente.nivel > 1)
+        (user.posto.startsWith('g') && /^\d+$/.test(user.posto.slice(1))) ||
+        (user.posto.startsWith('j') && /^\d+$/.test(user.posto.slice(1))) ||
+        (user.nivel > 1)
       ) {
         setShowNotificationList(!showNotificationList);
         setShowNotification(!showNotification);
-        setHasNewNotification(false);
+        dispatch(removeNotification());
       }
     }
     scrollToBottom();
@@ -75,10 +68,10 @@ const Notification = ({ notification, atendente }) => {
         style={{ overflowY: 'auto', maxHeight: '60px' }}
         onClick={handleIconClick}
       >
-        {notificationGroups.map((group, groupIndex) => (
-          <div key={groupIndex}>
-            {group.map((notification, index) => (
-              <div className="notification-group" key={`${notification.id}`}>
+        {notificationGroups.map((group) => (
+          <div key={`group-${group.id}`}>
+            {group.map((notification) => (
+              <div className="notification-group" key={`notification-${notification.id}`}>
                 <div className="notification-item">
                   <p className="notification-text">{notification.text}</p>
                   <p className="notification-text-datahora">{notification.timestamp}</p>
@@ -88,9 +81,9 @@ const Notification = ({ notification, atendente }) => {
           </div>
         ))}
       </div>
-
+  
       <div
-        style={{ display: atendente.usuario != null ? 'flex' : 'none' }}
+        style={{ display: user.usuario != null ? 'flex' : 'none' }}
         className={`notification-icon ${hasNewNotification ? 'nova-notification' : ''}`}
         onClick={handleIconClick}
       >
