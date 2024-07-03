@@ -2,7 +2,7 @@
 API CONEXÃO SERVIDOR PYTHON
 
 */
-export const ipNucleo = 'http://192.168.1.50:5000';
+export const ipNucleo = 'https://192.168.1.50:5000';
 export const usuarioError = [{
     "titulo": "Impressora!",
     "mensagem": "Por favor Aguarde! ...",

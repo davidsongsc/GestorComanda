@@ -436,8 +436,9 @@ function Comanda({
       const valorDescontos = Math.abs(calcularDesconto().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).replace(',', '.'));
       const abc = valorDescontos + valorSelecionado;
       if (atendente.restricoes.c_caixa_desconto) {
-
+        handleNotification(`${atendente.usuario} ${abc} ${contaAtual} ${valorSelecionado}`);
         if (contaAtual >= valorSelecionado) {
+   
           if (abc <= contaAtual) {
             handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
             adicionarItem(
@@ -464,6 +465,7 @@ function Comanda({
           } else {
             handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
           }
+        
 
         }
       } else {
@@ -703,14 +705,14 @@ function Comanda({
       label: 'Receber',
       handleClick: handleMostrarFormulario,
       className: IsReceberConta(atendente) ? 'A' : 'C',
-      disabled: IsReceberConta(atendente) ? false : true,
+      disabled: !IsReceberConta(atendente),
       visualizar: IsReceberConta(atendente) ? 'block' : 'none',
     },
     {
       label: 'Desconto',
       handleClick: () => handleClick('desconto'),
       className: IsReceberConta(atendente) ? 'A' : 'C',
-      disabled: IsReceberConta(atendente) ? false : true,
+      disabled: !IsReceberConta(atendente),
       visualizar: IsReceberConta(atendente) ? 'block' : 'none',
     },
     {
@@ -866,45 +868,47 @@ function Comanda({
 
 
         {telaOptionSistema}
+        <div className='div-espe'>
+          <InventarioGrupo
+            mostrarTodos={mostrarTodos}
+            filtrarPorGrupo={filtrarPorGrupo} />
+          <div className='inventario'>
+            <ul ref={listaRef} className='i-inventario'>
+              {mostrarFormulario ? (
+                <PagamentoForm
+                  handleMostrarFormularioConfirm={handleMostrarFormularioConfirm}
+                  finalizarComanda={finalizarComanda}
+                  setNotification={setNotification}
+                  setPagamento={setPagamento}
+                  calcularValorRestante={calcularValorRestante}
+                  calcularTotal={calcularTotal}
+                  adicionarItem={adicionarItem}
 
-        <InventarioGrupo
-          mostrarTodos={mostrarTodos}
-          filtrarPorGrupo={filtrarPorGrupo} />
-        <div className='inventario'>
-          <ul ref={listaRef} className='i-inventario'>
-            {mostrarFormulario ? (
-              <PagamentoForm
-                handleMostrarFormularioConfirm={handleMostrarFormularioConfirm}
-                finalizarComanda={finalizarComanda}
-                setNotification={setNotification}
-                setPagamento={setPagamento}
-                calcularValorRestante={calcularValorRestante}
-                calcularTotal={calcularTotal}
-                adicionarItem={adicionarItem}
-
-              />
-            ) : (
-              <>
-                {itensFiltrados.map((item, index) => (
-                  <li key={index}>
-                    <div className='obs-produtos-inventario'>
-                      <text style={{ position: 'absolute', margin: '2px 16px' }}>{handleDisponibilidade(item.id, item.disponibilidade, item.qtd)}</text>
-                      <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>
-                        {item.nomeproduto}
-                      </button>
-                    </div>
-                  </li>
-                ))}
-              </>
-            )}
-          </ul>
+                />
+              ) : (
+                <>
+                  {itensFiltrados.map((item, index) => (
+                    <li key={index}>
+                      <div className='obs-produtos-inventario'>
+                        <text style={{ position: 'absolute', margin: '2px 16px' }}>{handleDisponibilidade(item.id, item.disponibilidade, item.qtd)}</text>
+                        <button className={`GPX${item.grupo}`} onClick={() => adicionarItem(item)}>
+                          {item.nomeproduto}
+                        </button>
+                      </div>
+                    </li>
+                  ))}
+                </>
+              )}
+            </ul>
+          </div>
         </div>
-        <ControleDigitosComanda handleTeclado={handleTeclado} />
+        
 
         <div className='controleb'>
           <div className='operadores'>
             {renderizarBotoes()}
           </div>
+          <ControleDigitosComanda handleTeclado={handleTeclado} />
         </div>
         <table className='tabela-fixa'>
           <thead>

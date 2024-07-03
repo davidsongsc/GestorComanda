@@ -507,9 +507,13 @@ const MesasPage = () => {
         if (user.restricoes.g_comanda_maitre) {
             handleEmitStatus(mesa.mesa, 1);
             handleNotification(mesa.atendente + ' Inicia a mesa.');
-        } else if (user.restricoes.abrirMesa && mesa.status !== 1 && mesa.status !== 4 && mesa.status !== 5 && mesa.status !== 8) {
-            handleEmitStatus(mesa.mesa, 8);
-            handleNotification(user.usuario + ' Inicia a mesa.');
+        } else if (user.restricoes.g_comanda_maitre && mesa.status != 5) {
+            handleEmitStatus(mesa.mesa, 7);
+            handleNotification(user.usuario + ' Inicia a mesa em modo titular.');
+        }
+        else if (mesa.status != 1 && mesa.status != 5 && mesa.status != 6 ) {
+            handleEmitStatus(mesa.mesa, 7);
+            handleNotification(user.usuario + ' Inicia a mesa em modo titular.');
         }
         else {
             handleNotification(mesa.atendente + ' está realizando lançamentos.');
@@ -517,24 +521,23 @@ const MesasPage = () => {
     };
 
     const handleSameAtendente = (mesa) => {
-        if (user.restricoes.c_caixa_cobrar) {
+        if (mesa.status === 3) {
             mudarTipoAlertaId(5);
             handleEmitStatus(mesa.mesa, 1);
             handleNotification(user.usuario + ' Inicia a mesa ' + mesa.mesa);
         }
-        else if (mesa.status === 1 || mesa.status === 4 || mesa.status === 5) {
-            if (user.restricoes.g_maitre_abrirMesa) {
-                mudarTipoAlertaId(3);
-                handleNotification('Aberta no terminal!');
-                handleEmitStatus(mesa.mesa, 9);
-                handleNotification(mesa.atendente + ' Inicia a mesa.');
-            } else {
-                mudarTipoAlertaId(4);
-                handleNotification('Comanda em Recebimento!');
-            }
+        else if (mesa.status !== 1 && mesa.status !== 5) {
+
+            mudarTipoAlertaId(4);
+            handleNotification('Comanda em Recebimento!');
+
+        }
+        else if (mesa.status === 5) {
+            mudarTipoAlertaId(3);
+            handleEmitStatus(mesa.mesa, 6);
+            handleNotification(mesa.atendente + ' Inicia a mesa.');
         } else {
-            mudarTipoAlertaId(0);
-            handleNotification('Acesso negado, Por favor, informe sua senha!');
+            mudarTipoAlertaId(3);
             setMostrarAlerta(true);
         }
     };

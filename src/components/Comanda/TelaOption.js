@@ -347,7 +347,7 @@ function TelaOption({
                         abSom();
                         ivAdd(item, secador);
                       }}
-                      style={{ height: "15vh", width: "15vh", margin: '5px' }}
+                      
                     >
                       {item.nomeproduto}
                     </button>

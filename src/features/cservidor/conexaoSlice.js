@@ -11,27 +11,29 @@ const socketSlice = createSlice({
   name: 'socket',
   initialState,
   reducers: {
-    initializeSocket: (state, action) => {
-      // Inicializa o socket aqui, se necessário
-      state.socket = io(action.payload);
-      state.isConnected = true; // Marca como conectado assim que inicializa
+    initializeSocket: {
+      reducer(state, action) {
+        state.socket = io(action.payload);
+        state.isConnected = true;
+      },
+      prepare(url) {
+        return { payload: url };
+      }
     },
-    connectSocket: (state) => {
-      // Conecta o socket
-      if (state.socket) {
+    connectSocket(state) {
+      if (state.socket && !state.socket.connected) {
         state.socket.connect();
         state.isConnected = true;
       }
     },
-    disconnectSocket: (state) => {
-      // Desconecta o socket e limpa a referência
+    disconnectSocket(state) {
       if (state.socket) {
         state.socket.disconnect();
         state.socket = null;
         state.isConnected = false;
       }
     },
-    setRecovered: (state, action) => {
+    setRecovered(state, action) {
       state.recovered = action.payload;
     },
   },

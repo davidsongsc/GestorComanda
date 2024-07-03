@@ -9,23 +9,27 @@
 }
 
 .inventario {
-    position: absolute;
-    left: 50%;
-    top: 0;
+    height: 76.5vh;
+    width: 47vw;
     background: darkgray;
-    width: 49%;
 }
 
 .i-inventario {
     display: flex;
-    flex-wrap: wrap;
-    height: 60.5vh;
     overflow: auto;
     position: relative;
-    left: 0;
-    top: 0px;
+    top: -1.4vh;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    align-content: flex-start;
+    height: 76vh;
+
 }
 
+.div-espe {
+    display: flex;
+    flex-direction: column;
+}
 
 @keyframes menuOptionsOut {
     0% {
@@ -89,53 +93,53 @@
 }
 
 .inventarioOp {
-    animation: menuOptions .9s cubic-bezier(0.42, 0, 0, 0.71);
+    /*animation: menuOptions .9s cubic-bezier(0.42, 0, 0, 0.71);*/
     display: flex;
     border-width: 10px;
     border-style: outset;
-    left: 96%;
+    left: 0vw;
     position: relative;
-    width: 85%;
+    width: 85vw;
     background: rgb(151, 187, 10);
-    transition: 2s;
+    transition: .9s;
 
 }
 
 .inventarioOption {
-    animation: menuOptions .9s cubic-bezier(0.42, 0, 0, 0.71);
+    /*animation: menuOptions .9s cubic-bezier(0.42, 0, 0, 0.71);*/
     display: flex;
     border-width: 10px;
     border-style: outset;
-    left: 96%;
+    left: 0vw;
     position: relative;
-    width: 85%;
+    width: 79vw;
     background: rgb(254, 254, 255);
-    transition: 2s;
+    transition: .8s;
 }
 
 .inventarioOp.out,
 .inventarioOption.out {
-    animation: menuOptionsOut 0.9s cubic-bezier(0.42, 0, 0, 0.71);
-    transition-delay: 1.2s;
+    /*animation: menuOptionsOut 0.9s cubic-bezier(0.42, 0, 0, 0.71);*/
+    transition-delay: 0.1s;
 }
 
 .inventarioOption ul {
     display: flex;
-    flex-wrap: wrap;
-    height: 86vh;
-    width: 900px;
+    height: 76vh;
+    width: 80vw;
     overflow-y: auto;
     position: relative;
-    justify-content: space-around;
-    align-content: space-around;
-    align-items: center;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
 }
 
 .inventarioOp ul {
     display: flex;
     flex-wrap: wrap;
-    height: 86vh;
-    width: 900px;
+    height: 76vh;
+    width: 80vw;
     overflow-y: auto;
     position: relative;
     justify-content: space-around;
@@ -153,37 +157,40 @@
 
 .inventario li button {
     height: 100px;
-    width: 160px;
+    width: 151px;
 }
 
 .inventario ul button {
-    margin: 0 9px;
+    margin: 6px 11px;
     font-size: 16px;
     text-transform: uppercase;
     box-shadow: 1px 1px 1px black;
 }
 
 .grupo-produto {
+    width: auto;
     background: brown;
-    padding: 5px;
+    /* padding: 5px; */
     border-width: 3px;
-    position: absolute;
+    /* position: absolute; */
     border-style: none;
-    width: 280px;
-    top: 2px;
-    left: 30%;
-    max-height: 60vh;
+    /* width: 280px; */
+    /* top: 2px; */
+    /* left: 30%; */
+    /* max-height: 60vh; */
     overflow-y: scroll;
- 
+
 }
 
 
 .grupo-produto button {
     margin: 5px 3px;
-    width: 118px;
+    width: 109px;
     height: 50px;
-    font-size: 15px;
+    font-size: 13px;
+    text-shadow: 1px 1px 2px black;
 }
+
 
 .GPX0 {
     background-image: linear-gradient(rgb(0, 0, 0), rgb(0, 0, 0), rgb(0, 0, 0));
@@ -384,10 +391,12 @@ em {
     position: relative;
 
 }
-.vertical p{
+
+.vertical p {
     text-transform: uppercase;
     font-size: 12px;
 }
+
 .A,
 .B,
 .C,
@@ -466,8 +475,8 @@ button {
 
 .inventarioOp button,
 .inventarioOption button {
-    width: 15vh;
-    height: 15vh;
+    width: 10vh;
+    height: 10vh;
 }
 
 .inventarioOp button:hover,
@@ -510,22 +519,16 @@ input[type="submit"]:hover {
 }
 
 .controlea {
-    position: absolute;
-    top: 62vh;
     background: brown;
-    left: 30%;
+
     height: 205px;
-    width: 13%;
+
     padding: 9px;
 }
 
 .controleb {
-    position: absolute;
-    top: 69vh;
     background: brown;
-    left: 50.5vw;
-    height: 18vh;
-    width: 49vw;
+    width: 40vw;
     border-width: 2px;
     border-style: double;
 }
@@ -603,18 +606,20 @@ option {
 }
 
 .comandar {
-    position: relative;
+    position: fixed;
     background: brown;
-    height: 100vh;
+    height: 98vh;
     width: 100vw;
-    top: 0.5vh;
+    top: 0vh;
     left: 0;
     z-index: 1;
+    display: flex;
 }
 
 .cm-comanda-pn {
     height: 89%;
-    width: 30%;
+
+    width: 100%;
     overflow: auto;
     box-shadow: 1px 3px;
     background: beige;
@@ -623,8 +628,8 @@ option {
 .operadores {
     display: flex;
     flex-wrap: wrap;
-    
-    
+
+
 }
 
 .tabela-fixa {
@@ -656,61 +661,53 @@ option {
 
 @media only screen and (max-width: 1070px) {
     .cm-comanda-pn {
-        width: 82%;
-        position: fixed;
-        height: 50%;
-        right: 4px;
+        width: auto;
+        position: relative;
+        height: 30vh;
+
         z-index: 1;
     }
 
     .grupo-produto {
-        width: 80%;
-        left: 17%;
-        top: 51vh;
-        height: 100px;
-        z-index: 1;
+        position: relative;
+        left: 4vw;
+        width: 96%;
     }
 
     .inventario {
-        width: 90%;
-        left: 43px;
-        height: 26%;
-        top: 66.6%;
+        position: relative;
+        height: 20vh;
+        width: 100%;
     }
 
     .i-inventario {
         height: 93%;
         justify-content: center;
         align-items: flex-start;
- 
+        left: -8vw;
+
     }
 
-    .inventario li button {
-        height: 38px;
-        width: 77px;
-        font-size: 10px;
-    }
-
-    .inventario li button {
-        height: 38px;
-        width: 75px;
-        font-size: 6.5px;
-        margin-bottom: 5px;
-    }
-    .controleb {
-        position: fixed;
-        top: 0;
-        background: brown;
-        left: 0;
-        height: 91.5vh;
-        width: 70px;
-        border-width: 2px;
-        border-style: double;
+    .operadores {
+        height: 7.8vh;
         overflow-y: auto;
     }
 
+    .inventario li button {
+        height: 46px;
+        width: 102px;
+        font-size: 10px;
+        margin-bottom: 5px;
+    }
+
+    .controleb {
+        position: relative;
+        width: auto;
+
+    }
+
     .tabela-fixa {
-        position: fixed;
+        position: relative;
         bottom: 0px;
         left: 0px;
         height: 5vh;
@@ -725,7 +722,7 @@ option {
 
     .grupo-produto button {
         margin: 5px 3px;
-        width: 85px;
+        width: 96px;
         height: 25px;
         font-size: 9px;
     }
@@ -733,11 +730,22 @@ option {
     .controlea {
         display: none;
     }
+
     .tabela-fixa .linha-table {
         color: white;
         font-size: 18px;
     }
-    .desconto-table, .gorjeta-table, .pendente-table{
+
+    .desconto-table,
+    .gorjeta-table,
+    .pendente-table {
         display: none;
+    }
+
+    .comandar {
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
     }
 }
