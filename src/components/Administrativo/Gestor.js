@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import PieChart from '../Comanda/PieChart';
 import PainelLateral from './PainelLateral';
-import ServerStatus from '../Sistema/ServerStatus';
 import { useSelector } from 'react-redux';
 import { useDispatch } from 'react-redux';
 import { setNotification } from '../../features/notification/notificationSlice';
@@ -19,6 +18,8 @@ const Relatorios = () => {
   const [dadosPieChart, setDadosPieChart] = useState([]);
   const atendente = useSelector(state => state.user);
   const socket = useSelector(state => state.socket.socket);
+  const showGestor = useSelector(state => state.mostrarGestor.showGestor);
+
 
   useEffect(() => {
     // Inicializa o socket quando o componente monta
@@ -26,10 +27,10 @@ const Relatorios = () => {
 
 
     return () => {
-        // Desconecta o socket quando o componente desmonta
-        dispatch(disconnectSocket());
+      // Desconecta o socket quando o componente desmonta
+      dispatch(disconnectSocket());
     };
-}, [dispatch]);
+  }, [dispatch]);
   const navigate = useNavigate();
   const handleNotification = (text) => {
     setNotification(text);
@@ -134,14 +135,15 @@ const Relatorios = () => {
   }
   return (
     <>
-      <PainelLateral  />
-      <div className="relatorios-container">
+
+      <PainelLateral />
+      <div className="relatorios-container" style={{display: showGestor ? 'flex': 'none'}}>
         <div style={{
           maxHeight: '80vh',
           overflowY: 'auto',
         }} />
         <div className="painel-container">
-          
+
           <h1>Informação</h1>
           <div style={{
             maxHeight: '39vh',
@@ -172,16 +174,15 @@ const Relatorios = () => {
                 ))}
               </tbody>
             </table>
-            
+
           </div>
-          <h1>Dados Sistema</h1>
-          <ServerStatus setNotification={handleNotification} />
+
           <h1>Cancelamentos</h1>
           <PieChart dados={dadosPieChart} />
         </div>
 
         <div className="painel-dados">
-    
+
           <h1>Dados</h1>
           <div style={{
             maxHeight: '9 0vh',

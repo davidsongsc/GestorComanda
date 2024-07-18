@@ -20,6 +20,8 @@ import ComandaProvider from '../features/cservidor/comandaProvedor';
 import { updateListaUsuarios } from '../store/actions';
 import { disconnectSocket, initializeSocket } from '../features/cservidor/conexaoSlice';
 import connectarServidor from './Api/loglogin';
+import Relatorios from './Administrativo/Gestor';
+import { mostrarGestor } from '../features/cservidor/gestorSlice';
 
 // ALERTA DE ERRO USUARIO NÃO AUTENTICADO
 
@@ -49,18 +51,22 @@ const MesasPage = () => {
     const deviceName = navigator.userAgent;
     const platform = navigator.platform;
     const userLanguage = navigator.language;
+    const showGestor = useSelector(state => state.mostrarGestor.showGestor);
+    const handleShowGestor = () => {
+        dispatch(mostrarGestor());
+    };
 
     useEffect(() => {
         // Inicializa o socket quando o componente monta
         dispatch(initializeSocket(connectarServidor)); // Ajuste para sua URL de servidor
-        console.log(platform);
-        console.log(`Idioma do usuário: ${userLanguage}`);
-        const isOnline = navigator.onLine;
-        console.log(`O usuário está online? ${isOnline}`);
-        console.log(deviceName);
-        const isCookieEnabled = navigator.cookieEnabled;
-        console.log(`Cookies estão habilitados? ${isCookieEnabled}`);
-        if ("geolocation" in navigator) {
+        //console.log(platform);
+        //console.log(`Idioma do usuário: ${userLanguage}`);
+        //const isOnline = navigator.onLine;
+        //console.log(`O usuário está online? ${isOnline}`);
+        //console.log(deviceName);
+        //const isCookieEnabled = navigator.cookieEnabled;
+        //console.log(`Cookies estão habilitados? ${isCookieEnabled}`);
+        /*if ("geolocation" in navigator) {
             document.cookie = "username=John Doe; expires=Thu, 18 Dec 2023 12:00:00 UTC; path=/";
             const cookies = document.cookie;
             console.log(cookies);
@@ -73,6 +79,7 @@ const MesasPage = () => {
             handleNotification("Geolocalização não suportada pelo navegador.");
             console.log("Geolocalização não suportada pelo navegador.");
         }
+            */
         return () => {
             // Desconecta o socket quando o componente desmonta
             dispatch(disconnectSocket());
@@ -214,15 +221,12 @@ const MesasPage = () => {
         }))
     );
 
-    // eslint-disable-next-line no-unused-vars
-    const [erroSenha, setErroSenha] = useState(false);
     let timeoutId;
 
     const handleNotification = (text) => {
         dispatch(setNotification({ text: text }));
     };
     useEffect(() => {
-        // Verificar se há um usuário salvo no localStorage ao iniciar o componente
         const usuario = localStorage.getItem('usuario');
         if (usuario) {
             const userData = JSON.parse(usuario);
@@ -236,7 +240,6 @@ const MesasPage = () => {
     }, [dispatch]);
 
     useEffect(() => {
-        // Recuperar os dados do usuário do localStorage
         const usuario = localStorage.getItem('usuario');
         if (usuario) {
             const data = JSON.parse(usuario);
@@ -254,15 +257,6 @@ const MesasPage = () => {
     const handleCloseModalMesa = () => {
         setShowModalMesa(false);
     }
-
-    const fetchComandas = () => {
-        if (socket && socket.emit) {
-            socket.emit('get_comandas', socket.id);
-        } else {
-            handleNotification('Socket não está inicializado corretamente.');
-        }
-
-    };
 
     useEffect(() => {
         const fetchComandas = async () => {
@@ -397,6 +391,8 @@ const MesasPage = () => {
 
         if (socket && socket.emit) {
             socket.emit('deletar_status_comanda_nova', socket.id, data);
+            socket.emit('notificacoes', socket.id, 'TESTE 123');
+
         } else {
             handleNotification('Não é possivel deletar o status da comanda, falha na conexão com servidor.');
         }
@@ -454,29 +450,39 @@ const MesasPage = () => {
 
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
-
+        console.log(mesa)
         if (!user.restricoes.abrirMesa) {
             handleNotification("Acesso não autorizado | mesa: " + mesa.mesa);
             return;
         }
+        else if(mesa.status === 9 && !user.restricoes.g_maitre_abrirMesa)
+        {
+            handleNotification("BLOQUEIO | M-" + mesa.mesa);
 
-        if (mesa.conta) {
-            handleWithConta(mesa);
-        } else {
-            handleWithoutConta(idMesa, mesa);
         }
+        else {
+            if (mesa.conta) {
+                handleWithConta(mesa);
+            } else {
+                handleWithoutConta(idMesa, mesa);
+            }
+        }
+
+
     };
 
     const handleWithConta = (mesa) => {
         if (!user.usuario) {
-            handleWithoutUser();
+            handleUsuarioAusente();
         } else if (mesa.status === 5 && (user.restricoes.c_caixa_cobrar || user.restricoes.g_comanda_maitre)) {
             handleOperacaoCaixa(mesa);
         } else if (mesa.atendente !== user.usuario) {
             handleDifferentAtendente(mesa);
-        } else {
+        } else if (mesa.atendente === user.usuario) {
             handleSameAtendente(mesa);
         }
+
+
     };
 
     const handleWithoutConta = (idMesa, mesa) => {
@@ -493,7 +499,7 @@ const MesasPage = () => {
         setMostrarAlerta(true);
     };
 
-    const handleWithoutUser = () => {
+    const handleUsuarioAusente = () => {
         mudarTipoAlertaId(1);
         handleNotification('Usuário não encontrado!');
     };
@@ -502,16 +508,22 @@ const MesasPage = () => {
         handleEmitStatus(mesa.mesa, 4);
         handleNotification('Operação de Caixa: ' + mesa.mesa);
     };
-
-    const handleDifferentAtendente = (mesa) => {
+    const handleMaitreAcessoComanda = (mesa) => {
         if (user.restricoes.g_comanda_maitre) {
             handleEmitStatus(mesa.mesa, 1);
-            handleNotification(mesa.atendente + ' Inicia a mesa.');
+            handleNotification(user.usuario + ' Inicia a mesa de ' + mesa.atendente);
+        }
+    }
+    const handleDifferentAtendente = (mesa) => {
+        if (user.restricoes.g_atendenteDiferenteAbrirMesa) {
+            handleEmitStatus(mesa.mesa, 1);
+            handleNotification(user.usuario + ' Inicia a mesa de ' + mesa.atendente);
+
         } else if (user.restricoes.g_comanda_maitre && mesa.status != 5) {
             handleEmitStatus(mesa.mesa, 7);
             handleNotification(user.usuario + ' Inicia a mesa em modo titular.');
         }
-        else if (mesa.status != 1 && mesa.status != 5 && mesa.status != 6 ) {
+        else if (mesa.status != 1 && mesa.status != 5 && mesa.status != 6) {
             handleEmitStatus(mesa.mesa, 7);
             handleNotification(user.usuario + ' Inicia a mesa em modo titular.');
         }
@@ -525,20 +537,16 @@ const MesasPage = () => {
             mudarTipoAlertaId(5);
             handleEmitStatus(mesa.mesa, 1);
             handleNotification(user.usuario + ' Inicia a mesa ' + mesa.mesa);
-        }
-        else if (mesa.status !== 1 && mesa.status !== 5) {
-
-            mudarTipoAlertaId(4);
-            handleNotification('Comanda em Recebimento!');
-
-        }
-        else if (mesa.status === 5) {
+        } else if (mesa.status === 5) {
             mudarTipoAlertaId(3);
             handleEmitStatus(mesa.mesa, 6);
             handleNotification(mesa.atendente + ' Inicia a mesa.');
-        } else {
+        }
+
+        else {
             mudarTipoAlertaId(3);
             setMostrarAlerta(true);
+            handleMaitreAcessoComanda(mesa);
         }
     };
 
@@ -572,9 +580,14 @@ const MesasPage = () => {
 
 
     const fazerPedido = () => { };
-
+    //showGestor
     return (
         <div className='comandeira-comanda'>
+
+
+            <div className={showGestor ? 'gestor-comandas-relatorio' : ''}>
+                {user && user.restricoes && user.restricoes.g_comanda_maitre ? <Relatorios /> : null}
+            </div>
             {showModalMesa != false ?
                 <Modal show={showModalMesa} onHide={handleCloseModalMesa}
                     style={{
@@ -627,11 +640,7 @@ const MesasPage = () => {
                             }
                         </Modal.Body>
                     </ComandaProvider>
-                    {/*
-                <Modal.Footer>
-                    <Button onClick={handleCloseModalMesa}>Fechar</Button>
-                </Modal.Footer>
-                 */}
+
                 </Modal>
                 : <></>}
             <div className={user.auth === true ? "mesas-page senha-background" : 'mesas-page' + (isAuthenticated && user.auth === 'dt9' ? 'senha-background' : '')}>
@@ -686,7 +695,7 @@ const MesasPage = () => {
                     <button onClick={() => handleSairLogin('true')} >SAIR</button>
                 }
                 <BarraMenuOperacional />
-
+                <button onClick={handleShowGestor} >Gestor</button>
 
 
             </div>

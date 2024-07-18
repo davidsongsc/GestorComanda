@@ -28,19 +28,18 @@ function ServerStatus({ setNotification }) {
 
     async function connectSocket() {
         return new Promise((resolve, reject) => {
-
-            socket.on('connect', () => {
+            if (socket){
                 resolve(socket);
-            });
-            socket.on('connect_error', (error) => {
-                reject(error);
-            });
+            }
+            else {
+                reject('Erro ao conectar');
+            }
         });
     }
 
     async function connectPrinter() {
         return new Promise((resolve, reject) => {
-            const printer = io('http://192.168.0.50:8100');
+            const printer = io('https://192.168.0.50:8100');
             printer.on('connect', () => {
                 resolve(printer);
             });
@@ -52,7 +51,7 @@ function ServerStatus({ setNotification }) {
 
     async function connectEstoque() {
         return new Promise((resolve, reject) => {
-            const estoque = io('http://192.168.0.50:8200');
+            const estoque = io('https://192.168.0.50:8200');
             estoque.on('connect', () => {
                 resolve(estoque);
             });
@@ -64,7 +63,7 @@ function ServerStatus({ setNotification }) {
 
     async function connectTerminais() {
         return new Promise((resolve, reject) => {
-            const terminais = io('http://192.168.0.50:8300');
+            const terminais = io('https://192.168.0.50:8300');
             terminais.on('connect', () => {
                 resolve(terminais);
             });
@@ -75,7 +74,7 @@ function ServerStatus({ setNotification }) {
     }
     async function connectCozinha() {
         return new Promise((resolve, reject) => {
-            const cozinha = io('http://192.168.0.50:8400');
+            const cozinha = io('https://192.168.0.50:8400');
             cozinha.on('connect', () => {
                 resolve(cozinha);
             });
@@ -86,7 +85,7 @@ function ServerStatus({ setNotification }) {
     }
     async function checkServerStatus() {
         try {
-            const siteResponse = await axios.get('http://192.168.0.50:5000');
+            const siteResponse = await axios.get('https://192.168.1.50:5000');
             setSiteStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
             handleNotification('Servidor Conectado!');
         } catch (error) {
@@ -94,14 +93,14 @@ function ServerStatus({ setNotification }) {
             handleNotification('Servidor Desconectado!');
         }
         /* try {
-             const siteResponse = await axios.get('http://192.168.0.50:8080');
+             const siteResponse = await axios.get('https://192.168.0.50:8080');
              setCardapioDigitalStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
          } catch (error) {
              setCardapioDigitalStatus(<AiOutlineExclamationCircle color={corDesconectado} size={tamanhoIcon} />);
          }
  */
         try {
-            const siteResponse = await axios.get('http://192.168.0.50:3000');
+            const siteResponse = await axios.get('https://192.168.1.50:3000');
             handleNotification('Modelo Conectado!');
             setServerTesteStatus(<AiOutlineCheckCircle color={corConectado} size={tamanhoIcon} />);
         } catch (error) {

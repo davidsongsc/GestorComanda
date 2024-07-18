@@ -6,6 +6,7 @@ import Notification from './components/Sistema/Notification';
 
 import { carregarRestricoes } from './store/actions';
 import { useDispatch, useSelector } from 'react-redux';
+import RestricoesComponente from './components/Outros/RestricoesComponente';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -24,6 +25,7 @@ const App = () => {
       <Notification />
       <Routes>
         <Route path="/" element={<MesasPage />} />
+        <Route path="/colaborador" element={<RestricoesComponente />} />
       </Routes>
     </BrowserRouter>
   );

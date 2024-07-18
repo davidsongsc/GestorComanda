@@ -1,17 +1,14 @@
-import './comanda.css';
 import React, { useState, useRef, useEffect } from 'react';
-import InventarioGrupo from './InventarioGrupo';
+import { ipNucleo, usuarioError, TX, limiteOptionsCardapio, nome, token, options } from '../principal/ExtensoesApi';
+import { setNotification } from '../../features/notification/notificationSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import ControleDigitosComanda from '../PagePainel/ControleDigitosComanda';
 import AlertaPersonalizado from '../Sistema/AlertaPersonalizado';
+import removerItem from './extra_comandas/C_removeritem';
+import InventarioGrupo from './InventarioGrupo';
 import PagamentoForm from './Pagamento';
 import TelaOption from './TelaOption';
-import { useDispatch } from 'react-redux';
-
-import ControleDigitosComanda from '../PagePainel/ControleDigitosComanda';
-import { ipNucleo, usuarioError, TX, limiteOptionsCardapio, nome, token, options } from '../principal/ExtensoesApi';
-import removerItem from './extra_comandas/C_removeritem';
-import { useSelector } from 'react-redux';
-import { setNotification } from '../../features/notification/notificationSlice';
-
+import './comanda.css';
 
 function Comanda({
   displayVisualizando,
@@ -25,19 +22,16 @@ function Comanda({
   handleComandaItens,
   handleDeletarItem }) {
   const dispatch = useDispatch();
+  const listaRef = useRef(null);
+  const tbodyRef = useRef(null);
   const atendente = useSelector(state => state.user);
   const atendentes = useSelector(state => state.atendentes.listaUsuarios);
-
-  // eslint-disable-next-line no-unused-vars
   const [tipoAlertaId, setTipoAlertaId] = useState(0);
   const [showModal, setShowModal] = useState(false);
-  // eslint-disable-next-line no-unused-vars
   const [scrollTop, setScrollTop] = useState(0);
   const [grupoSelecionado, setGrupoSelecionado] = useState(6615);
-  const listaRef = useRef(null);
   const [itens, setItens] = useState([]);
   const [mesa, setMesa] = useState();
-  // eslint-disable-next-line no-unused-vars
   const [grupo, setGrupo] = useState([]);
   const [usuario, setUsuario] = useState([]);
   const [areaActive, setActive] = useState(false);
@@ -63,14 +57,13 @@ function Comanda({
   const [mudarAreaComanda, setMudarArea] = useState(false);
   const [botaoMudarAreaComanda, setBotaoMudarArea] = useState(true);
 
-  const tbodyRef = useRef(null);
-  //ADICIONAR SOCKET PARA MUDAR ATENDENTE NO BANCO DE DADOS
   const handleMudarAtendimento = () => {
     setUsuario(selectedValueUser);
     setMudarAtendimento(!mudarAtendenteComanda);
     setBotaoMudarAtendimento(!botaoMudarAtendenteComanda);
 
   }
+
   const handleNotification = (text) => {
     dispatch(setNotification({ text: text }));
   };
@@ -375,12 +368,7 @@ function Comanda({
 
     if (id === 'O.K.') {
       handleFecharComanda();
-      if (displayVisualizando === 4) {
-        handleEmitStatus(mesa, 2);
-      } else {
-        handleEmitStatus(mesa, 3);
-      }
-
+      handleEmitStatus(mesa, 3);
       handleUpInsert();
 
       if (atendente.restricoes.loginSistemaSempreOn) {
@@ -406,12 +394,21 @@ function Comanda({
       handleSairLogin();
 
 
+    } else if (id === 'bloquear') {
+      handleFecharComanda();
+      handleEmitStatus(mesa, 9);
+      handleSairLogin();
+
+
     } else if (id === 'cancelar') {
       if (atendente.restricoes.c_caixa_cancelamento) {
         handleDelComanda(mesaId, calcularConta().toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }));
         handleEmitStatus(mesa, 3);
         handleNotification('Comanda encerrada');
-        window.location.reload();
+        setTimeout(() => {
+          //window.location.reload();
+        }, 1500);
+
       } else {
         handleNotification('Usuario ' + atendente.usuario + ' não pode finalizar a comanda!');
       }
@@ -438,9 +435,9 @@ function Comanda({
       if (atendente.restricoes.c_caixa_desconto) {
         handleNotification(`${atendente.usuario} ${abc} ${contaAtual} ${valorSelecionado}`);
         if (contaAtual >= valorSelecionado) {
-   
+
           if (abc <= contaAtual) {
-            handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
+
             adicionarItem(
               {
                 avaliacao: 0,
@@ -462,10 +459,11 @@ function Comanda({
               },
               'M'
             );
+            handleNotification(`${atendente.usuario} concedeu desconto de R$ ${valorSelecionado} para comanda ${mesaId}`);
           } else {
             handleNotification(`${atendente.usuario} a conta não possui valores minimos para desconto.`);
           }
-        
+
 
         }
       } else {
@@ -494,7 +492,7 @@ function Comanda({
             setCombinaG
           );
 
-          handleNotification('Item removido da comanda!');
+          handleNotification('Item alterado da comanda!');
         }
 
       } else {
@@ -699,33 +697,33 @@ function Comanda({
 
   const buttons = [
     { label: 'O.K.', handleClick: () => handleClick('O.K.'), className: 'H' },
-    { label: 'IMPRIMIR', handleClick: () => handleClick('conta'), className: 'A', disabled: IsImprimirValido(atendente) ? false : true, visualizar: IsImprimirValido(atendente) ? 'block' : 'none' },
+    { label: 'IMPRIMIR', handleClick: () => handleClick('conta'), className: 'D', disabled: IsImprimirValido(atendente) ? false : true, visualizar: IsImprimirValido(atendente) ? 'block' : 'none' },
 
     {
       label: 'Receber',
       handleClick: handleMostrarFormulario,
-      className: IsReceberConta(atendente) ? 'A' : 'C',
+      className: IsReceberConta(atendente) ? 'D' : 'C',
       disabled: !IsReceberConta(atendente),
       visualizar: IsReceberConta(atendente) ? 'block' : 'none',
     },
     {
       label: 'Desconto',
       handleClick: () => handleClick('desconto'),
-      className: IsReceberConta(atendente) ? 'A' : 'C',
+      className: IsReceberConta(atendente) ? 'B' : 'C',
       disabled: !IsReceberConta(atendente),
       visualizar: IsReceberConta(atendente) ? 'block' : 'none',
     },
     {
       label: 'CANCELAR',
       handleClick: () => handleClick('cancelar'),
-      className: isCancelarValido(atendente) ? 'A' : 'C',
+      className: isCancelarValido(atendente) ? 'L' : 'C',
       disabled: isCancelarValido(atendente) ? false : true,
       visualizar: isCancelarValido(atendente) ? 'block' : 'none',
     },
     {
       label: 'CAIXA',
       handleClick: handleMostrarCaixaStatus,
-      className: isGestorValido(atendente) ? 'A' : 'C',
+      className: isGestorValido(atendente) ? 'CX' : 'C',
       disabled: isCaixaValido(atendente) ? false : true,
       visualizar: isGerenteValido(atendente) ? 'block' : 'none',
     },
@@ -757,6 +755,14 @@ function Comanda({
     { label: 'Dividir Conta', handleClick: () => handleClick('fechar'), className: 'F', disabled: isDividirMesaValido(atendente) ? true : false, visualizar: isDividirMesaValido(atendente) ? 'block' : 'none' },
     { label: 'mudar area', handleClick: () => handleMudarArea(), className: mudarAreaComanda ? 'A' : 'C', disabled: isTransferirAreaComandaValido(atendente) ? false : true, visualizar: isTransferirAreaComandaValido(atendente) ? 'block' : 'none' },
     { label: 'mudar atendente', handleClick: () => handleMudarAtendimento(), className: botaoMudarAtendenteComanda ? 'A' : 'C', disabled: isTransferirAtendenteValido(atendente) ? false : true, visualizar: isTransferirAtendenteValido(atendente) ? 'block' : 'none' },
+
+    {
+      label: 'BLOQUEAR',
+      handleClick: () => handleClick('bloquear'),
+      className: isCancelarValido(atendente) ? 'D' : 'C',
+      disabled: isCancelarValido(atendente) ? false : true,
+      visualizar: isCancelarValido(atendente) ? 'block' : 'none',
+    }
   ];
 
   function renderizarBotoes() {
@@ -879,7 +885,7 @@ function Comanda({
                   handleMostrarFormularioConfirm={handleMostrarFormularioConfirm}
                   finalizarComanda={finalizarComanda}
                   setNotification={setNotification}
-                  setPagamento={setPagamento}
+                  setPagamento={handleNotification}
                   calcularValorRestante={calcularValorRestante}
                   calcularTotal={calcularTotal}
                   adicionarItem={adicionarItem}
@@ -902,7 +908,7 @@ function Comanda({
             </ul>
           </div>
         </div>
-        
+
 
         <div className='controleb'>
           <div className='operadores'>

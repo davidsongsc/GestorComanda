@@ -3,16 +3,24 @@ import { useTransition, animated } from "react-spring";
 import { useNavigate } from "react-router-dom";
 import FuncaoComponent from "../Outros/FuncaoComponent";
 import { setNotification } from "../../features/notification/notificationSlice";
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { mostrarGestor } from "../../features/cservidor/gestorSlice";
 
 const PainelLateral = () => {
+    const dispatch = useDispatch();
+
     const [sistemaVisible, setSistemaVisible] = useState(false);
     const [relatoriosVisible, setRelatoriosVisible] = useState(false);
     const [cadastroVisible, setCadastroVisible] = useState(false);
     const [estatisticas, setEstatisticas] = useState(false);
+    const [restricoes, setRestricoes] = useState(false);
     const [usuario, setUsuario] = useState();
     const atendente = useSelector(state => state.user);
+    const showGestor = useSelector(state => state.mostrarGestor.showGestor);
 
+    const handleShowGestor = () => {
+        dispatch(mostrarGestor());
+    };
     const navigate = useNavigate();
     const handleNotification = (text) => {
         setNotification(text);
@@ -42,6 +50,11 @@ const PainelLateral = () => {
         leave: { opacity: 0, transform: "translateY(-20px)" },
     });
 
+    const restricoesSistemaTransitions = useTransition(restricoes, {
+        from: { opacity: 0, transform: "translateY(-20px)" },
+        enter: { opacity: 1, transform: "translateY(0px)" },
+        leave: { opacity: 0, transform: "translateY(-20px)" },
+    });
     const handleSistemaClick = () => {
         setSistemaVisible(!sistemaVisible);
     };
@@ -56,6 +69,11 @@ const PainelLateral = () => {
     const handleEstatisticas = () => {
         setEstatisticas(!estatisticas);
     };
+
+    const handleRestricoes = () => {
+        setRestricoes(!restricoes);
+    };
+
 
     const navigateTo = (route) => {
         navigate(route);
@@ -74,7 +92,7 @@ const PainelLateral = () => {
     }
     return (
         <>
-            <header style={{ display: 'flex', position: 'fixed', top: 0, width: '100%', background: 'white', zIndex: 965, height: '45px' }}>
+            <header style={{ display: showGestor ? 'flex' : 'none', position: 'fixed', top: 0, width: '100%', background: 'white', zIndex: 965, height: '45px' }}>
                 <nav style={{ width: '100%', padding: '5px 0px', display: 'flex', justifyContent: 'space-evenly' }}>
                     <h1 style={{ margin: 0, textAlign: 'center' }}>Painel</h1>
                     <ul style={{ margin: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', listStyle: 'none', height: '46px' }}>
@@ -104,6 +122,7 @@ const PainelLateral = () => {
                         </li>
 
                         <li style={{ marginRight: '10px' }}>
+                            <button onClick={handleShowGestor}>Fechar</button>
                             <button onClick={handleSairLogin}>Sair</button>
                         </li>
                     </ul>
@@ -116,6 +135,7 @@ const PainelLateral = () => {
                 maxHeight: '100%',
                 overflowY: 'auto',
                 width: '160px',
+                display: showGestor ? 'block' : 'none',
             }} className="botoes-container">
                 <div style={{ display: 'flex', alignItems: 'left' }}>
 
@@ -207,6 +227,15 @@ const PainelLateral = () => {
                             </animated.div>
                         ) : null
                     )}
+                </div>
+                <div style={{ display: 'flex', alignItems: 'left' }}>
+
+                    <animated.button
+                        style={{ restricoesSistemaTransitions, background: restricoes ? 'green' : '' }}
+                        onClick={handleRestricoes}
+                    >
+                        Restricoes
+                    </animated.button>
                 </div>
             </div>
         </>

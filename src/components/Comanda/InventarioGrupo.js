@@ -5,7 +5,7 @@ const nome = 'maquina';
 const token = 'abc123';
 
 
-function InventarioGrupo({ filtrarPorGrupo, mostrarTodos, id }) {
+function InventarioGrupo({ filtrarPorGrupo, id }) {
     const [grupo, setGrupo] = useState([]);
 
     //console.log(filtrarPorGrupo)

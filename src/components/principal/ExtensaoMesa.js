@@ -31,8 +31,8 @@ export const usuarioError = [{
 {
     "titulo": "Erro! Login",
     "mensagem": "Atendimento em andamento!",
-    "btn1": "OK",
-    "fnb1": "",
+    "btn1": "ENTRAR",
+    "fnb1": "cmentrar",
     "btn2": "Fechar",
     "fnb2": ""
 

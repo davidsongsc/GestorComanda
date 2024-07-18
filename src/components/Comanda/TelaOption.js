@@ -335,7 +335,7 @@ function TelaOption({
         {contagem === limite - 2 ? (
           <div style={{ position: "absolute", display: "block", width: '40%' }}>
             <div className="inventarioOp">
-              <h1>{descricaoProduto}</h1> {/* Exibindo a descrição do produto selecionado */}
+              <h1>{descricaoProduto}</h1> 
               <ul ref={listaRef}>
 
                 {options.map((item, i) => (

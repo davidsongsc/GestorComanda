@@ -654,7 +654,17 @@ html{
   height: 75px;
   opacity: 0.8;
 }
+.gestor-comandas-relatorio{
+  position: absolute;
+  width: 100vw;
+  left: 0;
+  background: gainsboro;
+  z-index: 99;
+}
 
+.painel-vendas{
+  max-height: 85vh;
+}
 @keyframes rotateAnimation {
   0% {
     transform: rotate(5deg);
@@ -698,6 +708,7 @@ html{
   width: 100%;
   display: flex;
   justify-content: space-around;
+  height: 100vh;
 }
 
 .painel-container {

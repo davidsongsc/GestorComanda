@@ -83,11 +83,13 @@ const UserLogin = () => {
         }
       });
     } else {
-      handleNotification('Falha: servidor não disponível ou desconectado.');
+     
       if (socket) {
         console.log(socket);
       } else {
+        handleNotification('Falha: servidor não disponível ou desconectado.');
         console.error('Socket não está disponível para reconectar.');
+        window.location.reload();
       }
     }
   };

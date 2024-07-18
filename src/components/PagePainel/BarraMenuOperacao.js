@@ -1,18 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { setLocalMesa } from '../../features/localmesa/localmesaSlice';
-import { useDispatch } from 'react-redux';
+
 
 const BarraMenuOperacional = () => {
     const user = useSelector(state => state.user);
     const mesaSelect = useSelector(state => state.localmesa.localmesa);
-    const navigate = useNavigate();
     const dispatch = useDispatch();
-
-    const handleNavigation = (path) => {
-        navigate(path);
-    };
 
     const handleLocalView = (local) => {
         dispatch(setLocalMesa(local));
@@ -30,12 +24,13 @@ const BarraMenuOperacional = () => {
             element.msRequestFullscreen();
         }
     };
+
     const handleLojaArea = (text) => {
         console.log(text);
         dispatch(setLocalMesa(text));
         console.log(mesaSelect);
-
     };
+
 
     if (!user) {
         return null; // Ou algum indicador de carregamento enquanto o usuário não é carregado
@@ -43,9 +38,8 @@ const BarraMenuOperacional = () => {
 
     return (
         <>
-            {user.nivel >= 1 &&
+            {user.nivel >= 1 && (
                 <div className='digitos'>
-
                     <div className='g1s'>
                         <button onClick={() => handleLojaArea('loja')} style={{ display: user.restricoes.area_rLoja ? 'row' : 'none' }}>Principal</button>
                         <button onClick={() => handleLojaArea('delivery')} style={{ display: user.restricoes.area_rDelivery ? 'row' : 'none' }}>Delivery</button>
@@ -53,11 +47,15 @@ const BarraMenuOperacional = () => {
                         <button onClick={() => handleLojaArea('giral')} style={{ display: user.restricoes.area_rGiral ? 'row' : 'none' }}>Giral</button>
                         <button onClick={() => handleLojaArea('externa')} style={{ display: user.restricoes.area_rExterna ? 'row' : 'none' }}>Externa</button>
 
-                        <button onClick={() => handleNavigation('')} style={{ display: user.restricoes.g_caixa_operador ? 'row' : 'none' }}>Gestor</button>
+                        
                         <button onClick={handleFullscreen} style={{ display: user.restricoes.g_comanda_maitre ? 'row' : 'none' }}>TELA</button>
                     </div>
                 </div>
-            }
+            )}
+
+            {/* Renderize o componente Gestor condicionalmente */}
+
+            
         </>
     );
 };

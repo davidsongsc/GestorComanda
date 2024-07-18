@@ -2,33 +2,53 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { FaBell } from 'react-icons/fa';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearNotification, removeNotification } from '../../features/notification/notificationSlice';
+import { removeNotification, setNotification } from '../../features/notification/notificationSlice';
 
 const Notification = () => {
   const dispatch = useDispatch();
 
-  // Adicione valores padrão para evitar problemas com `undefined`
-  const notificationGroups = useSelector(state => state.notification?.notificationGroups || []);
-  const hasNewNotification = useSelector(state => state.notification?.hasNewNotification || false);
+  const notificationGroups = useSelector(state => state.notification.notificationGroups || []);
+  const hasNewNotification = useSelector(state => state.notification.hasNewNotification || false);
   const user = useSelector(state => state.user || {});
-
   const [showNotification, setShowNotification] = useState(false);
   const [showNotificationList, setShowNotificationList] = useState(false);
   const [maxvh, setMaxVh] = useState('');
   const notificationContainerRef = useRef(null);
+  const socket = useSelector(state => state.socket.socket);
 
   useEffect(() => {
     if (notificationGroups.length > 0) {
       setShowNotification(true);
+
       setTimeout(() => {
         setShowNotification(false);
-      }, 4500); // timeNotificacao
+      }, 4500);
     }
   }, [notificationGroups]);
 
   useEffect(() => {
     scrollToBottom();
   }, [notificationGroups]);
+
+  useEffect(() => {
+    if (socket) {
+      socket.on('notificacoes_rec', (data) => {
+        console.log('Nova notificação recebida:', data);
+        dispatch(setNotification({ text: data }));
+  
+        // Mostrar a notificação por 4.5 segundos
+        setShowNotification(true);
+        setTimeout(() => {
+          setShowNotification(false);
+        }, 4500);
+      });
+  
+      return () => {
+        // Limpar o evento quando o componente for desmontado
+        socket.off('notificacoes_rec');
+      };
+    }
+  }, [socket, dispatch]);
 
   const handleIconClick = () => {
     if (user.usuario) {
@@ -68,8 +88,8 @@ const Notification = () => {
         style={{ overflowY: 'auto', maxHeight: '60px' }}
         onClick={handleIconClick}
       >
-        {notificationGroups.map((group) => (
-          <div key={`group-${group.id}`}>
+        {notificationGroups.map((group, index) => (
+          <div key={`group-${index}`}>
             {group.map((notification) => (
               <div className="notification-group" key={`notification-${notification.id}`}>
                 <div className="notification-item">
@@ -81,9 +101,9 @@ const Notification = () => {
           </div>
         ))}
       </div>
-  
+
       <div
-        style={{ display: user.usuario != null ? 'flex' : 'none' }}
+        style={{ display: user.usuario ? 'flex' : 'none' }}
         className={`notification-icon ${hasNewNotification ? 'nova-notification' : ''}`}
         onClick={handleIconClick}
       >

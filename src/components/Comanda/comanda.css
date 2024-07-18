@@ -385,7 +385,14 @@ table tbody {
 .I {
     background-color: black;
 }
-
+.L {
+    background-color: #b80d0d;
+    color: white;
+}
+.CX {
+    background-color: rgb(199, 113, 0);
+    color: white;
+}
 em {
 
     position: relative;

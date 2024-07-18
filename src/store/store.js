@@ -5,6 +5,7 @@ import notificationReducer from '../features/notification/notificationSlice';
 import notificationMiddleware from '../middleware/notificationMiddleware';
 import localmesaReducer from '../features/localmesa/localmesaSlice';
 import conexaoReducer from '../features/cservidor/conexaoSlice';
+import gestorReducer from '../features/cservidor/gestorSlice';
 import atendentesReducer from './atendentesReducer';
 
 // Middleware personalizado para ignorar erros de não serialização específicos
@@ -23,6 +24,7 @@ export const store = configureStore({
     socket: conexaoReducer,
     notification: notificationReducer,
     atendentes: atendentesReducer,
+    mostrarGestor: gestorReducer,
   },
   middleware: (getDefaultMiddleware) => ignoreNonSerializableMiddleware(getDefaultMiddleware),
 });
