@@ -6,7 +6,7 @@ import PainelLateral from './PainelLateral';
 import { setNotification } from '../../features/notification/notificationSlice';
 import { useSelector } from 'react-redux';
 
-const Caixa = ({ socket }) => {
+const Caixa = () => {
   const [relatorios, setRelatorios] = useState([]);
   const [totalValores, setTotalValores] = useState(0);
   const [nomesFrequentes, setNomesFrequentes] = useState([]);
@@ -14,6 +14,8 @@ const Caixa = ({ socket }) => {
   const [produtosFrequentes, setProdutosFrequentes] = useState([]);
   const [relatoriosClassificados, setRelatoriosClassificados] = useState([]);
   const [dadosPieChart, setDadosPieChart] = useState([]);
+  const socket = useSelector(state => state.socket.socket);
+
   const [itens, setItens] = useState([]);
   const [inventario, setInventario] = useState([]);
   const atendente = useSelector(state => state.user);
@@ -98,7 +100,7 @@ const Caixa = ({ socket }) => {
     console.log(dadosPieChart);
     // ...
   }, [relatorios]);
-  
+
 
   const nomeProdutos = (produto_id) => {
 
@@ -146,16 +148,16 @@ const Caixa = ({ socket }) => {
     const total = valoresNumericos.reduce((acc, relatorio) => acc + parseFloat(relatorio.valor * relatorio.qtd), 0);
     setTotalValores(total.toLocaleString(undefined, { minimumFractionDigits: 2 }));
   };
-  
-  
+
+
   const encontrarNomesFrequentes = () => {
     const nomes = {};
     relatorios.forEach((relatorio) => {
       const valor = parseFloat(relatorio.valor);
       const valorAtribuido = valor < 0 ? 0 : valor;
-  
+
       if (nomes[relatorio.operador]) {
-        nomes[relatorio.operador].totalValores += (valorAtribuido*relatorio.qtd);
+        nomes[relatorio.operador].totalValores += (valorAtribuido * relatorio.qtd);
         nomes[relatorio.operador].frequencia++;
       } else {
         nomes[relatorio.operador] = {
@@ -164,18 +166,18 @@ const Caixa = ({ socket }) => {
         };
       }
     });
-  
+
     const nomesOrdenados = Object.entries(nomes).sort((a, b) => b[1].frequencia - a[1].frequencia);
     setNomesFrequentes(nomesOrdenados);
   };
-  
+
 
   const encontrarProdutosFrequentes = () => {
     const nomes = {};
     relatorios.forEach((relatorio) => {
       const valor = parseFloat(relatorio.valor);
       const valorAtribuido = valor < 0 ? 0 : valor;
-  
+
       const nomeProdutoRelatorio = nomeProduto(relatorio.produto);
       if (nomes[nomeProdutoRelatorio]) {
         nomes[nomeProdutoRelatorio].totalValores += valorAtribuido;
@@ -187,11 +189,11 @@ const Caixa = ({ socket }) => {
         };
       }
     });
-  
+
     const nomesOrdenados = Object.entries(nomes).sort((a, b) => b[1].frequencia - a[1].frequencia);
     setProdutosFrequentes(nomesOrdenados);
   };
-  
+
 
   const classificarRelatorios = () => {
     const relatoriosOrdenados = [...relatorios].sort((a, b) => {
@@ -217,7 +219,7 @@ const Caixa = ({ socket }) => {
   }
   return (
     <>
-      <PainelLateral  />
+      <PainelLateral />
       <div className="relatorios-container">
         <div />
         <div className="painel-container">
@@ -306,8 +308,8 @@ const Caixa = ({ socket }) => {
                   .reverse()
                   .map((relatorio) => (
                     <tr key={relatorio.id}>
-                      <td style={{ position: 'relative', zIndex: '1', textTransform: 'uppercase'}}>{nomeProduto(relatorio.produto)}</td>
-                      <td>R$ {(relatorio.valor*relatorio.qtd)}</td>
+                      <td style={{ position: 'relative', zIndex: '1', textTransform: 'uppercase' }}>{nomeProduto(relatorio.produto)}</td>
+                      <td>R$ {(relatorio.valor * relatorio.qtd)}</td>
                       <td>{relatorio.comanda}</td>
                       <td>{relatorio.operador}</td>
                       <td>{relatorio.datahora}</td>
@@ -322,11 +324,11 @@ const Caixa = ({ socket }) => {
   );
 
 };
-
+/*
 Caixa.propTypes = {
   socket: PropTypes.object.isRequired,
   atendente: PropTypes.object.isRequired,
   setNotification: PropTypes.func.isRequired,
 };
-
+*/
 export default Caixa;

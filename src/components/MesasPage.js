@@ -450,7 +450,6 @@ const MesasPage = () => {
 
     const handleMesaClick = (idMesa) => {
         const mesa = mesas.find((mesa) => mesa.mesa === idMesa);
-        console.log(mesa)
         if (!user.restricoes.abrirMesa) {
             handleNotification("Acesso não autorizado | mesa: " + mesa.mesa);
             return;
@@ -586,7 +585,7 @@ const MesasPage = () => {
 
 
             <div className={showGestor ? 'gestor-comandas-relatorio' : ''}>
-                {user && user.restricoes && user.restricoes.g_comanda_maitre ? <Relatorios /> : null}
+                {user && user.restricoes && user.restricoes.g_comanda_maitre ? <Relatorios  /> : null}
             </div>
             {showModalMesa != false ?
                 <Modal show={showModalMesa} onHide={handleCloseModalMesa}

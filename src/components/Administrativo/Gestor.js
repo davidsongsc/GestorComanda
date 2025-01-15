@@ -9,7 +9,14 @@ import { setNotification } from '../../features/notification/notificationSlice';
 import { disconnectSocket, initializeSocket } from '../../features/cservidor/conexaoSlice';
 import connectarServidor from '../Api/loglogin';
 
-const Relatorios = () => {
+/**
+ * Componente de relatórios
+ *
+ * Exibe os relatórios de cancelamentos de vendas e suas respectivas informações.
+ *
+ * @returns {JSX.Element} Elemento JSX do componente de relatórios
+ */
+const Relatorios = ( ) => {
   const dispatch = useDispatch();
   const [relatorios, setRelatorios] = useState([]);
   const [totalValores, setTotalValores] = useState(0);
@@ -25,12 +32,12 @@ const Relatorios = () => {
     // Inicializa o socket quando o componente monta
     dispatch(initializeSocket(connectarServidor)); // Ajuste para sua URL de servidor
 
-
     return () => {
       // Desconecta o socket quando o componente desmonta
       dispatch(disconnectSocket());
     };
   }, [dispatch]);
+  
   const navigate = useNavigate();
   const handleNotification = (text) => {
     setNotification(text);
@@ -43,10 +50,10 @@ const Relatorios = () => {
 
     } else {
       consultarRelatorios();
-      socket.on('relatorios_encontrados', handleRelatoriosEncontrados);
+      socket.on('vendas_encontrados', handleRelatoriosEncontrados);
 
       return () => {
-        socket.off('relatorios_encontrados', handleRelatoriosEncontrados);
+        socket.off('vendas_encontrados', handleRelatoriosEncontrados);
       };
     }
   }, []);
@@ -119,20 +126,10 @@ const Relatorios = () => {
       nome,
       totalValores
     })));
-    console.log(dadosPieChart);
+    
     // ...
   }, [nomesFrequentes]);
-  const handleSistema = () => {
-    navigate('/');
-  }
-
-  const handleVendas = () => {
-    navigate('/venda');
-  }
-  const handleCadastroFuncionario = () => {
-    navigate('/cadastrocolaborador');
-
-  }
+  
   return (
     <>
 

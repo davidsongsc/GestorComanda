@@ -7,6 +7,7 @@ import Notification from './components/Sistema/Notification';
 import { carregarRestricoes } from './store/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import RestricoesComponente from './components/Outros/RestricoesComponente';
+import Caixa from './components/Administrativo/Venda';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -19,13 +20,15 @@ const App = () => {
   if (cRestricoes.carregandoRestricoes) {
     return <div>Carregando restrições...</div>;
   }
-  console.log(cRestricoes);
+  
   return (
     <BrowserRouter>
       <Notification />
       <Routes>
         <Route path="/" element={<MesasPage />} />
         <Route path="/colaborador" element={<RestricoesComponente />} />
+        <Route path="/venda" element={<Caixa />} />
+        
       </Routes>
     </BrowserRouter>
   );

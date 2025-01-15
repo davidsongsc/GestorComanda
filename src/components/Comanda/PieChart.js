@@ -9,7 +9,7 @@ const PieChart = ({ dados }) => {
       const data = new google.visualization.DataTable();
       data.addColumn('string', 'Nomes');
       data.addColumn('number', 'Total descontos');
-      console.log(dados);
+
       // Mapeia os dados recebidos para adicionar as linhas no DataTable
       const rows = dados.map(({ nome, totalValores }) => [
         nome,
